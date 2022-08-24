@@ -2,3 +2,5 @@
 Template/
 
 Syllabus.pdf
+*.out
+*.debug
