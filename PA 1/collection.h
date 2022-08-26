@@ -1,10 +1,6 @@
 #pragma once
 
 #include <cstddef>
-#include <stdexcept>
-#include <iostream>
-
-using std::cout;
 
 /**
  * @brief An Abstract Data Type that holds a collection of items
@@ -49,7 +45,7 @@ public:
     Collection(const Collection& rhs) : _size{rhs._size}, _capacity{rhs._capacity}, _data{nullptr} {
         this->_data = new Object[this->_capacity];
         for (size_t i = 0; i < this->_capacity; ++i)
-            this->_data[i] = i < this->_size ? rhs._data[i] : 0;
+            this->_data[i] = i < this->_size ? rhs._data[i] : Object();
     }
 
     /**
@@ -64,7 +60,7 @@ public:
 
             this->_data = new Object[this->_capacity];
             for (size_t i = 0; i < this->_capacity; ++i)
-                this->_data[i] = i < this->_size ? rhs._data[i] : 0;
+                this->_data[i] = i < this->_size ? rhs._data[i] : Object();
         }
 
         return *this;
@@ -110,12 +106,12 @@ public:
         // cout << "list.insert(" << std::to_string(obj) << ");\n";
 
         if (this->_size + 1 > this->_capacity) {
-            int* temp = this->_data;
+            Object* temp = this->_data;
             this->_capacity *= 2;
             this->_data = new Object[this->_capacity];
 
             for (size_t i = 0; i < this->_capacity; ++i)
-                this->_data[i] = i < this->_size ? temp[i] : 0;
+                this->_data[i] = i < this->_size ? temp[i] : Object();
 
             delete[] temp;
         }
