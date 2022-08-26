@@ -58,6 +58,9 @@ public:
         if (this != &rhs) {
             this->make_empty();
 
+            this->_size = rhs.size();
+            this->_capacity = rhs._capacity;
+
             this->_data = new Object[this->_capacity];
             for (size_t i = 0; i < this->_capacity; ++i)
                 this->_data[i] = i < this->_size ? rhs._data[i] : Object();

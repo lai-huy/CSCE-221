@@ -73,132 +73,174 @@ std::cout << #x << reset << "\n";
 #define is_not not_to_be
 
 namespace {
-    bool test_passed = true;
+	bool test_passed = true;
 }
 
 bool test_create() {
-    Collection<int> list;
+	Collection<int> list;
 
-    assert(list.is_empty());
-    assert(list.size() is 0);
+	assert(list.is_empty());
+	assert(list.size() is 0);
 
-    END_TEST;
+	END_TEST;
 }
 
 bool test_insert() {
-    Collection<int> list;
+	Collection<int> list;
 
-    assert(list.is_empty());
-    assert(list.size() is 0);
+	assert(list.is_empty());
+	assert(list.size() is 0);
 
-    list.insert(0);
-    {
-        assert(!list.is_empty());
-        assert(list.size() is 1);
-    }
+	list.insert(0);
+	{
+		assert(!list.is_empty());
+		assert(list.size() is 1);
+	}
 
-    list.insert(1);
-    {
-        assert(!list.is_empty());
-        assert(list.size() is 2);
-    }
+	list.insert(1);
+	{
+		assert(!list.is_empty());
+		assert(list.size() is 2);
+	}
 
-    list.insert(2);
-    {
-        assert(!list.is_empty());
-        assert(list.size() is 3);
-    }
+	list.insert(2);
+	{
+		assert(!list.is_empty());
+		assert(list.size() is 3);
+	}
 
-    list.insert(3);
-    {
-        assert(!list.is_empty());
-        assert(list.size() is 4);
-    }
+	list.insert(3);
+	{
+		assert(!list.is_empty());
+		assert(list.size() is 4);
+	}
 
-    list.insert(4);
-    {
-        assert(!list.is_empty());
-        assert(list.size() is 5);
-    }
+	list.insert(4);
+	{
+		assert(!list.is_empty());
+		assert(list.size() is 5);
+	}
 
-    list.insert(5);
-    {
-        assert(!list.is_empty());
-        assert(list.size() is 6);
-    }
+	list.insert(5);
+	{
+		assert(!list.is_empty());
+		assert(list.size() is 6);
+	}
 
-    list.insert(6);
-    {
-        assert(!list.is_empty());
-        assert(list.size() is 7);
-    }
+	list.insert(6);
+	{
+		assert(!list.is_empty());
+		assert(list.size() is 7);
+	}
 
-    END_TEST;
+	END_TEST;
 }
 
 bool test_contains() {
-    Collection<int> list;
-    assert(list.is_empty());
-    assert(list.size() is 0);
-    assert(!list.contains(0));
+	Collection<int> list;
+	assert(list.is_empty());
+	assert(list.size() is 0);
+	assert(!list.contains(0));
 
-    list.insert(0);
-    assert(list.contains(0));
+	list.insert(0);
+	assert(list.contains(0));
 
-    END_TEST;
+	END_TEST;
 }
 
 bool test_remove() {
-    Collection<int> list;
-    assert(list.is_empty());
-    assert(list.size() is 0);
+	Collection<int> list;
+	assert(list.is_empty());
+	assert(list.size() is 0);
 
-    list.remove(0);
-    assert(list.is_empty());
-    assert(list.size() is 0);
+	list.remove(0);
+	assert(list.is_empty());
+	assert(list.size() is 0);
 
-    list.insert(0);
-    assert(!list.is_empty());
-    assert(list.size() is 1);
+	list.insert(0);
+	assert(!list.is_empty());
+	assert(list.size() is 1);
 
-    list.remove(0);
-    {
-        assert(list.is_empty());
-        assert(list.size() is 0);
-    }
+	list.remove(0);
+	{
+		assert(list.is_empty());
+		assert(list.size() is 0);
+	}
 
-    list.insert(1);
-    list.insert(2);
-    list.insert(3);
-    list.insert(4);
-    list.insert(5);
-    {
-        assert(!list.is_empty());
-        assert(list.size() is 5);
-    }
+	list.insert(1);
+	list.insert(2);
+	list.insert(3);
+	list.insert(4);
+	list.insert(5);
+	{
+		assert(!list.is_empty());
+		assert(list.size() is 5);
+	}
 
-    list.remove(1);
-    {
-        assert(!list.is_empty());
-        assert(list.size() is 4);
-    }
+	list.remove(1);
+	{
+		assert(!list.is_empty());
+		assert(list.size() is 4);
+	}
 
-    END_TEST;
+	END_TEST;
+}
+
+bool test_copy_const() {
+	Collection<int> a;
+	a.insert(1);
+	a.insert(2);
+	a.insert(3);
+	a.insert(4);
+
+	Collection<int> b(a);
+	assert(b.size() is a.size());
+	assert(b.is_empty() == a.is_empty());
+
+	END_TEST;
+}
+
+bool test_copy_oper() {
+	Collection<int> a;
+	a.insert(1);
+	a.insert(2);
+	a.insert(3);
+	a.insert(4);
+
+	Collection<int> b;
+	b.insert(5);
+	b.insert(6);
+	b.insert(7);
+	b.insert(8);
+	b.insert(9);
+	{
+		assert(b.size() is 5);
+	}
+
+	b = a;
+	{
+		assert(b.size() is 4);
+		assert(b.size() is a.size());
+	}
+
+	END_TEST;
 }
 
 int main() {
-    unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
+	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
-    test(create);
-    test(insert);
-    test(contains);
-    test(remove);
+	test(create);
+	test(insert);
+	test(contains);
+	test(remove);
+	test(copy_const);
+	test(copy_oper);
 
-    cout << "\n";
-    cout << magenta << "summary:" << reset << "\n";
-    cout << green << pass_cnt << " tests passing." << reset << "\n";
-    cout << red << fail_cnt << " tests failing." << reset << "\n";
-    cout << yellow << skip_cnt << " tests skipped." << reset << "\n";
+	cout << "\n";
+	cout << magenta << "summary:" << reset << "\n";
+	cout << green << pass_cnt << " tests passing." << reset << "\n";
+	cout << red << fail_cnt << " tests failing." << reset << "\n";
+	cout << yellow << skip_cnt << " tests skipped." << reset << "\n";
 
-    return 0;
+	return 0;
 }
