@@ -138,6 +138,185 @@ bool test_insert_invalid() {
 	END_TEST;
 }
 
+bool test_remove_head() {
+	DoublyLinkedList<int> list;
+	assert(list.size() is 0);
+	assert(list.head() is nullptr);
+
+	list.insert(0, 0);
+	list.insert(1, 1);
+	list.insert(2, 2);
+	list.insert(3, 3);
+	assert(list.size() is 4);
+	assert(list.head() is_not nullptr);
+
+	list.remove(0);
+	assert(list.size() is 3);
+	assert(list.head() is_not nullptr);
+
+	list.remove(0);
+	assert(list.size() is 2);
+	assert(list.head() is_not nullptr);
+
+	list.remove(0);
+	assert(list.size() is 1);
+	assert(list.head() is_not nullptr);
+
+	list.remove(0);
+	assert(list.size() is 0);
+	assert(list.head() is nullptr);
+
+	END_TEST;
+}
+
+bool test_remove_tail() {
+	DoublyLinkedList<int> list;
+	assert(list.size() is 0);
+	assert(list.head() is nullptr);
+
+	list.insert(0, 0);
+	list.insert(1, 1);
+	list.insert(2, 2);
+	list.insert(3, 3);
+	assert(list.size() is 4);
+	assert(list.head() is_not nullptr);
+
+	list.remove(list.size() - 1);
+	assert(list.size() is 3);
+	assert(list.head() is_not nullptr);
+
+	list.remove(list.size() - 1);
+	assert(list.size() is 2);
+	assert(list.head() is_not nullptr);
+
+	list.remove(list.size() - 1);
+	assert(list.size() is 1);
+	assert(list.head() is_not nullptr);
+
+	list.remove(list.size() - 1);
+	assert(list.size() is 0);
+	assert(list.head() is nullptr);
+
+	END_TEST;
+}
+
+bool test_remove_middle() {
+	DoublyLinkedList<int> list;
+	assert(list.size() is 0);
+	assert(list.head() is nullptr);
+
+	list.insert(0, 0);
+	list.insert(1, 1);
+	list.insert(2, 2);
+	list.insert(3, 3);
+	assert(list.size() is 4);
+	assert(list.head() is_not nullptr);
+
+	list.remove(1);
+	assert(list.size() is 3);
+	assert(list.head() is_not nullptr);
+
+	list.remove(1);
+	assert(list.size() is 2);
+	assert(list.head() is_not nullptr);
+
+	END_TEST;
+}
+
+bool test_remove_invalid() {
+	DoublyLinkedList<int> list;
+	assert(list.size() is 0);
+	assert(list.head() is nullptr);
+
+	list.insert(0, 0);
+	list.insert(1, 1);
+	list.insert(2, 2);
+	list.insert(3, 3);
+	assert(list.size() is 4);
+	assert(list.head() is_not nullptr);
+
+	expect_throw(list.remove(6), out_of_range);
+
+	END_TEST;
+}
+
+bool test_oper_sq() {
+	DoublyLinkedList<int> list;
+	assert(list.size() is 0);
+	assert(list.head() is nullptr);
+
+	list.insert(0, 0);
+	list.insert(1, 1);
+	list.insert(2, 2);
+	list.insert(3, 3);
+	list.insert(4, 4);
+	list.insert(5, 5);
+	assert(list.size() is 6);
+	assert(list.head() is_not nullptr);
+
+	assert(list[0] is 0);
+	assert(list[1] is 1);
+	assert(list[2] is 2);
+	assert(list[3] is 3);
+	assert(list[4] is 4);
+	assert(list[5] is 5);
+	expect_throw(list[6], out_of_range);
+
+	END_TEST;
+}
+
+bool test_create_copy() {
+	DoublyLinkedList<int> list;
+	assert(list.size() is 0);
+	assert(list.head() is nullptr);
+
+	list.insert(0, 0);
+	list.insert(1, 1);
+	list.insert(2, 2);
+	list.insert(3, 3);
+	list.insert(4, 4);
+	list.insert(5, 5);
+	assert(list.size() is 6);
+	assert(list.head() is_not nullptr);
+
+	DoublyLinkedList<int> a(list);
+	assert(a.size() is list.size());
+	assert(a.head() is_not list.head());
+	assert(a.head()->_value is list.head()->_value);
+
+	END_TEST;
+}
+
+bool test_copy_oper() {
+	DoublyLinkedList<int> list;
+	assert(list.size() is 0);
+	assert(list.head() is nullptr);
+
+	list.insert(0, 0);
+	list.insert(1, 1);
+	list.insert(2, 2);
+	list.insert(3, 3);
+	list.insert(4, 4);
+	list.insert(5, 5);
+	assert(list.size() is 6);
+	assert(list.head() is_not nullptr);
+
+	DoublyLinkedList<int> a;
+	a.insert(0, 6);
+	a.insert(0, 7);
+	a.insert(0, 8);
+	a.insert(0, 9);
+	assert(a.size() is 4);
+	assert(a.head() is_not nullptr);
+
+	a = list;
+	assert(a.size() is list.size());
+	assert(a.head() is_not list.head());
+	assert(a.head()->_value is list.head()->_value);
+
+	END_TEST;
+}
+
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
@@ -146,6 +325,13 @@ int main() {
 	test(insert_tail);
 	test(insert_middle);
 	test(insert_invalid);
+	test(remove_head);
+	test(remove_tail);
+	test(remove_middle);
+	test(remove_invalid);
+	test(oper_sq);
+	test(create_copy);
+	test(copy_oper);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";

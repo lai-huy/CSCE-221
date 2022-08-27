@@ -8,6 +8,11 @@
 using std::out_of_range;
 using std::cout;
 
+/**
+ * @brief Node struct for the DoublyLinkedList
+ *
+ * @tparam Object
+ */
 template <typename Object>
 struct Node {
     Object _value;
@@ -24,13 +29,32 @@ struct Node {
     }
 };
 
+/**
+ * @brief A Doubly Linked List
+ *
+ * @tparam Object
+ */
 template <typename Object>
 class DoublyLinkedList {
 private:
+    /**
+     * @brief size of the linked list
+     */
     size_t _size;
+
+    /**
+     * @brief Pointer to the first element in the list
+     */
     Node<Object>* _head;
+
+    /**
+     * @brief Pointer to the last element in the list
+     */
     Node<Object>* _tail;
 
+    /**
+     * @brief clear the list
+     */
     void clear() {
         if (this->_size) {
             this->_size = 0;
@@ -46,24 +70,49 @@ private:
         }
     }
 
-    void copy(const DoublyLinkedList<Object> rhs) {
+    /**
+     * @brief Copy a list into this list
+     *
+     * @param rhs DoublyLinkedList to copy from
+     */
+    void copy(const DoublyLinkedList& rhs) {
         const Node<Object>* node = rhs._head;
         while (node) {
             this->insert(this->_size, node->_value);
             node = node->_next;
         }
+
+        delete node;
     }
 
 public:
+    /**
+     * @brief Construct a new Doubly Linked List object
+     */
     DoublyLinkedList() : _size{0}, _head{nullptr}, _tail{nullptr} {}
-    DoublyLinkedList(const DoublyLinkedList& rhs) : _size{rhs._size}, _head{nullptr}, _tail{nullptr} {
+
+    /**
+     * @brief Construct a new Doubly Linked List object
+     *
+     * @param rhs DoublyLinkedList to copy from
+     */
+    DoublyLinkedList(const DoublyLinkedList& rhs) : _size{0}, _head{nullptr}, _tail{nullptr} {
         this->copy(rhs);
     }
 
+    /**
+     * @brief Destroy the Doubly Linked List object
+     */
     ~DoublyLinkedList() {
         this->clear();
     }
 
+    /**
+     * @brief Copy assignment operator
+     *
+     * @param rhs DoublyLinkedList to copy from
+     * @return DoublyLinkedList& *this
+     */
     DoublyLinkedList& operator=(const DoublyLinkedList& rhs) {
         if (this != &rhs) {
             this->clear();
@@ -73,27 +122,44 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Determine the current size of this list
+     *
+     * @return size_t this->_size;
+     */
     size_t size() const {
         return this->_size;
     }
 
+    /**
+     * @brief Access a current element at a specified index
+     *
+     * @param index index to access
+     * @return Object& reference to the element
+     */
     Object& operator[](size_t index) {
         if (index >= this->_size)
             throw out_of_range("Index out of bounds");
 
         Node<Object>* node = this->_head;
 
-        for (size_t i = 0; i < this->_size; ++i)
+        for (size_t i = 0; i < index; ++i)
             node = node->_next;
 
         return node->_value;
     }
 
+    /**
+     * @brief Insert an object
+     *
+     * @param index
+     * @param obj
+     */
     void insert(size_t index, const Object& obj) {
+        cout << "list.insert(" << std::to_string(index) << ", " << std::to_string(obj) << ");\n";
+
         if (index > this->_size)
             throw out_of_range("Index out of bounds");
-
-        cout << "list.insert(" << std::to_string(index) << ", " << std::to_string(obj) << ");\n";
 
         Node<Object>* node = new Node(obj);
         if (!this->_head) {
@@ -122,19 +188,29 @@ public:
         return;
     }
 
+    /**
+     * @brief Remove an element from the list
+     *
+     * @param index index to remove
+     */
     void remove(size_t index) {
+        cout << "list.remove(" << std::to_string(index) << ");\n";
+
         if (index >= this->_size)
             throw out_of_range("Index out of bounds");
 
-        if (!index) {
+        if (this->_size == 1) {
+            delete this->_head;
+            this->_head = nullptr;
+            this->_tail = nullptr;
+        } else if (!index) {
             this->_head = this->_head->_next;
             delete this->_head->_prev;
             this->_head->_prev = nullptr;
-        } else if (index == this->_size) {
+        } else if (index == this->_size - 1) {
             this->_tail = this->_tail->_prev;
             delete this->_tail->_next;
             this->_tail->_next = nullptr;
-            return;
         } else {
             Node<Object>* node = this->_head;
             for (size_t i = 0; i < index; ++i)
@@ -144,8 +220,15 @@ public:
             node->_next->_prev = node->_prev;
             delete node;
         }
+
+        --this->_size;
     }
 
+    /**
+     * @brief return this head pointer of htis list
+     *
+     * @return const Node<Object>* this->_head;
+     */
     const Node<Object>* head() const {
         return this->_head;
     }
