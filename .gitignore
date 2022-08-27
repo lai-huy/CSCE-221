@@ -3,4 +3,7 @@ Template/
 
 Syllabus.pdf
 *.out
+*.gcov
+*.gcda
+*.dcno
 *.debug
