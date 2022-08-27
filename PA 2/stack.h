@@ -12,20 +12,49 @@ private:
    DoublyLinkedList<Object> _data;
 
 public:
-   Stack();
-   Stack(const Stack& rhs);
-   ~Stack();
-   Stack& operator=(const Stack& rhs);
+   Stack() : _data{DoublyLinkedList<Object>()} {}
 
-   void push(const Object& obj);
-   void pop();
-   Object& top();
+   Stack(const Stack& rhs) : _data{DoublyLinkedList<Object>(rhs._data)} {}
+
+   ~Stack() {
+      this->_data.clear();
+   }
+
+   Stack& operator=(const Stack& rhs) {
+      if (this != &rhs) {
+         this->_data.clear();
+         this->_data.copy(rhs._data);
+      }
+
+      return *this;
+   }
+
+   void push(const Object& obj) {
+      this->_data.insert(0, obj);
+   }
+
+   void pop() {
+      try {
+         this->_data.remove(0);
+      } catch (const out_of_range& err) {
+         throw out_of_range("Stack underflow");
+      }
+   }
+
+   Object& top() {
+      try {
+         return this->_data[0];
+      } catch (const out_of_range& err) {
+         throw out_of_range("Stack is empty");
+      }
+   }
 
    //OPTIONAL
    //Stack(Stack&& rhs);
    //Stack& operator=(Stack&& rhs);
    //void push(Object&& obj);
    //const Object& top() const;
+
    size_t size() const {
       return this->_data.size();
    }

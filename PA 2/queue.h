@@ -11,18 +11,53 @@ class Queue {
 private:
     DoublyLinkedList<Object> _data;
 public:
-    Queue();
-    Queue(const Queue& rhs);
-    ~Queue();
-    Queue& operator=(const Queue& rhs);
-    void enqueue(const Object& rhs);
-    Object dequeue();
-    Object& front();
+    Queue() : _data{DoublyLinkedList<Object>()} {}
+    
+    Queue(const Queue& rhs) : _data{DoublyLinkedList<Object>(rhs._data)} {}
+
+    ~Queue() {
+        this->_data.~DoublyLinkedList();
+    }
+
+    Queue& operator=(const Queue& rhs) {
+        if (this != &rhs) {
+            this->_data.clear();
+            this->_data.copy(rhs._data);
+        }
+
+        return *this;
+    }
+
+    void enqueue(const Object& obj) {
+        this->_data.insert(this->_data.size(), obj);
+    }
+
+    Object dequeue() {
+        Object val;
+        try {
+            val = this->_data[0];
+        } catch (const out_of_range& err) {
+            throw out_of_range("Queue underflow");
+        }
+
+        this->_data.remove(0);
+        return val;
+    }
+
+    Object& front() {
+        try {
+            return this->_data[0];
+        } catch (const out_of_range& err) {
+            throw out_of_range("Queue is empty");
+        }
+    }
 
     //OPTIONAL
     // Queue(Queue&&)
     // Queue& operator=(Queue&&)
     // void enqueue(Object&&)
     // const Object& front() const
-    // size_t size() const
+    size_t size() const {
+        return this->_data.size();
+    }
 };

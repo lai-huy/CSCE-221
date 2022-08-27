@@ -75,8 +75,149 @@ namespace {
 	bool test_passed = true;
 }
 
+bool test_create() {
+	Queue<int> queue;
+	assert(queue.size() is 0);
+
+	END_TEST;
+}
+
+bool test_enqueue() {
+	Queue<int> queue;
+	assert(queue.size() is 0);
+
+	queue.enqueue(0);
+	assert(queue.size() is 1);
+
+	queue.enqueue(1);
+	assert(queue.size() is 2);
+
+	queue.enqueue(2);
+	assert(queue.size() is 3);
+
+	queue.enqueue(3);
+	assert(queue.size() is 4);
+
+	END_TEST;
+}
+
+bool test_dequeue() {
+	Queue<int> queue;
+	assert(queue.size() is 0);
+
+	queue.enqueue(0);
+	queue.enqueue(1);
+	queue.enqueue(2);
+	queue.enqueue(3);
+	assert(queue.size() is 4);
+
+	assert(queue.dequeue() is 0);
+	assert(queue.size() is 3);
+
+	assert(queue.dequeue() is 1);
+	assert(queue.size() is 2);
+
+	assert(queue.dequeue() is 2);
+	assert(queue.size() is 1);
+
+	assert(queue.dequeue() is 3);
+	assert(queue.size() is 0);
+
+	END_TEST;
+}
+
+bool test_dequeue_empty() {
+	Queue<int> queue;
+	assert(queue.size() is 0);
+
+	expect_throw(queue.dequeue(), out_of_range);
+
+	END_TEST;
+}
+
+bool test_front() {
+	Queue<int> queue;
+	assert(queue.size() is 0);
+
+	queue.enqueue(0);
+	assert(queue.front() is 0);
+
+	queue.enqueue(1);
+	assert(queue.front() is 0);
+
+	queue.enqueue(2);
+	assert(queue.front() is 0);
+
+	queue.enqueue(3);
+	assert(queue.front() is 0);
+
+	END_TEST;
+}
+
+bool test_front_empty() {
+	Queue<int> queue;
+	assert(queue.size() is 0);
+
+	expect_throw(queue.front(), out_of_range);
+
+	END_TEST;
+}
+
+bool test_copy() {
+	Queue<int> queue;
+	assert(queue.size() is 0);
+
+	queue.enqueue(0);
+	queue.enqueue(1);
+	queue.enqueue(2);
+	queue.enqueue(3);
+	assert(queue.size() is 4);
+
+	Queue<int> a(queue);
+	assert(a.size() is queue.size());
+	assert(a.front() is queue.front());
+
+	END_TEST;
+}
+
+bool test_copy_oper() {
+	Queue<int> queue;
+	assert(queue.size() is 0);
+	
+	queue.enqueue(0);
+	queue.enqueue(1);
+	queue.enqueue(2);
+	queue.enqueue(3);
+	assert(queue.size() is 4);
+
+	Queue<int> a;
+	a.enqueue(4);
+	a.enqueue(5);
+	a.enqueue(6);
+	a.enqueue(7);
+	a.enqueue(8);
+	assert(a.size() is 5);
+	assert(a.size() is_not queue.size());
+	assert(a.front() is_not queue.front());
+
+	a = queue;
+	assert(a.size() is queue.size());
+	assert(a.front() is queue.front());
+
+	END_TEST;
+}
+
 int main() {
     unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
+
+	test(create);
+	test(enqueue);
+	test(dequeue);
+	test(dequeue_empty);
+	test(front);
+	test(front_empty);
+	test(copy);
+	test(copy_oper);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";

@@ -52,6 +52,7 @@ private:
      */
     Node<Object>* _tail;
 
+public:
     /**
      * @brief clear the list
      */
@@ -85,7 +86,6 @@ private:
         delete node;
     }
 
-public:
     /**
      * @brief Construct a new Doubly Linked List object
      */
@@ -156,7 +156,7 @@ public:
      * @param obj
      */
     void insert(size_t index, const Object& obj) {
-        cout << "list.insert(" << std::to_string(index) << ", " << std::to_string(obj) << ");\n";
+        // cout << "list.insert(" << std::to_string(index) << ", " << std::to_string(obj) << ");\n";
 
         if (index > this->_size)
             throw out_of_range("Index out of bounds");
@@ -194,7 +194,7 @@ public:
      * @param index index to remove
      */
     void remove(size_t index) {
-        cout << "list.remove(" << std::to_string(index) << ");\n";
+        // cout << "list.remove(" << std::to_string(index) << ");\n";
 
         if (index >= this->_size)
             throw out_of_range("Index out of bounds");

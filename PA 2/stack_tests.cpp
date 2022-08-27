@@ -75,8 +75,160 @@ namespace {
 	bool test_passed = true;
 }
 
+bool test_create() {
+	Stack<int> stack;
+	assert(stack.size() is 0);
+
+	END_TEST;
+}
+
+bool test_push() {
+	Stack<int> stack;
+	assert(stack.size() is 0);
+
+	stack.push(0);
+	assert(stack.size() is 1);
+
+	stack.push(1);
+	assert(stack.size() is 2);
+
+	stack.push(2);
+	assert(stack.size() is 3);
+
+	stack.push(3);
+	assert(stack.size() is 4);
+
+	stack.push(4);
+	assert(stack.size() is 5);
+
+	END_TEST;
+}
+
+bool test_pop() {
+	Stack<int> stack;
+	assert(stack.size() is 0);
+
+	stack.push(0);
+	stack.push(1);
+	stack.push(2);
+	stack.push(3);
+	stack.push(4);
+	stack.push(5);
+	assert(stack.size() is 6);
+
+	stack.pop();
+	assert(stack.size() is 5);
+
+	stack.pop();
+	assert(stack.size() is 4);
+
+	stack.pop();
+	assert(stack.size() is 3);
+	
+	stack.pop();
+	assert(stack.size() is 2);
+	
+	stack.pop();
+	assert(stack.size() is 1);
+
+	stack.pop();
+	assert(stack.size() is 0);
+
+	END_TEST;
+}
+
+bool test_pop_empty() {
+	Stack<int> stack;
+	assert(stack.size() is 0);
+
+	expect_throw(stack.pop(), out_of_range);
+
+	END_TEST;
+}
+
+bool test_top() {
+	Stack<int> stack;
+	assert(stack.size() is 0);
+
+	stack.push(0);
+	assert(stack.top() is 0);
+	
+	stack.push(1);
+	assert(stack.top() is 1);
+	
+	stack.push(2);
+	assert(stack.top() is 2);
+
+	END_TEST;
+}
+
+bool test_top_empty() {
+	Stack<int> stack;
+	assert(stack.size() is 0);
+
+	expect_throw(stack.top(), out_of_range);
+
+	END_TEST;
+}
+
+bool test_copy() {
+	Stack<int> stack;
+	assert(stack.size() is 0);
+
+	stack.push(0);
+	stack.push(1);
+	stack.push(2);
+	stack.push(3);
+	assert(stack.size() is 4);
+
+	Stack<int> a(stack);
+	assert(a.size() is stack.size());
+	assert(a.top() is stack.top());
+
+	END_TEST;
+}
+
+bool test_copy_oper() {
+	Stack<int> stack;
+	assert(stack.size() is 0);
+
+	stack.push(0);
+	stack.push(1);
+	stack.push(2);
+	stack.push(3);
+	assert(stack.size() is 4);
+
+	Stack<int> a;
+	assert(a.size() is 0);
+
+	a.push(4);
+	a.push(5);
+	a.push(6);
+	a.push(7);
+	a.push(8);
+	a.push(9);
+	assert(a.size() is 6);
+	assert(a.size() is_not stack.size());
+	assert(a.top() is_not stack.top());
+
+	a = stack;
+	assert(a.size() is stack.size());
+	assert(a.top() is stack.top());
+
+	END_TEST;
+}
+
 int main() {
-    unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
+	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
+
+	test(create);
+	test(push);
+	test(pop);
+	test(pop_empty);
+	test(top);
+	test(top_empty);
+	test(copy);
+	test(copy_oper);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";
