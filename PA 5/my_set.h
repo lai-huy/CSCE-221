@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 // forward declarations
 template <class T> class Set;
 template <class T> class Set_const_iterator;
@@ -21,7 +23,7 @@ class Set_const_iterator {
     friend class Set<Comparable>;
     typedef Set_Node<Comparable> Node;
 
- public:
+public:
     virtual std::string to_string() const {
         // make a string that represents the state of the iterator
         //   e.g. "<Set::const_iterator -> [value]>"
@@ -36,7 +38,7 @@ class Set_iterator : public Set_const_iterator<Comparable> {
     typedef Set_Node<Comparable> Node;
     typedef Set_const_iterator<Comparable> const_iterator;
 
- public:
+public:
     std::string to_string() const override {
         // make a string that represents the state of the iterator
         //   e.g. "<Set::iterator -> [value]>"
@@ -48,7 +50,7 @@ class Set_iterator : public Set_const_iterator<Comparable> {
 template <class Comparable>
 class Set {
     typedef Set_Node<Comparable> Node;
- public:
+public:
     typedef Set_const_iterator<Comparable> const_iterator;
     typedef Set_iterator<Comparable> iterator;
 

@@ -1,6 +1,5 @@
 #include <iostream>
 #include "hashtable_open_addressing.h"
-#include "hashtable_open_addressing.h"
 
 class Hashable {
     std::string str;

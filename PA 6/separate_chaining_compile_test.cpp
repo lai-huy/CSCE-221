@@ -6,18 +6,18 @@ class Hashable {
     std::string str;
     int i;
 
- public:    
+public:
     Hashable() : str{}, i{} {}
     Hashable(std::string str, int i) : str{str}, i{i} {}
 
-    bool operator==(const Hashable& rhs) const { return str == rhs.str && i == rhs.i; }         
+    bool operator==(const Hashable& rhs) const { return str == rhs.str && i == rhs.i; }
     bool operator!=(const Hashable& rhs) const { return !(*this == rhs); }
-    
+
     friend std::ostream& operator<<(std::ostream&, const Hashable&);
 };
 
 std::ostream& operator<<(std::ostream& os, const Hashable& hashable) {
-    os << "{\""<<hashable.str<<"\", "<<hashable.i<<"}";
+    os << "{\"" << hashable.str << "\", " << hashable.i << "}";
     return os;
 }
 
@@ -28,7 +28,7 @@ struct HashableHash {
 };
 
 int main() {
-    HashTable<Hashable, HashableHash> table(11);    
+    HashTable<Hashable, HashableHash> table(11);
     HashTable<Hashable, HashableHash> copy = table;
     table = copy;
     std::cout << "is empty is " << std::boolalpha << table.is_empty() << std::endl;
@@ -44,6 +44,6 @@ int main() {
     std::cout << "max load factor is " << table.max_load_factor() << std::endl;
     table.rehash(42);
     table.print_table();
-    
+
     return 0;
 }

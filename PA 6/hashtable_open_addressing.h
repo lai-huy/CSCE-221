@@ -1,6 +1,37 @@
 #pragma once
 
-template <class Key, class Hash=std::hash<Key>>
+#include <functional>
+#include <iostream>
+#include <list>
+#include <sstream>
+#include <stdexcept>
+#include <vector>
+
+using std::ostream, std::cout;
+
+template <class Key, class Hash = std::hash<Key>>
 class HashTable {
-    // TODO(student): implement an open addressing hash table
+public:
+    HashTable();
+    explicit HashTable(size_t);
+
+    bool is_empty() const;
+    size_t size() const;
+    size_t table_size() const;
+
+    void make_empty();
+    bool insert(const Key& key);
+    size_t remove(const Key& key);
+
+    bool contains(const Key& key) const;
+    size_t position(const Key& key) const;
+
+    void print_table(ostream& os=cout) const;
+
+    HashTable(const HashTable& rhs);
+    HashTable(HashTable&& rhs);
+    ~HashTable();
+    HashTable& operator=(const HashTable& rhs);
+    HashTable& operator=(HashTable && rhs);
+    void insert(Key&& key);
 };

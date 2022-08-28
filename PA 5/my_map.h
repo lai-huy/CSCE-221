@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 // forward declarations
 template <class K, class V> class Map;
 template <class K, class V> class Map_const_iterator;
@@ -10,7 +12,7 @@ template <class Key, class Value>
 class Map_Node {
     friend class Map<Key, Value>;
     friend class Map_const_iterator<Key, Value>;
-    friend class Map_iterator<Key,Value>;
+    friend class Map_iterator<Key, Value>;
 };
 
 // TODO(stduent): implement this
@@ -21,7 +23,7 @@ class Map_const_iterator {
     typedef Map_Node<Key, Value> Node;
     typedef std::pair<const Key, Value> value_type;
 
- public:
+public:
     virtual std::string to_string() const {
         // make a string that represents the state of the iterator
         //   e.g. "<Map::const_iterator -> [key, value]>"
@@ -37,7 +39,7 @@ class Map_iterator : public Map_const_iterator<Key, Value> {
     typedef Map_Node<Key, Value> Node;
     typedef Map_const_iterator<Key, Value> const_iterator;
 
- public:
+public:
     std::string to_string() const override {
         // make a string that represents the state of the iterator
         //   e.g. "<Map::iterator -> [key, value]>"
@@ -50,7 +52,7 @@ template <class Key, class Value>
 class Map {
     typedef Map_Node<Key, Value> Node;
 
- public:
+public:
     typedef Map_const_iterator<Key, Value> const_iterator;
     typedef Map_iterator<Key, Value> iterator;
 };

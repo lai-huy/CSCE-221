@@ -175,31 +175,73 @@ public:
     }
 
     // OPTIONAL
-    // ArrayList(ArrayList&& rhs);
-    // ArrayList& operator=(ArrayList&& rhs);
-    // void insert(size_t index, Object&& obj);
+    ArrayList(ArrayList&& rhs) : _size{rhs._size}, _capacity{rhs._capacity}, _data{rhs._data} {
+        rhs._size = 0;
+        rhs._capacity = 0;
+        rhs._data = nullptr;
+    }
+    
+    ArrayList& operator=(ArrayList&& rhs) {
+        if (this != &rhs) {
+            delete[] this->_data;
 
-    // const Object& operator[](size_t index) const {
-    //     if (index >= this->_size)
-    //         throw out_of_range("Index out of bounds");
-    //     return this->_data[index];
-    // }
+            this->_size = rhs._size;
+            this->_capacity = rhs._capacity;
+            this->_data = rhs._data;
 
-    // Object* begin() {
-    //     return this->_size ? &this->_data[0] : nullptr;
-    // }
+            rhs._size = 0;
+            rhs._capacity = 1;
+            rhs._data = nullptr;
+        }
+    }
+    
+    void insert(size_t index, Object&& obj) {
+        if (index > this->_size)
+            throw out_of_range("Index out of bounds");
 
-    // const Object* begin() const {
-    //     return this->_size ? &this->_data[0] : nullptr;
-    // }
+        if (this->_size + 1 > this->_capacity) {
+            this->_capacity *= 2;
+            Object* temp = this->_data;
+            this->_data = new Object[this->_capacity]{};
 
-    // Object* end() {
-    //     return this->_size ? &this->_data[this->_size - 1] : nullptr;
-    // }
+            for (size_t i = 0; i < this->_capacity; ++i)
+                this->_data[i] = i < this->_size ? temp[i] : Object();
 
-    // const Object* end() const {
-    //     return this->_size ? &this->_data[this->_size - 1] : nullptr;
-    // }
+            delete[] temp;
+        }
+
+        if (!index) {
+            for (size_t i = this->_size - 1; i < this->_size; --i)
+                this->_data[i + 1] = this->_data[i];
+        } else if (this->_size)
+            for (size_t i = this->_size - 1; i >= index; --i)
+                this->_data[i + 1] = this->_data[i];
+
+        ++this->_size;
+        this->_data[index] = obj;
+    }
+
+    const Object& operator[](size_t index) const {
+        if (index >= this->_size)
+            throw out_of_range("Index out of bounds");
+        return this->_data[index];
+    }
+
+    Object* begin() {
+        return this->_size ? &this->_data[0] : nullptr;
+    }
+
+    const Object* begin() const {
+        return this->_size ? &this->_data[0] : nullptr;
+    }
+
+    Object* end() {
+        return this->_size ? &this->_data[this->_size - 1] : nullptr;
+    }
+
+    const Object* end() const {
+        return this->_size ? &this->_data[this->_size - 1] : nullptr;
+    }
 };
 
 #endif  // ARRAY_LIST_H
