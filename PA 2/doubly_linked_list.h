@@ -10,8 +10,6 @@ using std::cout;
 
 /**
  * @brief Node struct for the DoublyLinkedList
- *
- * @tparam Object
  */
 template <typename Object>
 struct Node {
@@ -32,7 +30,7 @@ struct Node {
 /**
  * @brief A Doubly Linked List
  *
- * @tparam Object
+ * @tparam Object type of element this is holding
  */
 template <typename Object>
 class DoublyLinkedList {
