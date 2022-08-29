@@ -1,6 +1,11 @@
 #pragma once
 
+#include <cstddef>
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
+#include <utility>
+#include <tuple>
 
 // forward declarations
 template <class T> class Set;
