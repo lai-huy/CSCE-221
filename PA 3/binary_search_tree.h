@@ -9,6 +9,11 @@
 using std::ostream, std::cout;
 using std::invalid_argument;
 
+/**
+ * @brief An Individual node of the LinkedList
+ * 
+ * @tparam Comparable a data type that overloads operator==, operator<, and operator>
+ */
 template <typename Comparable>
 struct Node {
     Comparable _value;
@@ -23,6 +28,11 @@ struct Node {
     }
 };
 
+/**
+ * @brief A Binary Search Tree
+ * 
+ * @tparam Comparable a data type that overloads operator==, operator<, and operator>
+ */
 template <typename Comparable>
 class BinarySearchTree {
 private:
