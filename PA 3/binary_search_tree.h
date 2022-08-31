@@ -38,19 +38,17 @@ private:
         return this->contains(root->_left, val);
     }
 
-    void clear(Node<Comparable>* node) {
+    Node<Comparable>* clear(Node<Comparable>* node) {
         if (node) {
-            this->clear(node->_left);
-            this->clear(node->_right);
+            node->_left = this->clear(node->_left);
+            node->_right = this->clear(node->_right);
             delete node;
-            node = nullptr;
         }
+
+        return nullptr;
     }
 
     void copy(const BinarySearchTree& rhs) {
-        if (this->_root)
-            this->clear(this->_root);
-
         this->_root = this->copy(rhs.root());
     }
 
@@ -80,27 +78,26 @@ private:
     Node<Comparable>* insert(Node<Comparable>* node, const Comparable& val) {
         if (!node)
             return new Node<Comparable>(val);
-        if (node->_value < val) {
+        if (node->_value < val)
             node->_right = this->insert(node->_right, val);
-            return node;
-        } else {
+        else
             node->_left = this->insert(node->_left, val);
-            return node;
-        }
+        return node;
     }
 
     Node<Comparable>* remove(Node<Comparable>* root, const Comparable& val) {
         if (!root)
-            return root;
+            return nullptr;
 
         if (val < root->_value)
             root->_left = this->remove(root->_left, val);
         else if (val > root->_value)
             root->_right = this->remove(root->_right, val);
         else {
-            if (root->is_leaf())
+            if (root->is_leaf()) {
+                delete root;
                 return nullptr;
-            else if (!root->_left) {
+            } else if (!root->_left) {
                 Node<Comparable>* temp = root->_right;
                 delete root;
                 root = nullptr;
@@ -136,13 +133,12 @@ public:
     }
 
     ~BinarySearchTree() {
-        this->clear(this->_root);
+        this->make_empty();
     }
 
     BinarySearchTree& operator=(const BinarySearchTree& rhs) {
         if (this != &rhs) {
-            this->clear(this->_root);
-            this->_root = nullptr;
+            this->make_empty();
             this->copy(rhs);
         }
 
@@ -154,12 +150,12 @@ public:
     }
 
     void insert(const Comparable& val) {
-        cout << "bst.insert(" << std::to_string(val) << ");\n";
+        // cout << "bst.insert(" << std::to_string(val) << ");\n";
         this->_root = this->insert(this->_root, val);
     }
 
     void remove(const Comparable& val) {
-        cout << "bst.remove(" << std::to_string(val) << ");\n";
+        // cout << "bst.remove(" << std::to_string(val) << ");\n";
         this->_root = this->remove(this->_root, val);
     }
 
@@ -197,7 +193,13 @@ public:
     // Optional
     // BinarySearchTree(BinarySearchTree&& rhs);
     // BinarySearchTree& operator=(BinarySearchTree&&);
-    // bool is_empty() const;
+
+    bool is_empty() const {
+        return !this->_root;
+    }
+
     // void insert(Comparable&&);
-    // void make_empty();
+    void make_empty() {
+        this->_root = this->clear(this->_root);
+    }
 };

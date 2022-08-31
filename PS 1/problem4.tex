@@ -1,0 +1,23 @@
+\clearpage
+\section*{Problem 4}
+
+Prove that the sum of the first $n$ odd integers equals $n^2$
+
+\noindent
+Let $P(n):=1+3+5+\cdots+(2n-1)$
+
+\noindent
+Base case:\\
+$P(1)=1\equiv1^2$
+
+\noindent
+Inductive case:\\
+Assume $P(n)=n^2$
+\begin{align*}
+P(n+1)  &= 1+3+5+\cdots+2n-1+2(n+1)-1  \\
+        &= 1+3+5+\cdots+2n-1+2n+1      \\
+        &= n^2+2n+1                    \\
+        &= (n+1)^2
+\end{align*}
+$\therefore P(n)=n^2$\\
+$\square$

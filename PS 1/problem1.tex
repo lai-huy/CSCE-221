@@ -1,0 +1,44 @@
+\clearpage
+\section*{Problem 1}
+\begin{enumerate}[A.]
+    \item Prove that $\displaystyle\log_{c}(ab)=\log_{c}a+\log_{c}b$
+    
+    Let $x=\log_{c}a$, $y=\log_{c}b$\\
+    Using the definition of the logarithm, $c^x=a$,$c^y=b$.\\
+    $ab=c^x\cdot c^y$\\
+    $ab=c^{x+y}$\\
+    $\log_c{ab}=x+y$
+    
+    Substituting back for $x$ and $y$,\\
+    $\log_c{ab}=\log_{c}a+\log_{c}b$\\
+    $\square$
+    
+    \item Prove that $\displaystyle\log_{c}(a^{b})=b\log_{c}a$
+    
+    Let $x=\log_{c}(a)$\\
+    Using the definition of the logarithm, $c^x=a$
+    
+    Substituting for $a$:\\
+    $\log_{c}(a^{b})=\log_{c}((c^{x})^{b})$\\
+    $=\log_{c}(c^{xb})$\\
+    $=xb$
+    
+    Substituting $x$ back for its definition\\
+    $xb=b\log_{c}(a)$\\
+    $\therefore\log_{c}(a^{b})=b\log_{c}(a)$\\
+    $\square$
+    
+    \item Prove that $\displaystyle\log_{b}a=\frac{\log_{c}a}{\log_{c}b}$
+    
+    Let $x=\log_{b}(a)$\\
+    Using the definition of the logarithm, $b^{x}=a$\\
+    Taking a logarithm to both sides $\log_{c}(b^{x})=\log_{c}a$
+    
+    Using the product rule, $x\log_{c}b=\log_{c}a$\\
+    $\displaystyle x=\frac{\log_{c}a}{\log_{c}b}$
+    
+    Substituting $x$ for its definition,\\
+    $\displaystyle\log_{b}a=\frac{\log_{c}a}{\log_{c}b}$\\
+    $\square$
+    
+\end{enumerate}

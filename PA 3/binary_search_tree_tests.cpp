@@ -81,129 +81,121 @@ bool test_insert() {
 	BinarySearchTree<int> bst;
 	assert(bst.root() == nullptr);
 
-	bst.insert(8);
-	{
-		const Node<int>* root = bst.root();
-		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left == nullptr);
-		assert(root->_right == nullptr);
-	}
-
-	bst.insert(4);
-	{
-		const Node<int>* root = bst.root();
-		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4)
-			assert(root->_left->_left == nullptr);
-		assert(root->_left->_right == nullptr);
-	}
-
-	bst.insert(12);
-	{
-		const Node<int>* root = bst.root();
-		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
-		assert(root->_left->_left == nullptr);
-		assert(root->_left->_right == nullptr);
-		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
-		assert(root->_right->_left == nullptr);
-		assert(root->_right->_right == nullptr);
-	}
-
+	bst.insert(7);
+	bst.insert(3);
+	bst.insert(11);
+	bst.insert(1);
+	bst.insert(5);
+	bst.insert(9);
+	bst.insert(13);
+	bst.insert(0);
 	bst.insert(2);
-	{
-		const Node<int>* root = bst.root();
-		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
-		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
-		assert(root->_left->_right == nullptr);
-		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
-		assert(root->_right->_left == nullptr);
-		assert(root->_right->_right == nullptr);
-	}
-
+	bst.insert(4);
 	bst.insert(6);
-	{
-		const Node<int>* root = bst.root();
-		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
-		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
-		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
-		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
-		assert(root->_right->_left == nullptr);
-		assert(root->_right->_right == nullptr);
-	}
-
+	bst.insert(8);
 	bst.insert(10);
-	{
-		const Node<int>* root = bst.root();
-		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
-		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
-		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
-		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
-		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
-		assert(root->_right->_right == nullptr);
-	}
-
+	bst.insert(12);
 	bst.insert(14);
 	{
 		const Node<int>* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
+		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
+	}
+
+	END_TEST;
+}
+
+bool test_insert_duplicate() {
+	BinarySearchTree<int> bst;
+	assert(bst.root() == nullptr);
+
+	bst.insert(0);
+	bst.insert(0);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 0);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 0);
+		assert(root->_left->_left == nullptr);
+		assert(root->_left->_right == nullptr);
+		assert(root->_right == nullptr);
+	}
+
+	END_TEST;
+}
+
+bool test_insert_dup_many() {
+	BinarySearchTree<int> bst;
+	assert(bst.root() == nullptr);
+
+	bst.insert(0);
+	bst.insert(0);
+	bst.insert(0);
+	bst.insert(0);
+	bst.insert(0);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 0);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 0);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 0);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_right == nullptr);
+		assert(root->_right == nullptr);
 	}
 
 	END_TEST;
@@ -213,48 +205,88 @@ bool test_contains() {
 	BinarySearchTree<int> bst;
 	assert(bst.root() == nullptr);
 
-	bst.insert(8);
-	bst.insert(4);
-	bst.insert(12);
+	bst.insert(7);
+	bst.insert(3);
+	bst.insert(11);
+	bst.insert(1);
+	bst.insert(5);
+	bst.insert(9);
+	bst.insert(13);
+	bst.insert(0);
 	bst.insert(2);
+	bst.insert(4);
 	bst.insert(6);
+	bst.insert(8);
 	bst.insert(10);
+	bst.insert(12);
 	bst.insert(14);
 	{
 		const Node<int>* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
+		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
 	}
 
 	{
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
+		assert(bst.contains(0));
+		assert(bst.contains(1));
 		assert(bst.contains(2));
+		assert(bst.contains(3));
+		assert(bst.contains(4));
+		assert(bst.contains(5));
 		assert(bst.contains(6));
+		assert(bst.contains(7));
+		assert(bst.contains(8));
+		assert(bst.contains(9));
 		assert(bst.contains(10));
+		assert(bst.contains(11));
+		assert(bst.contains(12));
+		assert(bst.contains(13));
 		assert(bst.contains(14));
-		assert(!bst.contains(0));
+		assert(!bst.contains(15));
 	}
 
 	END_TEST;
@@ -264,198 +296,469 @@ bool test_remove_leaf() {
 	BinarySearchTree<int> bst;
 	assert(bst.root() == nullptr);
 
-	bst.insert(8);
-	bst.insert(4);
-	bst.insert(12);
+	bst.insert(7);
+	bst.insert(3);
+	bst.insert(11);
+	bst.insert(1);
+	bst.insert(5);
+	bst.insert(9);
+	bst.insert(13);
+	bst.insert(0);
 	bst.insert(2);
+	bst.insert(4);
 	bst.insert(6);
+	bst.insert(8);
 	bst.insert(10);
+	bst.insert(12);
 	bst.insert(14);
 	{
 		const Node<int>* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
+		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(bst.contains(10));
-		assert(bst.contains(14));
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
 	}
 
 	bst.remove(14);
 	{
 		const Node<int>* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
+		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
-		assert(root->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(bst.contains(10));
-		assert(!bst.contains(14));
-	}
-
-	bst.remove(10);
-	{
-		const Node<int>* root = bst.root();
-		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
-		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
-		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
-		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
-		assert(root->_right->_left == nullptr);
-		assert(root->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(!bst.contains(10));
-		assert(!bst.contains(14));
-	}
-
-	bst.remove(6);
-	{
-		const Node<int>* root = bst.root();
-		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
-		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
-		assert(root->_left->_right == nullptr);
-		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
-		assert(root->_right->_left == nullptr);
-		assert(root->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(!bst.contains(6));
-		assert(!bst.contains(10));
-		assert(!bst.contains(14));
-	}
-
-	bst.remove(2);
-	{
-		const Node<int>* root = bst.root();
-		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
-		assert(root->_left->_left == nullptr);
-		assert(root->_left->_right == nullptr);
-		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
-		assert(root->_right->_left == nullptr);
-		assert(root->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(!bst.contains(2));
-		assert(!bst.contains(6));
-		assert(!bst.contains(10));
-		assert(!bst.contains(14));
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right == nullptr);
 	}
 
 	bst.remove(12);
 	{
 		const Node<int>* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
-		assert(root->_left->_left == nullptr);
-		assert(root->_left->_right == nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right == nullptr);
+	}
+
+	bst.remove(13);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right == nullptr);
+	}
+
+	bst.remove(10);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right == nullptr);
+	}
+
+	bst.remove(8);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left == nullptr);
+		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_right == nullptr);
+	}
+
+	bst.remove(9);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left == nullptr);
+		assert(root->_right->_right == nullptr);
+	}
+
+	bst.remove(11);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(!bst.contains(12));
-		assert(!bst.contains(2));
-		assert(!bst.contains(6));
-		assert(!bst.contains(10));
-		assert(!bst.contains(14));
+	}
+
+	bst.remove(6);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right == nullptr);
+		assert(root->_right == nullptr);
 	}
 
 	bst.remove(4);
 	{
 		const Node<int>* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left == nullptr);
-		assert(root->_right == nullptr);
-		assert(bst.contains(8));
-		assert(!bst.contains(4));
-		assert(!bst.contains(12));
-		assert(!bst.contains(2));
-		assert(!bst.contains(6));
-		assert(!bst.contains(10));
-		assert(!bst.contains(14));
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left == nullptr);
+		assert(root->_left->_right->_right == nullptr);
 	}
 
-	bst.remove(8);
+	bst.remove(5);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right == nullptr);
+	}
+
+	bst.remove(2);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right == nullptr);
+		assert(root->_right == nullptr);
+	}
+
+	bst.remove(0);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_right == nullptr);
+		assert(root->_right == nullptr);
+	}
+
+	bst.remove(1);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left == nullptr);
+		assert(root->_left->_right == nullptr);
+		assert(root->_right == nullptr);
+	}
+
+	bst.remove(3);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left == nullptr);
+		assert(root->_right == nullptr);
+	}
+
+	bst.remove(7);
 	{
 		const Node<int>* root = bst.root();
 		assert(root == nullptr);
-		assert(!bst.contains(8));
-		assert(!bst.contains(4));
-		assert(!bst.contains(12));
-		assert(!bst.contains(2));
-		assert(!bst.contains(6));
-		assert(!bst.contains(10));
-		assert(!bst.contains(14));
 	}
 
 	END_TEST;
@@ -465,105 +768,200 @@ bool test_remove_middle() {
 	BinarySearchTree<int> bst;
 	assert(bst.root() == nullptr);
 
-	bst.insert(8);
-	bst.insert(4);
-	bst.insert(12);
+	bst.insert(7);
+	bst.insert(3);
+	bst.insert(11);
+	bst.insert(1);
+	bst.insert(5);
+	bst.insert(9);
+	bst.insert(13);
+	bst.insert(0);
 	bst.insert(2);
+	bst.insert(4);
 	bst.insert(6);
+	bst.insert(8);
 	bst.insert(10);
+	bst.insert(12);
 	bst.insert(14);
 	{
 		const Node<int>* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
+		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
+	}
+
+	bst.remove(13);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 14);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right == nullptr);
+	}
+
+	bst.remove(14);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 12);
+		assert(root->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right == nullptr)
+	}
+
+	bst.remove(8);
+	bst.remove(9);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
 		assert(root->_right->_left->_value == 10);
 		assert(root->_right->_left->_left == nullptr);
 		assert(root->_right->_left->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(bst.contains(10));
-		assert(bst.contains(14));
 	}
-
-	bst.remove(4);
-	{
-		const Node<int>* root = bst.root();
-		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left != nullptr);
-		assert(root->_left->_value == 6);
-		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
-		assert(root->_left->_right == nullptr);
-		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
-		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
-		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(!bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(bst.contains(10));
-		assert(bst.contains(14));
-	}
-
-	bst.remove(12);
-	{
-		const Node<int>* root = bst.root();
-		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left != nullptr);
-		assert(root->_left->_value == 6);
-		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
-		assert(root->_left->_right == nullptr);
-		assert(root->_right != nullptr);
-		assert(root->_right->_value == 14);
-		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
-		assert(root->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(!bst.contains(4));
-		assert(!bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(bst.contains(10));
-		assert(bst.contains(14));
-	}
-
 	END_TEST;
 }
 
@@ -862,44 +1260,69 @@ bool test_print() {
 	BinarySearchTree<int> bst;
 	assert(bst.root() == nullptr);
 
-	bst.insert(8);
-	bst.insert(4);
-	bst.insert(12);
+	bst.insert(7);
+	bst.insert(3);
+	bst.insert(11);
+	bst.insert(1);
+	bst.insert(5);
+	bst.insert(9);
+	bst.insert(13);
+	bst.insert(0);
 	bst.insert(2);
+	bst.insert(4);
 	bst.insert(6);
+	bst.insert(8);
 	bst.insert(10);
+	bst.insert(12);
 	bst.insert(14);
 	{
 		const Node<int>* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
+		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(bst.contains(10));
-		assert(bst.contains(14));
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
 	}
 
 	bst.print_tree();
@@ -1111,6 +1534,53 @@ bool test_copy_oper() {
 		assert(root->_right->_right->_value == 14);
 		assert(root->_right->_right->_left == nullptr);
 		assert(root->_right->_right->_right == nullptr);
+		assert(a.contains(8));
+		assert(a.contains(4));
+		assert(a.contains(12));
+		assert(a.contains(2));
+		assert(a.contains(6));
+		assert(a.contains(10));
+		assert(a.contains(14));
+	}
+
+	END_TEST;
+}
+
+bool test_make_empty() {
+	BinarySearchTree<int> bst;
+	assert(bst.root() == nullptr);
+
+	bst.insert(8);
+	bst.insert(4);
+	bst.insert(12);
+	bst.insert(2);
+	bst.insert(6);
+	bst.insert(10);
+	bst.insert(14);
+	{
+		const Node<int>* root = bst.root();
+		assert(root != nullptr);
+		assert(root->_value == 8);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 4);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 2);
+		assert(root->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 6);
+		assert(root->_left->_right->_left == nullptr);
+		assert(root->_left->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 12);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 10);
+		assert(root->_right->_left->_left == nullptr);
+		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 14);
+		assert(root->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right == nullptr);
 		assert(bst.contains(8));
 		assert(bst.contains(4));
 		assert(bst.contains(12));
@@ -1120,6 +1590,9 @@ bool test_copy_oper() {
 		assert(bst.contains(14));
 	}
 
+	bst.make_empty();
+	assert(bst.root() == nullptr);
+
 	END_TEST;
 }
 
@@ -1128,6 +1601,8 @@ int main() {
 
 	test(create);
 	test(insert);
+	test(insert_duplicate);
+	test(insert_dup_many);
 	test(contains);
 	test(remove_leaf);
 	test(remove_middle);
@@ -1140,6 +1615,7 @@ int main() {
 	test(find_max_empty);
 	test(print_empty);
 	test(print);
+	test(make_empty);
 
 	test(copy);
 	test(copy_oper);

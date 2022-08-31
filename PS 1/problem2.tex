@@ -1,0 +1,52 @@
+\section*{Problem 2}
+\noindent
+Proving the Geometric Series Identity\\
+Let $\displaystyle S_n=a^0+a^1+a^2+\cdots+a^{n-1}$\\
+$\displaystyle aS_n=a^1+a^2+a^3+\cdots+a^{n}$\\
+$\displaystyle aS_n-S_n=a^1+a^2+\cdots+a^{n}-(a^0+a^1+\cdots a^{n-1})$\\
+$\displaystyle S_n(a-1)=a^{n}-a^0$\\
+$\displaystyle S_n=\frac{a^{n}-1}{a-1},a\neq1$
+
+\begin{center}
+\rule{\textwidth}{.1pt}
+\end{center}
+
+\noindent
+Let $\displaystyle S_n=0+\frac{1}{4}+\frac{2}{4^2}+\cdots+\frac{n-1}{4^{n-1}}$\\
+$\displaystyle 4S_n=\frac{1}{4^0}+\frac{2}{4^2}+\cdots+\frac{n-1}{4^{n-2}}$\\
+$\displaystyle 4S_n-S_n=\frac{1}{4^0}+\frac{2}{4^1}-\frac{1}{4^1}+\frac{3}{4^2}-\frac{2}{4^2}+\cdots+\frac{n-1}{4^{n-1}}-\frac{n-2}{4^{n-1}}$\\
+$\displaystyle 3S_n=\frac{1}{4^0}+\frac{1}{4^2}+\frac{1}{4^3}+\cdots+\frac{1}{4^{n-1}}$\\
+$\displaystyle 3S_n=\sum_{k=0}^{n}\frac{1}{4^k}$
+
+\begin{center}
+\rule{\textwidth}{.1pt}
+\end{center}
+
+\noindent
+Evaluate $\displaystyle\sum_{k=0}^{\infty}\frac{1}{4^k}$
+\begin{align*}
+\sum_{k=0}^{\infty}\frac{1}{4^k} &= \lim_{k\to\infty}\frac{\left(\frac{1}{4}\right)^n-1}{-\frac{3}{4}}      \\
+                                 &= \lim_{k\to\infty}-\frac{4}{3}\left[\left(\frac{1}{4}\right)^n-1\right]  \\
+                                 &= -\frac{4}{3}\lim_{k\to\infty}\left[\left(\frac{1}{4}\right)^k-1\right]  \\
+                                 &= \frac{4}{3}
+\end{align*}
+
+\begin{center}
+\rule{\textwidth}{.1pt}
+\end{center}
+\clearpage
+
+\noindent
+Substitute this value back into the original series\\
+$\displaystyle 3S_n=\sum_{k=0}^{n}\frac{1}{4^k}$\\
+$\displaystyle 3S_{\infty}=\sum_{k=0}^{\infty}\frac{1}{4^k}$\\
+$\displaystyle 3S_{\infty}=\frac{4}{3}$\\
+$\displaystyle S_{\infty}=\frac{4}{9}$
+
+\[
+    \sum_{i=0}^{\infty}\frac{i}{4^i}=\frac{4}{9}
+\]
+
+\begin{center}
+\rule{\textwidth}{3pt}
+\end{center}

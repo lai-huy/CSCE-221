@@ -4,7 +4,6 @@
 using std::invalid_argument;
 
 int select(size_t k, const int* list, size_t N) {
-    // TODO(student): solve the selection problem
     if (!list || !N)
         throw invalid_argument("List is empty");
     if (!k || k > N)
