@@ -58,10 +58,6 @@ private:
         return nullptr;
     }
 
-    void copy(const BinarySearchTree& rhs) {
-        this->_root = this->copy(rhs.root());
-    }
-
     void print_tree(const Node<Comparable>* root, ostream& os, size_t trace) const {
         if (!root) {
             os << "<empty>\n";
@@ -88,7 +84,7 @@ private:
     Node<Comparable>* insert(Node<Comparable>* node, const Comparable& val) {
         if (!node)
             return new Node<Comparable>(val);
-        if (node->_value <= val)
+        if (node->_value < val)
             node->_right = this->insert(node->_right, val);
         else
             node->_left = this->insert(node->_left, val);
@@ -138,9 +134,7 @@ private:
 public:
     BinarySearchTree() : _root{nullptr} {}
 
-    BinarySearchTree(const BinarySearchTree& rhs) : _root{nullptr} {
-        this->copy(rhs);
-    }
+    BinarySearchTree(const BinarySearchTree& rhs) : _root{this->copy(rhs.root())} {}
 
     ~BinarySearchTree() {
         this->make_empty();
@@ -149,7 +143,7 @@ public:
     BinarySearchTree& operator=(const BinarySearchTree& rhs) {
         if (this != &rhs) {
             this->make_empty();
-            this->copy(rhs);
+            this->_root = this->copy(rhs.root());
         }
 
         return *this;
@@ -201,14 +195,29 @@ public:
     }
 
     // Optional
-    // BinarySearchTree(BinarySearchTree&& rhs);
-    // BinarySearchTree& operator=(BinarySearchTree&&);
+    // BinarySearchTree(BinarySearchTree&& rhs) : _root{rhs.root()} {
+    //     rhs._root = nullptr; 
+    // }
+
+    // BinarySearchTree& operator=(BinarySearchTree&& rhs) {
+    //     if (this != &rhs) {
+    //         this->make_empty();
+    //         this->_root = rhs.root();
+    //         rhs._root = nullptr;
+    //     }
+
+    //     return *this;
+    // }
+    
+    // void insert(Comparable&& val) {
+    //     this->_root = this->insert(this->_root, val);
+    //     val = nullptr;
+    // }
 
     bool is_empty() const {
         return !this->_root;
     }
 
-    // void insert(Comparable&&);
     void make_empty() {
         this->_root = this->clear(this->_root);
     }
