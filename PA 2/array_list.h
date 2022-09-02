@@ -35,7 +35,7 @@ public:
     /**
      * @brief Construct a new Array List object
      */
-    ArrayList() : _size{0}, _capacity{1}, _data{new Object[1]} {}
+    ArrayList() : _size{0}, _capacity{1}, _data{nullptr} {}
 
     /**
      * @brief Construct a new Array List object
@@ -146,6 +146,9 @@ public:
             delete[] temp;
         }
 
+        if (!this->_data)
+            this->_data = new Object[this->_capacity]{};
+
         if (!index) {
             for (size_t i = this->_size - 1; i < this->_size; --i)
                 this->_data[i + 1] = this->_data[i];
@@ -226,6 +229,9 @@ public:
 
             delete[] temp;
         }
+
+        if (!this->_data)
+            this->_data = new Object[this->_capacity]{};
 
         if (!index) {
             for (size_t i = this->_size - 1; i < this->_size; --i)

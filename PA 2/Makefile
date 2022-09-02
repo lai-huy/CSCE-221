@@ -17,3 +17,7 @@ stack: clean stack.h stack_tests.cpp
 	
 queue: clean queue.h queue_tests.cpp
 	g++ -std=c++17 -Wall -Wextra -Weffc++ -g --coverage queue_tests.cpp -o main.out && ./main.out && gcov -mr queue_tests.cpp
+
+check: clean
+	g++ -std=c++17 -Wall -Wextra -Weffc++ -g -o valgrind.out array_list_tests.cpp
+	valgrind --leak-check=full --show-leak-kinds=all -s ./valgrind.out

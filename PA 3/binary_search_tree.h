@@ -88,7 +88,7 @@ private:
     Node<Comparable>* insert(Node<Comparable>* node, const Comparable& val) {
         if (!node)
             return new Node<Comparable>(val);
-        if (node->_value < val)
+        if (node->_value <= val)
             node->_right = this->insert(node->_right, val);
         else
             node->_left = this->insert(node->_left, val);
