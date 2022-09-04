@@ -26,4 +26,4 @@ avl_check: clean
 
 build_a_tree: clean binary_search_tree.h avl_tree.h build_a_tree.cpp
 	g++ -std=c++17 -Wall -Wextra -Weffc++ -pedantic-errors -g -o main.out build_a_tree.cpp
-	./a.out
+	./main.out

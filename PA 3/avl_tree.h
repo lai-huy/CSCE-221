@@ -10,9 +10,9 @@ using std::ostream, std::cout;
 using std::invalid_argument;
 
 /**
- * @brief 
- * 
- * @tparam Comparable 
+ * @brief
+ *
+ * @tparam Comparable
  */
 template <typename Comparable>
 class AVLTree {
@@ -80,10 +80,12 @@ private:
     Node<Comparable>* insert(Node<Comparable>* node, const Comparable& val) {
         if (!node)
             return new Node<Comparable>(val);
-        if (node->_value < val)
-            node->_right = this->insert(node->_right, val);
-        else
+        else if (val < node->_value)
             node->_left = this->insert(node->_left, val);
+        else
+            node->_right = this->insert(node->_right, val);
+
+        node = this->balance(node);
         return node;
     }
 
@@ -116,6 +118,7 @@ private:
             }
         }
 
+        root = this->balance(root);
         return root;
     }
 
@@ -125,6 +128,60 @@ private:
             curr = curr->_left;
 
         return curr;
+    }
+
+    signed long height(Node<Comparable>* root) {
+        size_t h = 0;
+        if (root) {
+            size_t l = this->height(root->_left);
+            size_t r = this->height(root->_right);
+            h = (l > r ? l : r) + 1;
+        }
+
+        return h;
+    }
+
+    signed long balace_factor(Node<Comparable>* root) {
+        return this->height(root->_left) - this->height(root->_right);
+    }
+
+    Node<Comparable>* rr_rotate(Node<Comparable>* root) {
+        Node<Comparable>* temp = root->_right;
+        root->_right = temp->_left;
+        temp->_left = root;
+        // cout << "Right-Right Rotate\n";
+        return temp;
+    }
+
+    Node<Comparable>* ll_rotate(Node<Comparable>* root) {
+        Node<Comparable>* temp = root->_left;
+        root->_left = temp->_right;
+        temp->_right = root;
+        // cout << "Left-Left Rotate\n";
+        return temp;
+    }
+
+    Node<Comparable>* lr_rotate(Node<Comparable>* root) {
+        Node<Comparable>* temp = root->_left;
+        root->_left = this->rr_rotate(temp);
+        // cout << "Left-Right Rotate\n";
+        return this->ll_rotate(root);
+    }
+
+    Node<Comparable>* rl_rotate(Node<Comparable>* root) {
+        Node<Comparable>* temp = root->_right;
+        root->_right = this->ll_rotate(temp);
+        // cout << "Right-Left Rotate\n";
+        return this->rr_rotate(root);
+    }
+
+    Node<Comparable>* balance(Node<Comparable>* root) {
+        signed long bf = this->balace_factor(root);
+        if (bf > 1)
+            root = this->balace_factor(root->_left) > 0 ? ll_rotate(root) : lr_rotate(root);
+        else if (bf < -1)
+            root = this->balace_factor(root->_right) > 0 ? rl_rotate(root) : rr_rotate(root);
+        return root;
     }
 
 public:
@@ -151,11 +208,15 @@ public:
 
     void insert(const Comparable& val) {
         // cout << "avl.insert(" << std::to_string(val) << ");\n";
+        if (this->contains(val))
+            return;
+
         this->_root = this->insert(this->_root, val);
     }
 
     void remove(const Comparable& val) {
         // cout << "avl.remove(" << std::to_string(val) << ");\n";
+        
         this->_root = this->remove(this->_root, val);
     }
 
