@@ -9,31 +9,29 @@ using std::out_of_range;
 using std::cout;
 
 /**
- * @brief Node struct for the DoublyLinkedList
- */
-template <typename Object>
-struct Node {
-    Object _value;
-    Node<Object>* _next;
-    Node<Object>* _prev;
-
-    Node() : _value{Object()}, _next{nullptr}, _prev{nullptr} {}
-    Node(const Node& rhs) : _value{rhs._value}, _next{nullptr}, _prev{nullptr} {}
-    Node(const Object& obj) : _value{obj}, _next{nullptr}, _prev{nullptr} {}
-    Node& operator=(const Node& rhs) {
-        if (this != rhs)
-            this->_value = rhs._value;
-        return *this;
-    }
-};
-
-/**
  * @brief A Doubly Linked List
  *
  * @tparam Object type of element this is holding
  */
 template <typename Object>
 class DoublyLinkedList {
+public:
+    template <typename T>
+    struct Node {
+        Object _value;
+        Node<Object>* _next;
+        Node<Object>* _prev;
+
+        Node() : _value{Object()}, _next{nullptr}, _prev{nullptr} {}
+        Node(const Node& rhs) : _value{rhs._value}, _next{nullptr}, _prev{nullptr} {}
+        Node(const Object& obj) : _value{obj}, _next{nullptr}, _prev{nullptr} {}
+        Node& operator=(const Node& rhs) {
+            if (this != rhs)
+                this->_value = rhs._value;
+            return *this;
+        }
+    };
+
 private:
     /**
      * @brief size of the linked list
@@ -159,7 +157,7 @@ public:
         if (index > this->_size)
             throw out_of_range("Index out of bounds");
 
-        Node<Object>* node = new Node(obj);
+        Node<Object>* node = new Node<Object>(obj);
         if (!this->_head) {
             this->_head = node;
             this->_tail = node;
@@ -250,7 +248,7 @@ public:
 
         iterator operator++(int) {
             iterator it = *this;
-            ++*this;
+            ++* this;
             return it;
         }
 
@@ -262,7 +260,7 @@ public:
 
         iterator operator--(int) {
             iterator it = *this;
-            --*this;
+            --* this;
             return it;
         }
 
@@ -298,11 +296,11 @@ public:
     iterator begin() {
         return iterator(this->_head);
     }
-    
+
     const iterator begin() const {
         return iterator(this->_head);
     }
-    
+
     iterator end() {
         return iterator(this->_tail);
     }
