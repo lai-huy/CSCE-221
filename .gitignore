@@ -2,6 +2,8 @@
 Template/
 
 Syllabus.pdf
+Textbook.pdf
+
 *.out
 *.gcov
 *.gcda
