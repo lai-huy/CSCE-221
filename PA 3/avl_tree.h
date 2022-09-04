@@ -1,27 +1,36 @@
 #pragma once
 
+#include <cstddef>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
+#include <utility>
 
 using std::ostream, std::cout;
 using std::invalid_argument;
 
-template <typename Comparable>
-struct Node {
-    Comparable _value;
-    Node<Comparable>* _left;
-    Node<Comparable>* _right;
-
-    Node() : _value{Comparable()}, _left{nullptr}, _right{nullptr} {}
-    Node(Comparable val) : _value{val}, _left{nullptr}, _right{nullptr} {}
-
-    bool is_leaf() const {
-        return !this->_left && !this->_right;
-    }
-};
-
+/**
+ * @brief 
+ * 
+ * @tparam Comparable 
+ */
 template <typename Comparable>
 class AVLTree {
+public:
+    template <typename T>
+    struct Node {
+        T _value;
+        Node<T>* _left;
+        Node<T>* _right;
+
+        Node() : _value{T()}, _left{nullptr}, _right{nullptr} {}
+        Node(T val) : _value{val}, _left{nullptr}, _right{nullptr} {}
+
+        bool is_leaf() const {
+            return !this->_left && !this->_right;
+        }
+    };
+
 private:
     Node<Comparable>* _root;
 

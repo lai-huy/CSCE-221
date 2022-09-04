@@ -10,31 +10,27 @@ using std::ostream, std::cout;
 using std::invalid_argument;
 
 /**
- * @brief An Individual node of the LinkedList
- * 
- * @tparam Comparable a data type that overloads operator==, operator<, and operator>
- */
-template <typename Comparable>
-struct Node {
-    Comparable _value;
-    Node<Comparable>* _left;
-    Node<Comparable>* _right;
-
-    Node() : _value{Comparable()}, _left{nullptr}, _right{nullptr} {}
-    Node(Comparable val) : _value{val}, _left{nullptr}, _right{nullptr} {}
-
-    bool is_leaf() const {
-        return !this->_left && !this->_right;
-    }
-};
-
-/**
  * @brief A Binary Search Tree
- * 
+ *
  * @tparam Comparable a data type that overloads operator==, operator<, and operator>
  */
 template <typename Comparable>
 class BinarySearchTree {
+public:
+    template <typename T>
+    struct Node {
+        T _value;
+        Node<T>* _left;
+        Node<T>* _right;
+
+        Node() : _value{T()}, _left{nullptr}, _right{nullptr} {}
+        Node(T val) : _value{val}, _left{nullptr}, _right{nullptr} {}
+
+        bool is_leaf() const {
+            return !this->_left && !this->_right;
+        }
+    };
+
 private:
     Node<Comparable>* _root;
 
@@ -81,7 +77,7 @@ private:
         return new_root;
     }
 
-    Node<Comparable>* insert(Node<Comparable>* node, const Comparable& val) {
+    Node<Comparable>* insert(Node<Comparable>*& node, const Comparable& val) {
         if (!node)
             return new Node<Comparable>(val);
         if (node->_value < val)
@@ -155,6 +151,9 @@ public:
 
     void insert(const Comparable& val) {
         // cout << "bst.insert(" << std::to_string(val) << ");\n";
+        if (this->contains(val))
+            return;
+        
         this->_root = this->insert(this->_root, val);
     }
 
@@ -208,7 +207,7 @@ public:
 
     //     return *this;
     // }
-    
+
     // void insert(Comparable&& val) {
     //     this->_root = this->insert(this->_root, val);
     //     val = nullptr;

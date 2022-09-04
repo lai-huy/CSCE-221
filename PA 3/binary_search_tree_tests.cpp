@@ -97,7 +97,7 @@ bool test_insert() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -169,7 +169,7 @@ bool test_insert_duplicate() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -220,7 +220,7 @@ bool test_insert_duplicate() {
 
 	bst.insert(7);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -295,7 +295,7 @@ bool test_insert_dup_many() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -384,7 +384,7 @@ bool test_contains() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -475,7 +475,7 @@ bool test_remove_leaf() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -526,7 +526,7 @@ bool test_remove_leaf() {
 
 	bst.remove(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -574,7 +574,7 @@ bool test_remove_leaf() {
 
 	bst.remove(12);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -619,7 +619,7 @@ bool test_remove_leaf() {
 
 	bst.remove(13);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -661,7 +661,7 @@ bool test_remove_leaf() {
 
 	bst.remove(10);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -699,7 +699,7 @@ bool test_remove_leaf() {
 
 	bst.remove(8);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -735,7 +735,7 @@ bool test_remove_leaf() {
 
 	bst.remove(9);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -768,7 +768,7 @@ bool test_remove_leaf() {
 
 	bst.remove(11);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -798,7 +798,7 @@ bool test_remove_leaf() {
 
 	bst.remove(6);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -825,7 +825,7 @@ bool test_remove_leaf() {
 
 	bst.remove(4);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -848,7 +848,7 @@ bool test_remove_leaf() {
 
 	bst.remove(5);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -868,7 +868,7 @@ bool test_remove_leaf() {
 
 	bst.remove(2);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -885,7 +885,7 @@ bool test_remove_leaf() {
 
 	bst.remove(0);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -899,7 +899,7 @@ bool test_remove_leaf() {
 
 	bst.remove(1);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -911,7 +911,7 @@ bool test_remove_leaf() {
 
 	bst.remove(3);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left == nullptr);
@@ -920,7 +920,7 @@ bool test_remove_leaf() {
 
 	bst.remove(7);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root == nullptr);
 	}
 
@@ -947,7 +947,7 @@ bool test_remove_middle() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -998,7 +998,7 @@ bool test_remove_middle() {
 
 	bst.remove(13);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1046,7 +1046,7 @@ bool test_remove_middle() {
 
 	bst.remove(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1092,7 +1092,7 @@ bool test_remove_middle() {
 	bst.remove(8);
 	bst.remove(9);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1140,7 +1140,7 @@ bool test_remove_root() {
 	bst.insert(10);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1174,7 +1174,7 @@ bool test_remove_root() {
 
 	bst.remove(8);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 10);
 		assert(root->_left != nullptr);
@@ -1229,7 +1229,7 @@ bool test_remove_invalid() {
 	bst.insert(10);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1263,7 +1263,7 @@ bool test_remove_invalid() {
 
 	bst.remove(0);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1310,7 +1310,7 @@ bool test_find_min() {
 	bst.insert(10);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1366,7 +1366,7 @@ bool test_find_max() {
 	bst.insert(10);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1439,7 +1439,7 @@ bool test_print() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1504,7 +1504,7 @@ bool test_copy() {
 	bst.insert(10);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1538,7 +1538,7 @@ bool test_copy() {
 
 	BinarySearchTree<int> a(bst);
 	{
-		const Node<int>* root = a.root(), * rooot = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = a.root(), * rooot = bst.root();
 		assert(root != nullptr);
 		assert(root != rooot);
 		assert(root->_value == 8);
@@ -1591,7 +1591,7 @@ bool test_copy_oper() {
 	bst.insert(10);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1634,7 +1634,7 @@ bool test_copy_oper() {
 	a.insert(8);
 	a.insert(12);
 	{
-		const Node<int>* root = a.root();
+		const BinarySearchTree<int>::Node<int>* root = a.root();
 		assert(root != nullptr);
 		assert(root->_value == 6);
 		assert(root->_left != nullptr);
@@ -1667,14 +1667,14 @@ bool test_copy_oper() {
 	}
 
 	{
-		const Node<int>* root = a.root(), * rooot = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = a.root(), * rooot = bst.root();
 		assert(root != rooot);
 		assert(root->_value != rooot->_value);
 	}
 
 	a = bst;
 	{
-		const Node<int>* root = a.root();
+		const BinarySearchTree<int>::Node<int>* root = a.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1721,7 +1721,7 @@ bool test_make_empty() {
 	bst.insert(10);
 	bst.insert(14);
 	{
-		const Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node<int>* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);

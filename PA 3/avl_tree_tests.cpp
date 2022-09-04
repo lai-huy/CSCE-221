@@ -99,7 +99,7 @@ bool test_insert() {
 	avl.insert(12);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -171,7 +171,7 @@ bool test_insert_duplicate() {
 	avl.insert(12);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -222,7 +222,7 @@ bool test_insert_duplicate() {
 
 	avl.insert(7);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -297,7 +297,7 @@ bool test_insert_dup_many() {
 	avl.insert(12);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -386,7 +386,7 @@ bool test_contains() {
 	avl.insert(12);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -477,7 +477,7 @@ bool test_remove_leaf() {
 	avl.insert(12);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -528,7 +528,7 @@ bool test_remove_leaf() {
 
 	avl.remove(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -576,7 +576,7 @@ bool test_remove_leaf() {
 
 	avl.remove(12);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -621,7 +621,7 @@ bool test_remove_leaf() {
 
 	avl.remove(13);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -663,7 +663,7 @@ bool test_remove_leaf() {
 
 	avl.remove(10);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -701,7 +701,7 @@ bool test_remove_leaf() {
 
 	avl.remove(8);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -737,7 +737,7 @@ bool test_remove_leaf() {
 
 	avl.remove(9);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -770,7 +770,7 @@ bool test_remove_leaf() {
 
 	avl.remove(11);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -800,7 +800,7 @@ bool test_remove_leaf() {
 
 	avl.remove(6);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -827,7 +827,7 @@ bool test_remove_leaf() {
 
 	avl.remove(4);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -850,7 +850,7 @@ bool test_remove_leaf() {
 
 	avl.remove(5);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -870,7 +870,7 @@ bool test_remove_leaf() {
 
 	avl.remove(2);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -887,7 +887,7 @@ bool test_remove_leaf() {
 
 	avl.remove(0);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -901,7 +901,7 @@ bool test_remove_leaf() {
 
 	avl.remove(1);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -913,7 +913,7 @@ bool test_remove_leaf() {
 
 	avl.remove(3);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left == nullptr);
@@ -922,7 +922,7 @@ bool test_remove_leaf() {
 
 	avl.remove(7);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root == nullptr);
 	}
 
@@ -949,7 +949,7 @@ bool test_remove_middle() {
 	avl.insert(12);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1000,7 +1000,7 @@ bool test_remove_middle() {
 
 	avl.remove(13);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1048,7 +1048,7 @@ bool test_remove_middle() {
 
 	avl.remove(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1094,7 +1094,7 @@ bool test_remove_middle() {
 	avl.remove(8);
 	avl.remove(9);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1142,7 +1142,7 @@ bool test_remove_root() {
 	avl.insert(10);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1176,7 +1176,7 @@ bool test_remove_root() {
 
 	avl.remove(8);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 10);
 		assert(root->_left != nullptr);
@@ -1231,7 +1231,7 @@ bool test_remove_invalid() {
 	avl.insert(10);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1265,7 +1265,7 @@ bool test_remove_invalid() {
 
 	avl.remove(0);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1312,7 +1312,7 @@ bool test_find_min() {
 	avl.insert(10);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1368,7 +1368,7 @@ bool test_find_max() {
 	avl.insert(10);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1441,7 +1441,7 @@ bool test_print() {
 	avl.insert(12);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1506,7 +1506,7 @@ bool test_copy() {
 	avl.insert(10);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1540,7 +1540,7 @@ bool test_copy() {
 
 	AVLTree<int> a(avl);
 	{
-		const Node<int>* root = a.root(), * rooot = avl.root();
+		const AVLTree<int>::Node<int>* root = a.root(), * rooot = avl.root();
 		assert(root != nullptr);
 		assert(root != rooot);
 		assert(root->_value == 8);
@@ -1593,7 +1593,7 @@ bool test_copy_oper() {
 	avl.insert(10);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1636,7 +1636,7 @@ bool test_copy_oper() {
 	a.insert(8);
 	a.insert(12);
 	{
-		const Node<int>* root = a.root();
+		const AVLTree<int>::Node<int>* root = a.root();
 		assert(root != nullptr);
 		assert(root->_value == 6);
 		assert(root->_left != nullptr);
@@ -1669,14 +1669,14 @@ bool test_copy_oper() {
 	}
 
 	{
-		const Node<int>* root = a.root(), * rooot = avl.root();
+		const AVLTree<int>::Node<int>* root = a.root(), * rooot = avl.root();
 		assert(root != rooot);
 		assert(root->_value != rooot->_value);
 	}
 
 	a = avl;
 	{
-		const Node<int>* root = a.root();
+		const AVLTree<int>::Node<int>* root = a.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1723,7 +1723,7 @@ bool test_make_empty() {
 	avl.insert(10);
 	avl.insert(14);
 	{
-		const Node<int>* root = avl.root();
+		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
