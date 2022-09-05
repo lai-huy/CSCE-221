@@ -555,6 +555,16 @@ bool test_insert_rl() {
 	END_TEST;
 }
 
+bool test_remove_empty() {
+	AVLTree<int> avl;
+	assert(avl.root() == nullptr);
+
+	avl.remove(0);
+	assert(avl.root() == nullptr);
+
+	END_TEST;
+}
+
 bool test_contains() {
 	AVLTree<int> avl;
 	assert(avl.root() == nullptr);
@@ -1117,6 +1127,7 @@ int main() {
 	test(insert_right);
 	test(insert_left);
 	test(insert_rl);
+	test(remove_empty);
 	test(contains);
 	test(find_min);
 	test(find_min_empty);
