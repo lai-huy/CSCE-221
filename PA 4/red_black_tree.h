@@ -7,35 +7,203 @@
 #include <utility>
 #include <tuple>
 
+using std::cout, std::ostream;
+using std::invalid_argument;
+using std::string;
+
 template <typename Comparable>
 class RedBlackTree {
 public:
     enum Color { RED, BLACK };
 
+    template <typename T>
+    struct Node {
+        T _value;
+        Color _color;
+        Node<T>* _left;
+        Node<T>* _right;
+
+        Node() : _value{T()}, _color{BLACK}, _left{nullptr}, _right{nullptr} {}
+        Node(T val) : _value{val}, _color{BLACK}, _left{nullptr}, _right{nullptr} {}
+
+        bool is_leaf() {
+            return !this->_left && !this->_right;
+        }
+    };
+
+private:
+    Node<Comparable>* _root;
+
+    bool contains(const Node<Comparable>* root, const Comparable& val) const {
+        if (!root)
+            return false;
+        if (root->_value == val)
+            return true;
+        if (root->_value < val)
+            return this->contains(root->_right, val);
+        return this->contains(root->_left, val);
+    }
+
+    Node<Comparable>* clear(Node<Comparable>* node) {
+        if (node) {
+            node->_left = this->clear(node->_left);
+            node->_right = this->clear(node->_right);
+            delete node;
+        }
+
+        return nullptr;
+    }
+
+    void print_tree(const Node<Comparable>* root, ostream& os, size_t trace) const {
+        if (!root) {
+            os << "<empty>\n";
+            return;
+        }
+
+        if (root->_right)
+            this->print_tree(root->_right, os, trace + 1);
+        os << string(trace * 2, ' ') << root->_value << "\n";
+        if (root->_left)
+            this->print_tree(root->_left, os, trace + 1);
+    }
+
+    Node<Comparable>* copy(const Node<Comparable>* root) {
+        if (!root)
+            return nullptr;
+
+        Node<Comparable>* new_root = new Node<Comparable>(root->_value);
+        new_root->_left = this->copy(root->_left);
+        new_root->_right = this->copy(root->_right);
+        return new_root;
+    }
+
+    Node<Comparable>* insert(Node<Comparable>*& node, const Comparable& val) {
+        if (!node)
+            return new Node<Comparable>(val);
+        if (node->_value < val)
+            node->_right = this->insert(node->_right, val);
+        else
+            node->_left = this->insert(node->_left, val);
+        return node;
+    }
+
+    Node<Comparable>* remove(Node<Comparable>* root, const Comparable& val) {
+        if (!root)
+            return nullptr;
+
+        if (val < root->_value)
+            root->_left = this->remove(root->_left, val);
+        else if (val > root->_value)
+            root->_right = this->remove(root->_right, val);
+        else {
+            if (root->is_leaf()) {
+                delete root;
+                return nullptr;
+            } else if (!root->_left) {
+                Node<Comparable>* temp = root->_right;
+                delete root;
+                root = nullptr;
+                return temp;
+            } else if (!root->_right) {
+                Node<Comparable>* temp = root->_left;
+                delete root;
+                root = nullptr;
+                return temp;
+            } else {
+                const Node<Comparable>* temp = this->find_min(root->_right);
+                root->_value = temp->_value;
+                root->_right = this->remove(root->_right, temp->_value);
+            }
+        }
+
+        return root;
+    }
+
+    const Node<Comparable>* find_min(const Node<Comparable>* root) const {
+        const Node<Comparable>* curr = root;
+        while (curr && curr->_left)
+            curr = curr->_left;
+
+        return curr;
+    }
+
+public:
     // Constructor & Rule of Three
-    RedBlackTree();
-    RedBlackTree(const RedBlackTree& rhs);
-    ~RedBlackTree();
-    RedBlackTree& operator=(const RedBlackTree&);
+    RedBlackTree() : _root{nullptr} {}
+    RedBlackTree(const RedBlackTree& rhs) : _root{this->copy(rhs.get_root())} {}
+
+    ~RedBlackTree() {
+        this->make_empty();
+    }
+
+    RedBlackTree& operator=(const RedBlackTree& rhs) {
+        if (this != &rhs) {
+            this->make_empty();
+            this->_root = this->copy(rhs.get_root());
+        }
+
+        return *this;
+    }
 
     // modifiers
-    void insert(const Comparable& rhs);
-    void remove(const Comparable& rhs);
+    void insert(const Comparable& val) {
+        this->_root = this->insert(this->_root, val);
+    }
+
+    void remove(const Comparable& val) {
+        this->_root = this->remove(this->_root, val);
+    }
 
     // look up
-    bool contains(const Comparable&) const;
-    const Comparable& find_min() const;
-    const Comparable& find_max() const;
+    bool contains(const Comparable& val) const {
+        return this->contains(this->_root, val);
+    }
+
+    const Comparable& find_min() const {
+        if (!this->_root)
+            throw invalid_argument("Binary Search Tree is empty");
+
+        Node<Comparable>* curr = this->_root;
+        while (curr->_left)
+            curr = curr->_left;
+
+        return curr->_value;
+    }
+
+    const Comparable& find_max() const {
+        if (!this->_root)
+            throw invalid_argument("Binary Search Tree is empty");
+
+        Node<Comparable>* curr = this->_root;
+        while (curr->_right)
+            curr = curr->_right;
+
+        return curr->_value;
+    }
 
     // For Testing
-    int color(const Node* node) const;
-    const Node* get_root() const;
+    int color(const Node<Comparable>* node) const {
+        return node ? node->_color : 0;
+    }
+
+    const Node<Comparable>* get_root() const {
+        return this->_root;
+    }
 
     // OPTIONAL
     // RedBlackTree(RedBlackTree&& rhs);
     // RedBlackTree& operator=(RedBlackTree&& rhs);
-    // bool is_empty() const;
     // void insert(Comparable&& val);
-    // void make_empty();
-    // void print_tree(std::ostream&=std::cout) const;
+    void print_tree(ostream& os = cout) const {
+        size_t i = 0;
+        this->print_tree(this->_root, os, i);
+    }
+
+    bool is_empty() const {
+        return !this->_root;
+    }
+
+    void make_empty() {
+        this->_root = this->clear(this->_root);
+    }
 };
