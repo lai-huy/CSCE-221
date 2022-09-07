@@ -420,7 +420,7 @@ bool test_insert_right() {
 	avl.insert(3);
 	avl.insert(4);
 	avl.insert(5);
-	avl.insert(6);	// Rebalancing fails here
+	avl.insert(6);
 	avl.insert(7);
 	avl.insert(8);
 	avl.insert(9);
@@ -516,40 +516,49 @@ bool test_insert_left() {
 	END_TEST;
 }
 
+bool test_insert_lr() {
+	AVLTree<int> avl;
+	assert(avl.root() == nullptr);
+
+	avl.insert(2);
+	avl.insert(0);
+	avl.insert(1);
+	{
+		const AVLTree<int>::Node<int>* root = avl.root();
+		assert(root != nullptr);
+		assert(root->_value == 1);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 0);
+		assert(root->_left->_left == nullptr);
+		assert(root->_left->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 2);
+		assert(root->_right->_left == nullptr);
+		assert(root->_right->_right == nullptr);
+	}
+
+	END_TEST;
+}
+
 bool test_insert_rl() {
 	AVLTree<int> avl;
 	assert(avl.root() == nullptr);
 
-	avl.insert(7);
-	avl.insert(3);
+	avl.insert(0);
 	avl.insert(2);
 	avl.insert(1);
-	avl.insert(9);
-	avl.insert(8);
-	avl.insert(5);
-	avl.insert(4);
-	avl.insert(11);
-	avl.insert(10);
-	avl.insert(6);
-	avl.insert(12);
-	avl.remove(7);
-	avl.remove(8);
-	avl.remove(9);
-	avl.remove(10);
-	avl.remove(11);
-	avl.remove(12);
-	avl.insert(9);
-	avl.insert(7);
-	avl.insert(8);
-	avl.insert(10);
-	avl.insert(12);
-	avl.insert(11);
 	{
 		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
-		assert(root->_value == 7);
+		assert(root->_value == 1);
 		assert(root->_left != nullptr);
+		assert(root->_left->_value == 0);
+		assert(root->_left->_left == nullptr);
+		assert(root->_left->_right == nullptr);
 		assert(root->_right != nullptr);
+		assert(root->_right->_value == 2);
+		assert(root->_right->_left == nullptr);
+		assert(root->_right->_right == nullptr);
 	}
 
 	END_TEST;
@@ -561,6 +570,450 @@ bool test_remove_empty() {
 
 	avl.remove(0);
 	assert(avl.root() == nullptr);
+
+	END_TEST;
+}
+
+bool test_remove_leaf() {
+	AVLTree<int> avl;
+	assert(avl.root() == nullptr);
+
+	avl.insert(7);
+	avl.insert(3);
+	avl.insert(11);
+	avl.insert(1);
+	avl.insert(5);
+	avl.insert(9);
+	avl.insert(13);
+	avl.insert(0);
+	avl.insert(2);
+	avl.insert(4);
+	avl.insert(6);
+	avl.insert(8);
+	avl.insert(10);
+	avl.insert(12);
+	avl.insert(14);
+	{
+		const AVLTree<int>::Node<int>* root = avl.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
+	}
+
+	avl.remove(14);
+	{
+		const AVLTree<int>::Node<int>* root = avl.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right == nullptr);
+	}
+
+	avl.remove(12);
+	{
+		const AVLTree<int>::Node<int>* root = avl.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right == nullptr);
+	}
+
+	END_TEST;
+}
+
+bool test_remove_middle() {
+	AVLTree<int> avl;
+	assert(avl.root() == nullptr);
+
+	avl.insert(7);
+	avl.insert(3);
+	avl.insert(11);
+	avl.insert(1);
+	avl.insert(5);
+	avl.insert(9);
+	avl.insert(13);
+	avl.insert(0);
+	avl.insert(2);
+	avl.insert(4);
+	avl.insert(6);
+	avl.insert(8);
+	avl.insert(10);
+	avl.insert(12);
+	avl.insert(14);
+	{
+		const AVLTree<int>::Node<int>* root = avl.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
+	}
+
+	avl.remove(13);
+	{
+		const AVLTree<int>::Node<int>* root = avl.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 14);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right == nullptr);
+	}
+
+	avl.remove(14);
+	{
+		const AVLTree<int>::Node<int>* root = avl.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 12);
+		assert(root->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right == nullptr);
+	}
+
+	avl.remove(8);
+	avl.remove(9);
+	{
+		const AVLTree<int>::Node<int>* root = avl.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 10);
+		assert(root->_right->_left->_left == nullptr);
+		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 12);
+		assert(root->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right == nullptr);
+	}
+
+	END_TEST;
+}
+
+bool test_remove_root() {
+	AVLTree<int> avl;
+	assert(avl.root() == nullptr);
+
+	avl.insert(7);
+	avl.insert(3);
+	avl.insert(11);
+	avl.insert(1);
+	avl.insert(5);
+	avl.insert(9);
+	avl.insert(13);
+	avl.insert(0);
+	avl.insert(2);
+	avl.insert(4);
+	avl.insert(6);
+	avl.insert(8);
+	avl.insert(10);
+	avl.insert(12);
+	avl.insert(14);
+	{
+		const AVLTree<int>::Node<int>* root = avl.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
+	}
+
+	avl.remove(7);
 
 	END_TEST;
 }
@@ -1126,8 +1579,12 @@ int main() {
 	test(insert_dup_many);
 	test(insert_right);
 	test(insert_left);
+	test(insert_lr);
 	test(insert_rl);
 	test(remove_empty);
+	test(remove_leaf);
+	test(remove_middle);
+	test(remove_root);
 	test(contains);
 	test(find_min);
 	test(find_min_empty);

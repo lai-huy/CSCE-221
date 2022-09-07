@@ -8,6 +8,7 @@
 
 using std::ostream, std::cout;
 using std::invalid_argument;
+using std::string;
 
 /**
  * @brief
@@ -34,7 +35,7 @@ public:
 private:
     Node<Comparable>* _root;
 
-    bool contains(const Node<Comparable>* root, const Comparable& val) const {
+    bool contains(Node<Comparable>*& root, const Comparable& val) const {
         if (!root)
             return false;
         if (root->_value == val)
@@ -44,17 +45,18 @@ private:
         return this->contains(root->_left, val);
     }
 
-    Node<Comparable>* clear(Node<Comparable>* node) {
+    Node<Comparable>*& clear(Node<Comparable>*& node) {
         if (node) {
             node->_left = this->clear(node->_left);
             node->_right = this->clear(node->_right);
             delete node;
         }
 
-        return nullptr;
+        node = nullptr;
+        return node;
     }
 
-    void print_tree(const Node<Comparable>* root, ostream& os, size_t trace) const {
+    void print_tree(Node<Comparable>* root, ostream& os, size_t trace) const {
         if (!root) {
             os << "<empty>\n";
             return;
@@ -62,7 +64,7 @@ private:
 
         if (root->_right)
             this->print_tree(root->_right, os, trace + 1);
-        os << std::string(trace * 2, ' ') << root->_value << "\n";
+        os << string(trace * 2, ' ') << root->_value << "\n";
         if (root->_left)
             this->print_tree(root->_left, os, trace + 1);
     }
@@ -122,14 +124,6 @@ private:
         return root;
     }
 
-    const Node<Comparable>* find_min(const Node<Comparable>* root) const {
-        const Node<Comparable>* curr = root;
-        while (curr && curr->_left)
-            curr = curr->_left;
-
-        return curr;
-    }
-
     signed long height(Node<Comparable>* root) {
         size_t h = 0;
         if (root) {
@@ -145,7 +139,7 @@ private:
         return this->height(root->_left) - this->height(root->_right);
     }
 
-    Node<Comparable>* rr_rotate(Node<Comparable>* root) {
+    Node<Comparable>* rr_rotate(Node<Comparable>*& root) {
         Node<Comparable>* temp = root->_right;
         root->_right = temp->_left;
         temp->_left = root;
@@ -153,7 +147,7 @@ private:
         return temp;
     }
 
-    Node<Comparable>* ll_rotate(Node<Comparable>* root) {
+    Node<Comparable>* ll_rotate(Node<Comparable>*& root) {
         Node<Comparable>* temp = root->_left;
         root->_left = temp->_right;
         temp->_right = root;
@@ -161,14 +155,14 @@ private:
         return temp;
     }
 
-    Node<Comparable>* lr_rotate(Node<Comparable>* root) {
+    Node<Comparable>* lr_rotate(Node<Comparable>*& root) {
         Node<Comparable>* temp = root->_left;
         root->_left = this->rr_rotate(temp);
         // cout << "Left-Right Rotate\n";
         return this->ll_rotate(root);
     }
 
-    Node<Comparable>* rl_rotate(Node<Comparable>* root) {
+    Node<Comparable>* rl_rotate(Node<Comparable>*& root) {
         Node<Comparable>* temp = root->_right;
         root->_right = this->ll_rotate(temp);
         // cout << "Right-Left Rotate\n";
@@ -182,6 +176,14 @@ private:
         else if (bf < -1)
             root = this->balace_factor(root->_right) > 0 ? rl_rotate(root) : rr_rotate(root);
         return root;
+    }
+
+    Node<Comparable>* find_min(Node<Comparable>* root) {
+        Node<Comparable>* node = root;
+        while (node && node->_left)
+            node = node->_left;
+
+        return node;
     }
 
 public:
@@ -216,7 +218,7 @@ public:
 
     void remove(const Comparable& val) {
         // cout << "avl.remove(" << std::to_string(val) << ");\n";
-        
+
         this->_root = this->remove(this->_root, val);
     }
 
