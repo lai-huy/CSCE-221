@@ -1,4 +1,8 @@
+#include <cstddef>
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
+#include <utility>
 #include "binary_search_tree.h"
 
 using std::cout, std::endl;
@@ -1868,7 +1872,6 @@ int main() {
 	test(print_empty);
 	test(print);
 	test(make_empty);
-
 	test(copy);
 	test(copy_oper);
 

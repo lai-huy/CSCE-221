@@ -1,5 +1,8 @@
+#include <cstddef>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
+#include <utility>
 #include "avl_tree.h"
 
 using std::cout, std::endl;
