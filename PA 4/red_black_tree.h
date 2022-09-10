@@ -31,143 +31,102 @@ public:
 private:
     Node<Comparable>* root;
 
-    void rotateLeft(Node<Comparable>*& root, Node<Comparable>*& pt) {
-        Node<Comparable>* pt_right = pt->right;
+    void rotateLeft(Node<Comparable>*& root, Node<Comparable>*& parent) {
+        Node<Comparable>* right = parent->right;
+        parent->right = right->left;
 
-        pt->right = pt_right->left;
-
-        if (pt->right != NULL)
-            pt->right->parent = pt;
-
-        pt_right->parent = pt->parent;
-
-        if (pt->parent == NULL)
-            root = pt_right;
-
-        else if (pt == pt->parent->left)
-            pt->parent->left = pt_right;
-
+        if (parent->right)
+            parent->right->parent = parent;
+        right->parent = parent->parent;
+        if (!parent->parent)
+            root = right;
+        else if (parent == parent->parent->left)
+            parent->parent->left = right;
         else
-            pt->parent->right = pt_right;
+            parent->parent->right = right;
 
-        pt_right->left = pt;
-        pt->parent = pt_right;
+        right->left = parent;
+        parent->parent = right;
     }
 
-    void rotateRight(Node<Comparable>*& root, Node<Comparable>*& pt) {
-        Node<Comparable>* pt_left = pt->left;
+    void rotateRight(Node<Comparable>*& root, Node<Comparable>*& parent) {
+        Node<Comparable>* left = parent->left;
+        parent->left = left->right;
 
-        pt->left = pt_left->right;
-
-        if (pt->left != NULL)
-            pt->left->parent = pt;
-
-        pt_left->parent = pt->parent;
-
-        if (pt->parent == NULL)
-            root = pt_left;
-
-        else if (pt == pt->parent->left)
-            pt->parent->left = pt_left;
-
+        if (parent->left)
+            parent->left->parent = parent;
+        left->parent = parent->parent;
+        if (!parent->parent)
+            root = left;
+        else if (parent == parent->parent->left)
+            parent->parent->left = left;
         else
-            pt->parent->right = pt_left;
+            parent->parent->right = left;
 
-        pt_left->right = pt;
-        pt->parent = pt_left;
+        left->right = parent;
+        parent->parent = left;
     }
 
-    void fixViolation(Node<Comparable>*& root, Node<Comparable>*& pt) {
-        Node<Comparable>* parent_pt = NULL;
-        Node<Comparable>* grand_parent_pt = NULL;
+    void fixViolation(Node<Comparable>*& root, Node<Comparable>*& parent) {
+        Node<Comparable>* p_ptr = nullptr;
+        Node<Comparable>* gp_ptr = nullptr;
 
-        while ((pt != root) && (pt->color != BLACK) && (pt->parent->color == RED)) {
+        while ((parent != root) && (parent->color != Color::BLACK) && (parent->parent->color == Color::RED)) {
+            p_ptr = parent->parent;
+            gp_ptr = parent->parent->parent;
+            Node<Comparable>* uncle = p_ptr == gp_ptr->left ? gp_ptr->right : gp_ptr->left;
 
-            parent_pt = pt->parent;
-            grand_parent_pt = pt->parent->parent;
+            if (!uncle)
+                break;
 
-            /*  Case : A
-                Parent of pt is left child
-                of Grand-parent of pt */
-            if (parent_pt == grand_parent_pt->left) {
-
-                Node<Comparable>* uncle_pt = grand_parent_pt->right;
-
-                /* Case : 1
-                   The uncle of pt is also red
-                   Only Recoloring required */
-                if (uncle_pt != NULL && uncle_pt->color ==
-                                                       RED) {
-                    grand_parent_pt->color = RED;
-                    parent_pt->color = BLACK;
-                    uncle_pt->color = BLACK;
-                    pt = grand_parent_pt;
-                }
-
-                else {
-                    /* Case : 2
-                       pt is right child of its parent
-                       Left-rotation required */
-                    if (pt == parent_pt->right) {
-                        rotateLeft(root, parent_pt);
-                        pt = parent_pt;
-                        parent_pt = pt->parent;
+            if (p_ptr == gp_ptr->left) { // parent is left child of Grand parent of parent
+                if (uncle->color == Color::RED) { // The Uncle of pointer is also red. Only recoloring required
+                    gp_ptr->color = Color::RED;
+                    p_ptr->color = Color::BLACK;
+                    uncle->color = Color::BLACK;
+                    parent = gp_ptr;
+                } else { // parent is right child. Left rotation
+                    if (parent == p_ptr->right) {
+                        rotateLeft(root, p_ptr);
+                        parent = p_ptr;
+                        p_ptr = parent->parent;
                     }
 
-                    /* Case : 3
-                       pt is left child of its parent
-                       Right-rotation required */
-                    rotateRight(root, grand_parent_pt);
-                    swap(parent_pt->color,
-                               grand_parent_pt->color);
-                    pt = parent_pt;
+                    // parent is left child of its Parent. Right rotation required
+                    this->rotateRight(root, gp_ptr);
+                    swap(p_ptr->color, gp_ptr->color);
+                    parent = p_ptr;
                 }
-            }
-
-            /* Case : B
-               Parent of pt is right child
-               of Grand-parent of pt */
-            else {
-                Node<Comparable>* uncle_pt = grand_parent_pt->left;
-
-                /*  Case : 1
-                    The uncle of pt is also red
-                    Only Recoloring required */
-                if ((uncle_pt != NULL) && (uncle_pt->color ==
-                    RED)) {
-                    grand_parent_pt->color = RED;
-                    parent_pt->color = BLACK;
-                    uncle_pt->color = BLACK;
-                    pt = grand_parent_pt;
-                } else {
-                    /* Case : 2
-                       pt is left child of its parent
-                       Right-rotation required */
-                    if (pt == parent_pt->left) {
-                        rotateRight(root, parent_pt);
-                        pt = parent_pt;
-                        parent_pt = pt->parent;
+            } else { // Parent of parent is right child of Grand-parent of pointer
+                if (uncle->color == Color::RED) { // The Uncle of parent is also red. Only Recoloring Required
+                    gp_ptr->color = Color::RED;
+                    p_ptr->color = Color::BLACK;
+                    uncle->color = Color::BLACK;
+                    parent = gp_ptr;
+                } else { // Parent is left child of its parent. Right rotation required
+                    if (parent == p_ptr->left) {
+                        rotateRight(root, p_ptr);
+                        parent = p_ptr;
+                        p_ptr = parent->parent;
                     }
 
-                    /* Case : 3
-                       pt is right child of its parent
-                       Left-rotation required */
-                    rotateLeft(root, grand_parent_pt);
-                    swap(parent_pt->color, grand_parent_pt->color);
-                    pt = parent_pt;
+                    // parent is right child of its parent. Left rotation required
+                    rotateLeft(root, gp_ptr);
+                    swap(p_ptr->color, gp_ptr->color);
+                    parent = p_ptr;
                 }
             }
         }
 
-        root->color = BLACK;
+        root->color = Color::BLACK;
     }
 
     Node<Comparable>* insert(Node<Comparable>* root, Node<Comparable>* pt) {
-        /* If the tree is empty, return a new node */
+        // If the tree is empty, return a new node
         if (!root)
             return pt;
 
-        /* Otherwise, recur down the tree */
+        // Otherwise, recur down the tree
         if (pt->value < root->value) {
             root->left = this->insert(root->left, pt);
             root->left->parent = root;
@@ -176,7 +135,7 @@ private:
             root->right->parent = root;
         }
 
-        /* return the (unchanged) node pointer */
+        // return the (unchanged) node pointer
         return root;
     }
 
