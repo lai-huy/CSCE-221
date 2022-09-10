@@ -1093,8 +1093,6 @@ bool test_remove_middle() {
 		assert(root->_right->_right->_right == nullptr);
 	}
 
-	std::cout << "\n\n";
-
 	bst.remove(14);
 	{
 		const BinarySearchTree<int>::Node<int>* root = bst.root();
@@ -1802,56 +1800,6 @@ bool test_copy_oper() {
 	END_TEST;
 }
 
-bool test_make_empty() {
-	BinarySearchTree<int> bst;
-	assert(bst.root() == nullptr);
-
-	bst.insert(8);
-	bst.insert(4);
-	bst.insert(12);
-	bst.insert(2);
-	bst.insert(6);
-	bst.insert(10);
-	bst.insert(14);
-	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
-		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
-		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
-		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
-		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
-		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
-		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(bst.contains(10));
-		assert(bst.contains(14));
-	}
-
-	bst.make_empty();
-	assert(bst.root() == nullptr);
-
-	END_TEST;
-}
-
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
@@ -1871,7 +1819,6 @@ int main() {
 	test(find_max_empty);
 	test(print_empty);
 	test(print);
-	test(make_empty);
 	test(copy);
 	test(copy_oper);
 
