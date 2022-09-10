@@ -32,7 +32,7 @@ public:
     virtual std::string to_string() const {
         // make a string that represents the state of the iterator
         //   e.g. "<Set::const_iterator -> [value]>"
-        return "Set::const_iterator";
+        return "<Set::const_iterator -> [" + "" + "]";
     }
 };
 
@@ -47,7 +47,7 @@ public:
     std::string to_string() const override {
         // make a string that represents the state of the iterator
         //   e.g. "<Set::iterator -> [value]>"
-        return "Set::iterator";
+        return "<Set::iterator -> [" + "" + "]";
     }
 };
 
