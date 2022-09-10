@@ -95,7 +95,7 @@ private:
                        pt is right child of its parent
                        Left-rotation required */
                     if (pt == parent_pt->right) {
-                        rotateLeft(root, parent_pt);
+                        this->rotateLeft(root, parent_pt);
                         pt = parent_pt;
                         parent_pt = pt->parent;
                     }
@@ -103,7 +103,7 @@ private:
                     /* Case : 3
                        pt is left child of its parent
                        Right-rotation required */
-                    rotateRight(root, grand_parent_pt);
+                    this->rotateRight(root, grand_parent_pt);
                     swap(parent_pt->color, grand_parent_pt->color);
                     pt = parent_pt;
                 }

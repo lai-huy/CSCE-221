@@ -11,25 +11,71 @@
 
 using std::less;
 
-template <class Container, class Compare=less<typename Container::value_type>>
-void heapify(Container*, Compare=less<typename Container::value_type>{});
+/**
+ * @brief
+ *
+ * @tparam Container
+ * @tparam less<typename Container::value_type>
+ * @param container
+ * @param compare
+ */
+template <class Container, class Compare = less<typename Container::value_type>>
+void heapify(Container* container, Compare compare = less<typename Container::value_type>{}) {
 
-template <class Container, class Compare=less<typename Container::value_type>>
-void heap_insert(Container*, const typename Container::value_type&, Compare=less<typename Container::value_type>{});
+}
 
+/**
+ * @brief
+ *
+ * @tparam Container
+ * @tparam less<typename Container::value_type>
+ * @param container
+ * @param value
+ * @param compare
+ */
+template <class Container, class Compare = less<typename Container::value_type>>
+void heap_insert(Container* container, const typename Container::value_type& value, Compare compare = less<typename Container::value_type>{}) {
+
+}
+
+/**
+ * @brief
+ *
+ * @tparam Container
+ * @param container
+ * @return const Container::value_type&
+ */
 template <class Container>
-const typename Container::value_type& heap_get_min(const Container&);
+const typename Container::value_type& heap_get_min(const Container& container) {
 
-template <class Container, class Compare=less<typename Container::value_type>>
-void heap_delete_min(Container*, Compare=less<typename Container::value_type>{});
+}
+
+/**
+ * @brief
+ *
+ * @tparam Container
+ * @tparam less<typename Container::value_type>
+ * @param container
+ * @param compare
+ */
+template <class Container, class Compare = less<typename Container::value_type>>
+void heap_delete_min(Container* container, Compare compare = less<typename Container::value_type>{}) {
+
+}
 
 
 // OPTIONAL
-template <class Container, class Compare=less<typename Container::value_type>>
-void heapify(Container&, Compare=less<typename Container::value_type>{});
+template <class Container, class Compare = less<typename Container::value_type>>
+void heapify(Container& container, Compare compare = less<typename Container::value_type>{}) {
+    heapify(&container, compare);
+}
 
-template <class Container, class Compare=less<typename Container::value_type>>
-void heap_insert(Container&, const typename Container::value_type&, Compare=less<typename Container::value_type>{});
+template <class Container, class Compare = less<typename Container::value_type>>
+void heap_insert(Container& container, const typename Container::value_type& value, Compare compare = less<typename Container::value_type>{}) {
+    heap_insert(&container, value, compare);
+}
 
-template <class Container, class Compare=less<typename Container::value_type>>
-void heap_delete_min(Container&, Compare=less<typename Container::value_type>{});
+template <class Container, class Compare = less<typename Container::value_type>>
+void heap_delete_min(Container& container, Compare compare = less<typename Container::value_type>{}) {
+    heap_delete_min(container, compare);
+}
