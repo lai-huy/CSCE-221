@@ -10,6 +10,7 @@
 using std::cout, std::ostream;
 using std::invalid_argument;
 using std::string;
+using std::swap;
 
 template <typename Comparable>
 class RedBlackTree {
@@ -18,120 +19,164 @@ public:
 
     template <typename T>
     struct Node {
-        T _value;
-        Color _color;
-        Node<T>* _left;
-        Node<T>* _right;
+        T value;
+        Node<T>* left;
+        Node<T>* right;
+        Node<T>* parent;
+        Color color;
 
-        Node() : _value{T()}, _color{BLACK}, _left{nullptr}, _right{nullptr} {}
-        Node(T val) : _value{val}, _color{BLACK}, _left{nullptr}, _right{nullptr} {}
+        Node() : value{T()}, left{nullptr}, right{nullptr}, parent{nullptr}, color{Color::RED} {}
+        Node(const T& val) : value{T(val)}, left{nullptr}, right{nullptr}, parent{nullptr}, color{Color::RED} {}
 
         bool is_leaf() {
-            return !this->_left && !this->_right;
+            return !this->left && !this->right;
+        }
+
+        bool operator==(const Node<T>& rhs) {
+            if (this == &rhs)
+                return true;
+            if (this->value != rhs.value)
+                return false;
+            if (this->left != rhs.left)
+                return false;
+            if (this->right != rhs.right)
+                return false;
+            if (this->parent != rhs.parent)
+                return false;
+            if (this->color != rhs.color)
+                return false;
+            return true;
         }
     };
 
-private:
-    Node<Comparable>* _root;
+    typedef Node<Comparable>* nodeptr;
 
+private:
+    nodeptr _root;
+
+    /**
+     * @brief Determine if this tree contains a specified value
+     *
+     * @param root current subtree being searched
+     * @param val value to find
+     * @return true if the value is found
+     * @return false otherwise
+     */
     bool contains(const Node<Comparable>* root, const Comparable& val) const {
         if (!root)
             return false;
-        if (root->_value == val)
+        if (root->value == val)
             return true;
-        if (root->_value < val)
-            return this->contains(root->_right, val);
-        return this->contains(root->_left, val);
+        if (root->value < val)
+            return this->contains(root->right, val);
+        return this->contains(root->left, val);
     }
 
-    Node<Comparable>* clear(Node<Comparable>* node) {
-        if (node) {
-            node->_left = this->clear(node->_left);
-            node->_right = this->clear(node->_right);
-            delete node;
+    /**
+     * @brief Prevents memory leaks by deallocating subtrees
+     *
+     * @param root current subtree being cleared
+     * @return Node<Comparable>* nullptr
+     */
+    Node<Comparable>* clear(Node<Comparable>* root) {
+        if (root) {
+            root->left = this->clear(root->left);
+            root->right = this->clear(root->right);
+            delete root;
         }
 
         return nullptr;
     }
 
-    void print_tree(const Node<Comparable>* root, ostream& os, size_t trace) const {
-        if (!root) {
-            os << "<empty>\n";
-            return;
-        }
-
-        if (root->_right)
-            this->print_tree(root->_right, os, trace + 1);
-        os << string(trace * 2, ' ') << root->_value << "\n";
-        if (root->_left)
-            this->print_tree(root->_left, os, trace + 1);
-    }
-
+    /**
+     * @brief Copy a subtree into the current subtree
+     *
+     * @param root current subtree to copy into
+     * @return Node<Comparable>* a new subtree
+     */
     Node<Comparable>* copy(const Node<Comparable>* root) {
         if (!root)
             return nullptr;
 
-        Node<Comparable>* new_root = new Node<Comparable>(root->_value);
-        new_root->_left = this->copy(root->_left);
-        new_root->_right = this->copy(root->_right);
+        Node<Comparable>* new_root = new Node<Comparable>(root->value);
+        new_root->left = this->copy(root->left);
+        new_root->right = this->copy(root->right);
         return new_root;
     }
 
+    /**
+     * @brief Insert a value into a subtree
+     *
+     * @param node current subtree being inserted into
+     * @param val value to insert
+     * @return Node<Comparable>* new subtree
+     */
     Node<Comparable>* insert(Node<Comparable>*& node, const Comparable& val) {
         if (!node)
             return new Node<Comparable>(val);
-        if (node->_value < val)
-            node->_right = this->insert(node->_right, val);
-        else
-            node->_left = this->insert(node->_left, val);
+        if (node->value < val)
+            node->right = this->insert(node->right, val);
+        else if (node->value > val)
+            node->left = this->insert(node->left, val);
         return node;
     }
 
+    /**
+     * @brief Remove a value from a subtree
+     *
+     * @param root current subtree being removed from
+     * @param val value to remove
+     * @return Node<Comparable>* the right subtree of the node removed
+     */
     Node<Comparable>* remove(Node<Comparable>* root, const Comparable& val) {
         if (!root)
             return nullptr;
 
-        if (val < root->_value)
-            root->_left = this->remove(root->_left, val);
-        else if (val > root->_value)
-            root->_right = this->remove(root->_right, val);
-        else {
+        if (val < root->value)
+            root->left = this->remove(root->left, val);
+        else if (val > root->value)
+            root->right = this->remove(root->right, val);
+        else if (val == root->value) {
             if (root->is_leaf()) {
                 delete root;
                 return nullptr;
-            } else if (!root->_left) {
-                Node<Comparable>* temp = root->_right;
+            } else if (!root->left) {
+                Node<Comparable>* temp = root->right;
                 delete root;
                 root = nullptr;
                 return temp;
-            } else if (!root->_right) {
-                Node<Comparable>* temp = root->_left;
+            } else if (!root->right) {
+                Node<Comparable>* temp = root->left;
                 delete root;
                 root = nullptr;
                 return temp;
             } else {
-                const Node<Comparable>* temp = this->find_min(root->_right);
-                root->_value = temp->_value;
-                root->_right = this->remove(root->_right, temp->_value);
+                const Node<Comparable>* temp = this->find_min(root->right);
+                root->value = temp->value;
+                root->right = this->remove(root->right, temp->value);
             }
         }
 
         return root;
     }
 
+    /**
+     * @brief Find the node whose value is the smallets in the subtree
+     *
+     * @param root subtree to search through
+     * @return const Node<Comparable>* a pointer to the smallest node
+     */
     const Node<Comparable>* find_min(const Node<Comparable>* root) const {
         const Node<Comparable>* curr = root;
-        while (curr && curr->_left)
-            curr = curr->_left;
+        while (curr && curr->left)
+            curr = curr->left;
 
         return curr;
     }
 
 public:
-    // Constructor & Rule of Three
     RedBlackTree() : _root{nullptr} {}
-    RedBlackTree(const RedBlackTree& rhs) : _root{this->copy(rhs.get_root())} {}
-
+    RedBlackTree(const RedBlackTree& rhs) : _root{this->copy(const_cast<Node<Comparable>*>(rhs.get_root()))} {}
     ~RedBlackTree() {
         this->make_empty();
     }
@@ -139,71 +184,62 @@ public:
     RedBlackTree& operator=(const RedBlackTree& rhs) {
         if (this != &rhs) {
             this->make_empty();
-            this->_root = this->copy(rhs.get_root());
+            this->_root = this->copy(const_cast<Node<Comparable>*>(rhs.get_root()));
         }
 
         return *this;
     }
 
-    // modifiers
-    void insert(const Comparable& val) {
-        this->_root = this->insert(this->_root, val);
+    void insert(const Comparable& value) {
+        // cout << std::to_string(value) << "\n";
+        this->_root = this->insert(this->_root, value);
     }
 
-    void remove(const Comparable& val) {
-        this->_root = this->remove(this->_root, val);
+    void remove(const Comparable& value) {
+        // cout << std::to_string(value) << "\n";
+        this->_root = this->remove(this->_root, value);
     }
 
-    // look up
-    bool contains(const Comparable& val) const {
-        return this->contains(this->_root, val);
+    bool contains(const Comparable& value) const {
+        return this->contains(const_cast<const Node<Comparable>*&>(this->_root), value);
     }
 
     const Comparable& find_min() const {
-        if (!this->_root)
-            throw invalid_argument("Binary Search Tree is empty");
+        nodeptr node = this->_root;
+        while (node && node->left)
+            node = node->left;
 
-        Node<Comparable>* curr = this->_root;
-        while (curr->_left)
-            curr = curr->_left;
-
-        return curr->_value;
+        return node->value;
     }
 
     const Comparable& find_max() const {
-        if (!this->_root)
-            throw invalid_argument("Binary Search Tree is empty");
+        nodeptr node = this->_root;
+        while (node && node->right)
+            node = node->right;
 
-        Node<Comparable>* curr = this->_root;
-        while (curr->_right)
-            curr = curr->_right;
-
-        return curr->_value;
+        return node->value;
     }
 
-    // For Testing
-    int color(const Node<Comparable>* node) const {
-        return node ? node->_color : 0;
+    int color(const nodeptr node) const {
+        return node ? node->color : Color::BLACK;
     }
 
     const Node<Comparable>* get_root() const {
-        return this->_root;
+        return const_cast<const nodeptr>(this->_root);
     }
 
     // OPTIONAL
     // RedBlackTree(RedBlackTree&& rhs);
     // RedBlackTree& operator=(RedBlackTree&& rhs);
-    // void insert(Comparable&& val);
-    void print_tree(ostream& os = cout) const {
-        size_t i = 0;
-        this->print_tree(this->_root, os, i);
-    }
 
     bool is_empty() const {
         return !this->_root;
     }
 
+    // void insert(Comparable&& value);
     void make_empty() {
         this->_root = this->clear(this->_root);
     }
+
+    // void print_tree(ostream& os=cout) const;
 };

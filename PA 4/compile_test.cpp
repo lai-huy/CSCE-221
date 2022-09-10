@@ -4,27 +4,27 @@
 
 struct ComparableValue {
     int value;
-    
+
     ComparableValue() : value{0} {}
     explicit ComparableValue(int value) : value{value} {}
-    
-    bool operator<(const ComparableValue& rhs) const { 
-        return value < rhs.value; 
+
+    bool operator<(const ComparableValue& rhs) const {
+        return value < rhs.value;
     }
-    bool operator>(const ComparableValue& rhs) const { 
-        return rhs < *this; 
+    bool operator>(const ComparableValue& rhs) const {
+        return rhs < *this;
     }
-    bool operator>=(const ComparableValue& rhs) const { 
-        return !(*this < rhs); 
+    bool operator>=(const ComparableValue& rhs) const {
+        return !(*this < rhs);
     }
-    bool operator<=(const ComparableValue& rhs) const { 
-        return !(*this > rhs); 
+    bool operator<=(const ComparableValue& rhs) const {
+        return !(*this > rhs);
     }
-    bool operator!=(const ComparableValue& rhs) const { 
-        return *this < rhs || *this > rhs; 
+    bool operator!=(const ComparableValue& rhs) const {
+        return *this < rhs || *this > rhs;
     }
-    bool operator==(const ComparableValue& rhs) const { 
-        return !(*this != rhs); 
+    bool operator==(const ComparableValue& rhs) const {
+        return !(*this != rhs);
     }
 };
 
@@ -57,7 +57,7 @@ int main() {
         //tree.print_tree();
         get_root_color_node_members(tree);
     }
-    
+
     {
         RedBlackTree<ComparableValue> tree;
         tree.insert(ComparableValue(2));
@@ -70,6 +70,6 @@ int main() {
         //tree.print_tree();
         get_root_color_node_members(tree);
     }
-    
+
     return 0;
 }
