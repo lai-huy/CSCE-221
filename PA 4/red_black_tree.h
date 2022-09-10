@@ -67,58 +67,83 @@ private:
         parent->parent = left;
     }
 
-    void fixViolation(Node<Comparable>*& root, Node<Comparable>*& parent) {
-        Node<Comparable>* p_ptr = nullptr;
-        Node<Comparable>* gp_ptr = nullptr;
+    void rebalance(Node<Comparable>*& root, Node<Comparable>*& pt) {
+        Node<Comparable>* parent_pt = nullptr;
+        Node<Comparable>* grand_parent_pt = nullptr;
 
-        while ((parent != root) && (parent->color != Color::BLACK) && (parent->parent->color == Color::RED)) {
-            p_ptr = parent->parent;
-            gp_ptr = parent->parent->parent;
-            Node<Comparable>* uncle = p_ptr == gp_ptr->left ? gp_ptr->right : gp_ptr->left;
+        while ((pt != root) && (pt->color != Color::BLACK) && (pt->parent->color == Color::RED)) {
+            parent_pt = pt->parent;
+            grand_parent_pt = pt->parent->parent;
+            Node<Comparable>* uncle_pt;
 
-            if (!uncle)
-                break;
+            /*  Case : A
+                Parent of pt is left child
+                of Grand-parent of pt */
+            if (parent_pt == grand_parent_pt->left) {
+                uncle_pt = grand_parent_pt->right;
 
-            if (p_ptr == gp_ptr->left) { // parent is left child of Grand parent of parent
-                if (uncle->color == Color::RED) { // The Uncle of pointer is also red. Only recoloring required
-                    gp_ptr->color = Color::RED;
-                    p_ptr->color = Color::BLACK;
-                    uncle->color = Color::BLACK;
-                    parent = gp_ptr;
-                } else { // parent is right child. Left rotation
-                    if (parent == p_ptr->right) {
-                        rotateLeft(root, p_ptr);
-                        parent = p_ptr;
-                        p_ptr = parent->parent;
+                /* Case : 1
+                   The uncle of pt is also red
+                   Only Recoloring required */
+                if (uncle_pt && uncle_pt->color == Color::RED) {
+                    grand_parent_pt->color = Color::RED;
+                    parent_pt->color = Color::BLACK;
+                    uncle_pt->color = Color::BLACK;
+                    pt = grand_parent_pt;
+                } else {
+                    /* Case : 2
+                       pt is right child of its parent
+                       Left-rotation required */
+                    if (pt == parent_pt->right) {
+                        rotateLeft(root, parent_pt);
+                        pt = parent_pt;
+                        parent_pt = pt->parent;
                     }
 
-                    // parent is left child of its Parent. Right rotation required
-                    this->rotateRight(root, gp_ptr);
-                    swap(p_ptr->color, gp_ptr->color);
-                    parent = p_ptr;
+                    /* Case : 3
+                       pt is left child of its parent
+                       Right-rotation required */
+                    rotateRight(root, grand_parent_pt);
+                    swap(parent_pt->color, grand_parent_pt->color);
+                    pt = parent_pt;
                 }
-            } else { // Parent of parent is right child of Grand-parent of pointer
-                if (uncle->color == Color::RED) { // The Uncle of parent is also red. Only Recoloring Required
-                    gp_ptr->color = Color::RED;
-                    p_ptr->color = Color::BLACK;
-                    uncle->color = Color::BLACK;
-                    parent = gp_ptr;
-                } else { // Parent is left child of its parent. Right rotation required
-                    if (parent == p_ptr->left) {
-                        rotateRight(root, p_ptr);
-                        parent = p_ptr;
-                        p_ptr = parent->parent;
+            }
+
+            /* Case : B
+               Parent of pt is right child
+               of Grand-parent of pt */
+            else {
+                uncle_pt = grand_parent_pt->left;
+
+                /*  Case : 1
+                    The uncle of pt is also red
+                    Only Recoloring required */
+                if (uncle_pt && (uncle_pt->color == Color::RED)) {
+                    grand_parent_pt->color = RED;
+                    parent_pt->color = BLACK;
+                    uncle_pt->color = BLACK;
+                    pt = grand_parent_pt;
+                } else {
+                    /* Case : 2
+                       pt is left child of its parent
+                       Right-rotation required */
+                    if (pt == parent_pt->left) {
+                        rotateRight(root, parent_pt);
+                        pt = parent_pt;
+                        parent_pt = pt->parent;
                     }
 
-                    // parent is right child of its parent. Left rotation required
-                    rotateLeft(root, gp_ptr);
-                    swap(p_ptr->color, gp_ptr->color);
-                    parent = p_ptr;
+                    /* Case : 3
+                       pt is right child of its parent
+                       Left-rotation required */
+                    rotateLeft(root, grand_parent_pt);
+                    swap(parent_pt->color, grand_parent_pt->color);
+                    pt = parent_pt;
                 }
             }
         }
 
-        root->color = Color::BLACK;
+        root->color = BLACK;
     }
 
     Node<Comparable>* insert(Node<Comparable>* root, Node<Comparable>* pt) {
@@ -184,9 +209,7 @@ private:
 public:
     RedBlackTree() : root{nullptr} {}
 
-    RedBlackTree(const RedBlackTree& rhs) : root{nullptr} {
-        cout << &rhs << "\n";
-    }
+    RedBlackTree(const RedBlackTree& rhs) : root{this->copy(rhs.get_root())} {}
 
     ~RedBlackTree() {
         this->make_empty();
@@ -207,7 +230,7 @@ public:
 
         Node<Comparable>* pt = new Node(value);
         this->root = this->insert(this->root, pt);
-        this->fixViolation(this->root, pt);
+        this->rebalance(this->root, pt);
     }
 
     void remove(const Comparable& value) {
