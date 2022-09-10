@@ -21,13 +21,11 @@ public:
     template <typename T>
     struct Node {
         T _value;
+        size_t _height;
         Node<T>* _left;
         Node<T>* _right;
-        // TODO: Implement this
-        // size_t _height;
 
-        Node() : _value{T()}, _left{nullptr}, _right{nullptr} {}
-        Node(T val) : _value{val}, _left{nullptr}, _right{nullptr} {}
+        Node(const T& val) : _value{T(val)}, _height{1}, _left{nullptr}, _right{nullptr} {}
 
         bool is_leaf() const {
             return !this->_left && !this->_right;
@@ -36,6 +34,11 @@ public:
 
 private:
     Node<Comparable>* _root;
+
+    template <typename Type>
+    Type max(const Type& a, const Type& b) const {
+        return a > b ? a : b;
+    }
 
     bool contains(Node<Comparable>*& root, const Comparable& val) const {
         if (!root)
@@ -84,9 +87,11 @@ private:
     Node<Comparable>* insert(Node<Comparable>* node, const Comparable& val) {
         if (!node)
             return new Node<Comparable>(val);
+        else if (val == node->_value)
+            return node;
         else if (val < node->_value)
             node->_left = this->insert(node->_left, val);
-        else
+        else if (val > node->_value)
             node->_right = this->insert(node->_right, val);
 
         node = this->balance(node);
@@ -125,27 +130,35 @@ private:
         root = this->balance(root);
         return root;
     }
+    
+    signed long height(const Node<Comparable>*& root) const {
+        if (!root)
+            return 0;
 
-    signed long height(Node<Comparable>* root) {
-        size_t h = 0;
-        if (root) {
-            size_t l = this->height(root->_left);
-            size_t r = this->height(root->_right);
-            h = (l > r ? l : r) + 1;
-        }
-
-        return h;
+        return root->_height;
+    }
+    
+    size_t calcHeight(const Node<Comparable>*& root) const {
+        if (!root)
+            return 0;
+        return 1 + this->max(this->height(const_cast<const Node<Comparable>*&>(root->_left)), this->height(const_cast<const Node<Comparable>*&>(root->_right)));
     }
 
-    signed long balace_factor(Node<Comparable>* root) {
-        return this->height(root->_left) - this->height(root->_right);
+    signed long balace_factor(const Node<Comparable>*& root) const {
+        return !root ?
+            0l :
+            this->height(const_cast<const Node<Comparable>*&>(root->_left)) - this->height(const_cast<const Node<Comparable>*&>(root->_right));
     }
 
     Node<Comparable>* rr_rotate(Node<Comparable>*& root) {
         Node<Comparable>* temp = root->_right;
         root->_right = temp->_left;
         temp->_left = root;
-        // cout << "Right-Right Rotate\n";
+
+        // TODO fix height
+        root->_height = this->calcHeight(const_cast<const Node<Comparable>*&>(root));
+        temp->_height = this->calcHeight(const_cast<const Node<Comparable>*&>(temp));
+
         return temp;
     }
 
@@ -153,30 +166,31 @@ private:
         Node<Comparable>* temp = root->_left;
         root->_left = temp->_right;
         temp->_right = root;
-        // cout << "Left-Left Rotate\n";
         return temp;
     }
 
     Node<Comparable>* lr_rotate(Node<Comparable>*& root) {
         Node<Comparable>* temp = root->_left;
         root->_left = this->rr_rotate(temp);
-        // cout << "Left-Right Rotate\n";
         return this->ll_rotate(root);
     }
 
     Node<Comparable>* rl_rotate(Node<Comparable>*& root) {
         Node<Comparable>* temp = root->_right;
         root->_right = this->ll_rotate(temp);
-        // cout << "Right-Left Rotate\n";
         return this->rr_rotate(root);
     }
 
     Node<Comparable>* balance(Node<Comparable>* root) {
-        signed long bf = this->balace_factor(root);
+        const Node<Comparable>*& left = const_cast<const Node<Comparable>*&>(root->_left);
+        const Node<Comparable>*& right = const_cast<const Node<Comparable>*&>(root->_right);
+
+        root->_height = 1 + this->max(this->height(left), this->height(right));
+        signed long bf = this->balace_factor(const_cast<const Node<Comparable>*&>(root));
         if (bf > 1)
-            root = this->balace_factor(root->_left) > 0 ? ll_rotate(root) : lr_rotate(root);
+            root = this->balace_factor(left) > 0 ? ll_rotate(root) : lr_rotate(root);
         else if (bf < -1)
-            root = this->balace_factor(root->_right) > 0 ? rl_rotate(root) : rr_rotate(root);
+            root = this->balace_factor(right) > 0 ? rl_rotate(root) : rr_rotate(root);
         return root;
     }
 
@@ -186,6 +200,10 @@ private:
             node = node->_left;
 
         return node;
+    }
+
+    void clearRoot() {
+        this->_root = nullptr;
     }
 
 public:
@@ -206,26 +224,18 @@ public:
     }
 
     bool contains(const Comparable& val) {
-        // cout << "avl.contains(" << std::to_string(val) << ");\n";
         return this->contains(this->_root, val);
     }
 
     void insert(const Comparable& val) {
-        // cout << "avl.insert(" << std::to_string(val) << ");\n";
-        if (this->contains(val))
-            return;
-
         this->_root = this->insert(this->_root, val);
     }
 
     void remove(const Comparable& val) {
-        // cout << "avl.remove(" << std::to_string(val) << ");\n";
-
         this->_root = this->remove(this->_root, val);
     }
 
     const Comparable& find_min() const {
-        // cout << "avl.find_min();\n";
         if (!this->_root)
             throw invalid_argument("AVL Tree is empty");
 
@@ -238,7 +248,6 @@ public:
     }
 
     const Comparable& find_max() const {
-        // cout << "avl.find_max();\n";
         if (!this->_root)
             throw invalid_argument("AVL Tree is empty");
 
@@ -260,9 +269,17 @@ public:
     }
 
     // OPTIONAL
-    // AVLTree(AVLTree&&);
-    // AVLTree& operator=(AVLTree&&);
-    // void insert(Comparable&&);
+    // AVLTree(AVLTree&& rhs) : _root{rhs.root()} { rhs.clearRoot() }
+    // AVLTree& operator=(AVLTree&& rhs) {
+    //     if (this != &rhs) {
+    //         this->_root = rhs.root();
+    //         rhs.clearRoot();
+    //     }
+    // }
+
+    // void insert(Comparable&& value) {
+
+    // }
 
     bool is_empty() const {
         return !this->_root;

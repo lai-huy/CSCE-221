@@ -418,6 +418,7 @@ bool test_insert_right() {
 	AVLTree<int> avl;
 	assert(avl.root() == nullptr);
 
+	avl.insert(0);
 	avl.insert(1);
 	avl.insert(2);
 	avl.insert(3);
@@ -428,59 +429,10 @@ bool test_insert_right() {
 	avl.insert(8);
 	avl.insert(9);
 	avl.insert(10);
-
-	{
-		const AVLTree<int>::Node<int>* root = avl.root();
-		assert(root != nullptr);
-		assert(root->_value == 4);
-		assert(root->_left != nullptr);
-		assert(root->_left->_value == 2);
-		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 1);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
-		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 3);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
-		assert(root->_right != nullptr);
-		assert(root->_right->_value == 8);
-		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 6);
-		assert(root->_right->_left->_left != nullptr);
-		assert(root->_right->_left->_left->_value == 5);
-		assert(root->_right->_left->_left->_left == nullptr);
-		assert(root->_right->_left->_left->_right == nullptr);
-		assert(root->_right->_left->_right != nullptr);
-		assert(root->_right->_left->_right->_value == 7);
-		assert(root->_right->_left->_right->_left == nullptr);
-		assert(root->_right->_left->_right->_right == nullptr);
-		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 9);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right != nullptr);
-		assert(root->_right->_right->_right->_value == 10);
-		assert(root->_right->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right->_right == nullptr);
-	}
-
-	END_TEST;
-}
-
-bool test_insert_left() {
-	AVLTree<int> avl;
-	assert(avl.root() == nullptr);
-
-	avl.insert(10);
-	avl.insert(9);
-	avl.insert(8);
-	avl.insert(7);
-	avl.insert(6);
-	avl.insert(5);
-	avl.insert(4);
-	avl.insert(3);
-	avl.insert(2);
-	avl.insert(1);
+	avl.insert(11);
+	avl.insert(12);
+	avl.insert(13);
+	avl.insert(14);
 	{
 		const AVLTree<int>::Node<int>* root = avl.root();
 		assert(root != nullptr);
@@ -488,12 +440,15 @@ bool test_insert_left() {
 		assert(root->_left != nullptr);
 		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
+		assert(root->_left->_left->_value == 1);
 		assert(root->_left->_left->_left != nullptr);
-		assert(root->_left->_left->_left->_value == 1);
+		assert(root->_left->_left->_left->_value == 0);
 		assert(root->_left->_left->_left->_left == nullptr);
 		assert(root->_left->_left->_left->_right == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
 		assert(root->_left->_right->_value == 5);
 		assert(root->_left->_right->_left != nullptr);
@@ -505,15 +460,99 @@ bool test_insert_left() {
 		assert(root->_left->_right->_right->_left == nullptr);
 		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 9);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 8);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 10);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
+	}
+
+	END_TEST;
+}
+
+bool test_insert_left() {
+	AVLTree<int> avl;
+	assert(avl.root() == nullptr);
+
+	avl.insert(14);
+	avl.insert(13);
+	avl.insert(12);
+	avl.insert(11);
+	avl.insert(10);
+	avl.insert(9);
+	avl.insert(8);
+	avl.insert(7);
+	avl.insert(6);
+	avl.insert(5);
+	avl.insert(4);
+	avl.insert(3);
+	avl.insert(2);
+	avl.insert(1);
+	avl.insert(0);
+	{
+		const AVLTree<int>::Node<int>* root = avl.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
 	}
 
 	END_TEST;
@@ -1523,56 +1562,6 @@ bool test_copy_oper() {
 	END_TEST;
 }
 
-bool test_make_empty() {
-	AVLTree<int> avl;
-	assert(avl.root() == nullptr);
-
-	avl.insert(8);
-	avl.insert(4);
-	avl.insert(12);
-	avl.insert(2);
-	avl.insert(6);
-	avl.insert(10);
-	avl.insert(14);
-	{
-		const AVLTree<int>::Node<int>* root = avl.root();
-		assert(root != nullptr);
-		assert(root->_value == 8);
-		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
-		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
-		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
-		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
-		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
-		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(avl.contains(8));
-		assert(avl.contains(4));
-		assert(avl.contains(12));
-		assert(avl.contains(2));
-		assert(avl.contains(6));
-		assert(avl.contains(10));
-		assert(avl.contains(14));
-	}
-
-	avl.make_empty();
-	assert(avl.root() == nullptr);
-
-	END_TEST;
-}
-
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
@@ -1595,8 +1584,6 @@ int main() {
 	test(find_max_empty);
 	test(print_empty);
 	test(print);
-	test(make_empty);
-
 	test(copy);
 	test(copy_oper);
 
