@@ -1823,17 +1823,17 @@ int main() {
     test(insert_right);
     test(insert_left);
     test(contains);
-    test(remove_leaf);
-    test(remove_middle);
-    test(remove_root);
-    test(remove_empty);
-    test(remove_invalid);
-    test(find_min);
-    test(find_min_empty);
-    test(find_max);
-    test(find_max_empty);
-    test(copy);
-    test(copy_oper);
+    // test(remove_leaf);
+    // test(remove_middle);
+    // test(remove_root);
+    // test(remove_empty);
+    // test(remove_invalid);
+    // test(find_min);
+    // test(find_min_empty);
+    // test(find_max);
+    // test(find_max_empty);
+    // test(copy);
+    // test(copy_oper);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";
