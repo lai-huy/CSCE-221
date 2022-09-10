@@ -23,6 +23,8 @@ public:
         T _value;
         Node<T>* _left;
         Node<T>* _right;
+        // TODO: Implement this
+        // size_t _height;
 
         Node() : _value{T()}, _left{nullptr}, _right{nullptr} {}
         Node(T val) : _value{val}, _left{nullptr}, _right{nullptr} {}
