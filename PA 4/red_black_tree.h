@@ -9,7 +9,7 @@
 
 using std::cout, std::ostream;
 using std::invalid_argument;
-using std::string;
+using std::string, std::wstring;
 using std::swap;
 
 template <typename Comparable>
@@ -25,10 +25,22 @@ public:
         Node<T>* right;
         Node<T>* parent;
 
-        Node(T value) : value{value}, color{Color::RED}, left{nullptr}, right{nullptr}, parent{nullptr} {}
+        Node(const T& value) : value{T(value)}, color{Color::RED}, left{nullptr}, right{nullptr}, parent{nullptr} {}
+        Node(const T& value, const Color& color) : value{T(value)}, color{color}, left{nullptr}, right{nullptr}, parent{nullptr} {}
 
-        ostream& operator<<(ostream& os) {
-            os << color << ": " << value;
+        string colorToString() const {
+            switch (this->color) {
+            case RED:
+                return "\u2B1C";
+            case BLACK:
+                return "\u2B1B";
+            default:
+                return "?";
+            }
+        }
+
+        friend ostream& operator<<(ostream& os, const Node<T>& node) {
+            os << node.colorToString() << ":" << node.value;
             return os;
         }
 
@@ -38,10 +50,23 @@ public:
             return (this->left && left->color == Color::RED) || (this->right && right->color == Color::RED);
         }
 
+        bool isLeaf() const { return !this->left && !this->right; }
+
+        bool isBlack() const { return this->color == Color::BLACK; }
+
         Node<T>* sibling() const {
             if (!this->parent)
                 return nullptr;
             return this->isLeft() ? this->parent->right : this->parent->left;
+        }
+
+        size_t countChildren() {
+            size_t count = 0;
+            if (this->left)
+                ++count;
+            if (this->right)
+                ++count;
+            return count;
         }
     };
 
@@ -121,7 +146,7 @@ private:
                        pt is left child of its parent
                        Right-rotation required */
                     this->rotateRight(root, grand_parent_pt);
-                    swap(parent_pt->color, grand_parent_pt->color);
+                    std::swap(parent_pt->color, grand_parent_pt->color);
                     parent = parent_pt;
                 }
             }
@@ -163,12 +188,11 @@ private:
         root->color = Color::BLACK;
     }
 
-    void fixDoubleBlack(Node<Comparable>* x) {
-        if (x == this->root)
-            // Reached root
+    void fixDoubleBlack(Node<Comparable>*& node) {
+        if (node == this->root)
             return;
 
-        Node<Comparable>* sibling = x->sibling(), * parent = x->parent;
+        Node<Comparable>* sibling = node->sibling(), * parent = node->parent;
         if (!sibling) // No sibiling, double black pushed up
             this->fixDoubleBlack(parent);
         else {
@@ -183,7 +207,7 @@ private:
                 else // right case
                     this->rotateLeft(parent, parent->parent);
 
-                this->fixDoubleBlack(x);
+                this->fixDoubleBlack(node);
                 break;
             }
             case Color::BLACK:
@@ -234,63 +258,67 @@ private:
         }
     }
 
-    void remove(Node<Comparable>* root) {
-        Node<Comparable>* replace = this->find_min(root->right);
+    void remove(Node<Comparable>*& node) {
+        Node<Comparable>* replace = this->find_min(node->right);
 
-        // True when replace and root are both black
-        bool doubleBlack = (replace && replace->color == Color::BLACK) && (root->color == Color::BLACK);
-        Node<Comparable>* parent = root->parent;
+        // True when replace and node are both black
+        bool doubleBlack = node->isBlack() && (!replace || replace->isBlack());
+        Node<Comparable>* parent = node->parent;
 
-        if (!replace) {
-            // replace is NULL therefore root is leaf
-            if (root == this->root) {
+        switch (node->countChildren()) {
+        case 0:
+        {
+            if (node == this->root) {   // Node being removed is the root of the tree
                 this->root = nullptr;
             } else {
                 if (doubleBlack) {
-                    this->fixDoubleBlack(root);
-                } else { // replace or root is red
-                    Node<Comparable>* sibling = root->sibling();
+                    this->fixDoubleBlack(node);
+                } else {
+                    Node<Comparable>* sibling = node->sibling();
                     if (sibling) // sibling is not null, make it red"
                         sibling->color = Color::RED;
                 }
 
                 // delete root from the tree
-                if (root->isLeft())
+                if (node->isLeft())
                     parent->left = nullptr;
                 else
                     parent->right = nullptr;
             }
 
-            delete root;
+            delete node;
             return;
         }
-        if (!root->left || root->right) {
-            // root has 1 child
-            if (root == this->root) { // root is root, assign the value of replace to root, and delete replace
-                root->value = replace->value;
-                root->left = nullptr;
-                root->right = nullptr;
+        case 1:
+        {
+            if (node == this->root) { // Node being removed is the root of the tree, assign the value of replace to node, and delete replace
+                node->value = replace->value;
+                node->left = nullptr;
+                node->right = nullptr;
                 delete replace;
             } else {
                 // Detach root from tree and move replace up
-                if (root->isLeft())
+                if (node->isLeft()) {
                     parent->left = replace;
-                else
+                } else {
                     parent->right = replace;
+                }
 
-                delete root;
+                delete node;
                 replace->parent = parent;
                 if (doubleBlack) // replace and root both black, fix double black at replace
                     this->fixDoubleBlack(replace);
                 else // replace or root red, color replace black
-                    replace->color = BLACK;
+                    replace->color = Color::BLACK;
             }
             return;
         }
-
-        // root has 2 children, swap values with successor and recurse
-        std::swap(replace->value, root->value);
-        this->remove(replace);
+        case 2:
+        {
+            std::swap(replace->value, node->value);
+            this->remove(replace);
+        }
+        }
     }
 
     Node<Comparable>* search(Node<Comparable>* root, const Comparable& value) const {
@@ -301,7 +329,7 @@ private:
         return root->value < value ? this->search(root->right, value) : this->search(root->left, value);
     }
 
-    Node<Comparable>* insert(Node<Comparable>* root, Node<Comparable>* parent) {
+    Node<Comparable>* insert(Node<Comparable>*& root, Node<Comparable>*& parent) {
         if (!root)
             return parent;
         if (parent->value < root->value) {
@@ -315,7 +343,7 @@ private:
         return root;
     }
 
-    Node<Comparable>* clear(Node<Comparable>* root) {
+    Node<Comparable>* clear(Node<Comparable>*& root) {
         if (root) {
             root->left = this->clear(root->left);
             root->right = this->clear(root->right);
@@ -330,13 +358,13 @@ private:
         if (!root)
             return nullptr;
 
-        Node<Comparable>* node = new Node<Comparable>(root->value);
+        Node<Comparable>* node = new Node<Comparable>(root->value, root->color);
         node->left = this->copy(root->left);
         node->right = this->copy(root->right);
         return node;
     }
 
-    Node<Comparable>* find_min(Node<Comparable>* root) {
+    Node<Comparable>* find_min(Node<Comparable>*& root) {
         Node<Comparable>* temp = root;
         while (temp && temp->left)
             temp = temp->left;
@@ -351,7 +379,7 @@ private:
 
         if (root->right)
             this->print_tree(root->right, os, trace + 1);
-        os << string(trace * 2, ' ') << root->value << "\n";
+        os << string(trace * 2, ' ') << *root << "\n";
         if (root->left)
             this->print_tree(root->left, os, trace + 1);
     }
