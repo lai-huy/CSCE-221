@@ -19,5 +19,5 @@ queue: clean queue.h queue_tests.cpp
 	g++ -std=c++17 -Wall -Wextra -Weffc++ -g --coverage queue_tests.cpp -o main.out && ./main.out && gcov -mr queue_tests.cpp
 
 check: clean
-	g++ -std=c++17 -Wall -Wextra -Weffc++ -g -o valgrind.out array_list_tests.cpp
-	valgrind --leak-check=full --show-leak-kinds=all -s ./valgrind.out
+	g++ -std=c++17 -Wall -Wextra -Weffc++ -pedantic-errors -g -o unsainitized.out doubly_linked_list_tests.cpp
+	valgrind --leak-check=full --show-leak-kinds=all --log-file=valgrind.out -s ./unsainitized.out

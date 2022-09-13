@@ -16,11 +16,10 @@ using std::cout;
 template <typename Object>
 class DoublyLinkedList {
 public:
-    template <typename T>
     struct Node {
         Object _value;
-        Node<Object>* _next;
-        Node<Object>* _prev;
+        Node* _next;
+        Node* _prev;
 
         Node() : _value{Object()}, _next{nullptr}, _prev{nullptr} {}
         Node(const Node& rhs) : _value{rhs._value}, _next{nullptr}, _prev{nullptr} {}
@@ -41,30 +40,30 @@ private:
     /**
      * @brief Pointer to the first element in the list
      */
-    Node<Object>* _head;
+    Node* _head;
 
     /**
      * @brief Pointer to the last element in the list
      */
-    Node<Object>* _tail;
+    Node* _tail;
 
-public:
     /**
      * @brief clear the list
      */
     void clear() {
-        if (this->_size) {
-            this->_size = 0;
-            Node<Object>* node = this->_head;
+        if (this->_head) {
+            Node* node = this->_head;
             while (node->_next) {
                 node = node->_next;
                 delete node->_prev;
             }
 
             delete this->_tail;
-            this->_head = nullptr;
-            this->_tail = nullptr;
         }
+
+        this->_size = 0;
+        this->_head = nullptr;
+        this->_tail = nullptr;
     }
 
     /**
@@ -73,15 +72,26 @@ public:
      * @param rhs DoublyLinkedList to copy from
      */
     void copy(const DoublyLinkedList& rhs) {
-        const Node<Object>* node = rhs._head;
-        while (node) {
-            this->insert(this->_size, node->_value);
-            node = node->_next;
+        const Node* head = rhs.head();
+        this->_head = new Node(head->_value);
+
+        Node* curr = this->_head;
+        Node* next = head->_next;
+        Node* temp = nullptr;
+
+        while (next) {
+            curr->_next = new Node(next->_value);
+            temp = curr;
+            curr = curr->_next;
+            curr->_prev = temp;
+            next = next->_next;
         }
 
-        delete node;
+        this->_size = rhs.size();
+        this->_tail = curr;
+        this->_tail->_prev = temp;
     }
-
+public:
     /**
      * @brief Construct a new Doubly Linked List object
      */
@@ -137,7 +147,7 @@ public:
         if (index >= this->_size)
             throw out_of_range("Index out of bounds");
 
-        Node<Object>* node = this->_head;
+        Node* node = this->_head;
 
         for (size_t i = 0; i < index; ++i)
             node = node->_next;
@@ -157,7 +167,7 @@ public:
         if (index > this->_size)
             throw out_of_range("Index out of bounds");
 
-        Node<Object>* node = new Node<Object>(obj);
+        Node* node = new Node(obj);
         if (!this->_head) {
             this->_head = node;
             this->_tail = node;
@@ -170,7 +180,7 @@ public:
             this->_tail->_next = node;
             this->_tail = this->_tail->_next;
         } else {
-            Node<Object>* curr = this->_head;
+            Node* curr = this->_head;
             for (size_t i = 0; i < index - 1; ++i)
                 curr = curr->_next;
 
@@ -208,7 +218,7 @@ public:
             delete this->_tail->_next;
             this->_tail->_next = nullptr;
         } else {
-            Node<Object>* node = this->_head;
+            Node* node = this->_head;
             for (size_t i = 0; i < index; ++i)
                 node = node->_next;
 
@@ -223,19 +233,23 @@ public:
     /**
      * @brief return this head pointer of htis list
      *
-     * @return const Node<Object>* this->_head;
+     * @return const Node* this->_head;
      */
-    const Node<Object>* head() const {
+    const Node* head() const {
         return this->_head;
     }
 
+    const Node* tail() const {
+        return this->_tail;
+    }
+
     class iterator {
-        const Node<Object>* _node;
+        const Node* _node;
     public:
         iterator() : _node{DoublyLinkedList::_head} {}
-        iterator(const Node<Object>* node) : _node{node} {}
+        iterator(const Node* node) : _node{node} {}
 
-        iterator& operator=(const Node<Object>* node) {
+        iterator& operator=(const Node* node) {
             this->_node = node;
             return *this;
         }
@@ -278,34 +292,34 @@ public:
     };
 
     //OPTIONAL
-    DoublyLinkedList(DoublyLinkedList&& rhs) : _size{rhs._size}, _head{rhs._head}, _tail{rhs._tail} {
-        rhs._size = 0;
-        rhs._head = nullptr;
-        rhs._tail = nullptr;
-    }
+    // DoublyLinkedList(DoublyLinkedList&& rhs) : _size{rhs._size}, _head{rhs._head}, _tail{rhs._tail} {
+    //     rhs._size = 0;
+    //     rhs._head = nullptr;
+    //     rhs._tail = nullptr;
+    // }
 
-    DoublyLinkedList& operator=(DoublyLinkedList&& rhs) {
-        if (this != &rhs) {
-            this->clear();
-            this->copy(rhs);
-        }
+    // DoublyLinkedList& operator=(DoublyLinkedList&& rhs) {
+    //     if (this != &rhs) {
+    //         this->clear();
+    //         this->copy(rhs);
+    //     }
 
-        return *this;
-    }
+    //     return *this;
+    // }
 
-    iterator begin() {
-        return iterator(this->_head);
-    }
+    // iterator begin() {
+    //     return iterator(this->_head);
+    // }
 
-    const iterator begin() const {
-        return iterator(this->_head);
-    }
+    // const iterator begin() const {
+    //     return iterator(this->_head);
+    // }
 
-    iterator end() {
-        return iterator(this->_tail);
-    }
+    // iterator end() {
+    //     return iterator(this->_tail);
+    // }
 
-    const iterator end() const {
-        return iterator(this->_tail);
-    }
+    // const iterator end() const {
+    //     return iterator(this->_tail);
+    // }
 };
