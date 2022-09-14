@@ -101,7 +101,7 @@ bool test_insert() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -173,7 +173,7 @@ bool test_insert_duplicate() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -224,7 +224,7 @@ bool test_insert_duplicate() {
 
 	bst.insert(7);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -296,7 +296,7 @@ bool test_insert_dup_many() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -361,7 +361,7 @@ bool test_insert_dup_many() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -433,7 +433,7 @@ bool test_contains() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -524,7 +524,7 @@ bool test_remove_leaf() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -575,7 +575,7 @@ bool test_remove_leaf() {
 
 	bst.remove(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -623,7 +623,7 @@ bool test_remove_leaf() {
 
 	bst.remove(12);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -668,7 +668,7 @@ bool test_remove_leaf() {
 
 	bst.remove(13);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -710,7 +710,7 @@ bool test_remove_leaf() {
 
 	bst.remove(10);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -748,7 +748,7 @@ bool test_remove_leaf() {
 
 	bst.remove(8);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -784,7 +784,7 @@ bool test_remove_leaf() {
 
 	bst.remove(9);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -817,7 +817,7 @@ bool test_remove_leaf() {
 
 	bst.remove(11);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -847,7 +847,7 @@ bool test_remove_leaf() {
 
 	bst.remove(6);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -874,7 +874,7 @@ bool test_remove_leaf() {
 
 	bst.remove(4);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -897,7 +897,7 @@ bool test_remove_leaf() {
 
 	bst.remove(5);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -917,7 +917,7 @@ bool test_remove_leaf() {
 
 	bst.remove(2);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -934,7 +934,7 @@ bool test_remove_leaf() {
 
 	bst.remove(0);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -948,7 +948,7 @@ bool test_remove_leaf() {
 
 	bst.remove(1);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -960,7 +960,7 @@ bool test_remove_leaf() {
 
 	bst.remove(3);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left == nullptr);
@@ -969,7 +969,7 @@ bool test_remove_leaf() {
 
 	bst.remove(7);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root == nullptr);
 	}
 
@@ -996,7 +996,7 @@ bool test_remove_middle() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1047,7 +1047,7 @@ bool test_remove_middle() {
 
 	bst.remove(13);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1095,7 +1095,7 @@ bool test_remove_middle() {
 
 	bst.remove(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1141,7 +1141,7 @@ bool test_remove_middle() {
 	bst.remove(8);
 	bst.remove(9);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1197,7 +1197,7 @@ bool test_remove_root() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1248,7 +1248,7 @@ bool test_remove_root() {
 
 	bst.remove(7);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 8);
 		assert(root->_left != nullptr);
@@ -1312,78 +1312,120 @@ bool test_remove_invalid() {
 	BinarySearchTree<int> bst;
 	assert(bst.root() == nullptr);
 
-	bst.insert(8);
-	bst.insert(4);
-	bst.insert(12);
+	bst.insert(7);
+	bst.insert(3);
+	bst.insert(11);
+	bst.insert(1);
+	bst.insert(5);
+	bst.insert(9);
+	bst.insert(13);
+	bst.insert(0);
 	bst.insert(2);
+	bst.insert(4);
 	bst.insert(6);
+	bst.insert(8);
 	bst.insert(10);
+	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
+		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(bst.contains(10));
-		assert(bst.contains(14));
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
 	}
 
-	bst.remove(0);
+	bst.remove(15);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
+		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(bst.contains(10));
-		assert(bst.contains(14));
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
 	}
 
 	END_TEST;
@@ -1393,46 +1435,71 @@ bool test_find_min() {
 	BinarySearchTree<int> bst;
 	assert(bst.root() == nullptr);
 
-	bst.insert(8);
-	bst.insert(4);
-	bst.insert(12);
+	bst.insert(7);
+	bst.insert(3);
+	bst.insert(11);
+	bst.insert(1);
+	bst.insert(5);
+	bst.insert(9);
+	bst.insert(13);
+	bst.insert(0);
 	bst.insert(2);
+	bst.insert(4);
 	bst.insert(6);
+	bst.insert(8);
 	bst.insert(10);
+	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
+		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(bst.contains(10));
-		assert(bst.contains(14));
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
 	}
-	assert(bst.find_min() == 2);
+	assert(bst.find_min() == 0);
 
 	END_TEST;
 }
@@ -1449,44 +1516,69 @@ bool test_find_max() {
 	BinarySearchTree<int> bst;
 	assert(bst.root() == nullptr);
 
-	bst.insert(8);
-	bst.insert(4);
-	bst.insert(12);
+	bst.insert(7);
+	bst.insert(3);
+	bst.insert(11);
+	bst.insert(1);
+	bst.insert(5);
+	bst.insert(9);
+	bst.insert(13);
+	bst.insert(0);
 	bst.insert(2);
+	bst.insert(4);
 	bst.insert(6);
+	bst.insert(8);
 	bst.insert(10);
+	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
+		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(bst.contains(10));
-		assert(bst.contains(14));
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
 	}
 	assert(bst.find_max() == 14);
 
@@ -1530,7 +1622,7 @@ bool test_print() {
 	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
 		assert(root->_value == 7);
 		assert(root->_left != nullptr);
@@ -1587,85 +1679,131 @@ bool test_copy() {
 	BinarySearchTree<int> bst;
 	assert(bst.root() == nullptr);
 
-	bst.insert(8);
-	bst.insert(4);
-	bst.insert(12);
+	bst.insert(7);
+	bst.insert(3);
+	bst.insert(11);
+	bst.insert(1);
+	bst.insert(5);
+	bst.insert(9);
+	bst.insert(13);
+	bst.insert(0);
 	bst.insert(2);
+	bst.insert(4);
 	bst.insert(6);
+	bst.insert(8);
 	bst.insert(10);
+	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
+		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(bst.contains(10));
-		assert(bst.contains(14));
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
 	}
 
 	BinarySearchTree<int> a(bst);
 	{
-		const BinarySearchTree<int>::Node<int>* root = a.root(), * rooot = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
-		assert(root != rooot);
-		assert(root->_value == 8);
-		assert(root->_value == rooot->_value);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left != rooot->_left);
-		assert(root->_left->_value == 4);
-		assert(root->_left->_value == rooot->_left->_value)
-			assert(root->_left->_left != nullptr);
-		assert(root->_left->_left != rooot->_left->_left);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_value == rooot->_left->_left->_value);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(a.contains(8));
-		assert(a.contains(4));
-		assert(a.contains(12));
-		assert(a.contains(2));
-		assert(a.contains(6));
-		assert(a.contains(10));
-		assert(a.contains(14));
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
 	}
+
+	END_TEST;
+}
+
+bool test_copy_empty() {
+	BinarySearchTree<int> bst;
+	assert(bst.root() == nullptr);
+
+	BinarySearchTree<int> a(bst);
+	assert(a.root() == nullptr);
 
 	END_TEST;
 }
@@ -1674,44 +1812,69 @@ bool test_copy_oper() {
 	BinarySearchTree<int> bst;
 	assert(bst.root() == nullptr);
 
-	bst.insert(8);
-	bst.insert(4);
-	bst.insert(12);
+	bst.insert(7);
+	bst.insert(3);
+	bst.insert(11);
+	bst.insert(1);
+	bst.insert(5);
+	bst.insert(9);
+	bst.insert(13);
+	bst.insert(0);
 	bst.insert(2);
+	bst.insert(4);
 	bst.insert(6);
+	bst.insert(8);
 	bst.insert(10);
+	bst.insert(12);
 	bst.insert(14);
 	{
-		const BinarySearchTree<int>::Node<int>* root = bst.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
+		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(bst.contains(8));
-		assert(bst.contains(4));
-		assert(bst.contains(12));
-		assert(bst.contains(2));
-		assert(bst.contains(6));
-		assert(bst.contains(10));
-		assert(bst.contains(14));
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
 	}
 
 	BinarySearchTree<int> a;
@@ -1724,78 +1887,197 @@ bool test_copy_oper() {
 	a.insert(4);
 	a.insert(8);
 	a.insert(12);
+	a.insert(-1);
+	a.insert(1);
+	a.insert(3);
+	a.insert(5);
+	a.insert(7);
+	a.insert(9);
+	a.insert(11);
+	a.insert(13);
 	{
-		const BinarySearchTree<int>::Node<int>* root = a.root();
+		const BinarySearchTree<int>::Node* root = a.root();
 		assert(root != nullptr);
 		assert(root->_value == 6);
 		assert(root->_left != nullptr);
 		assert(root->_left->_value == 2);
 		assert(root->_left->_left != nullptr);
 		assert(root->_left->_left->_value == 0);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == -1);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 1);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
 		assert(root->_left->_right->_value == 4);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 3);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 5);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
 		assert(root->_right->_value == 10);
 		assert(root->_right->_left != nullptr);
 		assert(root->_right->_left->_value == 8);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 7);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 9);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
 		assert(root->_right->_right->_value == 12);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(a.contains(6));
-		assert(a.contains(2));
-		assert(a.contains(10));
-		assert(a.contains(0));
-		assert(a.contains(4));
-		assert(a.contains(8));
-		assert(a.contains(12));
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 11);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 13);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
 	}
 
 	{
-		const BinarySearchTree<int>::Node<int>* root = a.root(), * rooot = bst.root();
+		const BinarySearchTree<int>::Node* root = a.root(), * rooot = bst.root();
 		assert(root != rooot);
 		assert(root->_value != rooot->_value);
 	}
 
 	a = bst;
 	{
-		const BinarySearchTree<int>::Node<int>* root = a.root();
+		const BinarySearchTree<int>::Node* root = bst.root();
 		assert(root != nullptr);
-		assert(root->_value == 8);
+		assert(root->_value == 7);
 		assert(root->_left != nullptr);
-		assert(root->_left->_value == 4);
+		assert(root->_left->_value == 3);
 		assert(root->_left->_left != nullptr);
-		assert(root->_left->_left->_value == 2);
-		assert(root->_left->_left->_left == nullptr);
-		assert(root->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
 		assert(root->_left->_right != nullptr);
-		assert(root->_left->_right->_value == 6);
-		assert(root->_left->_right->_left == nullptr);
-		assert(root->_left->_right->_right == nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
 		assert(root->_right != nullptr);
-		assert(root->_right->_value == 12);
+		assert(root->_right->_value == 11);
 		assert(root->_right->_left != nullptr);
-		assert(root->_right->_left->_value == 10);
-		assert(root->_right->_left->_left == nullptr);
-		assert(root->_right->_left->_right == nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
 		assert(root->_right->_right != nullptr);
-		assert(root->_right->_right->_value == 14);
-		assert(root->_right->_right->_left == nullptr);
-		assert(root->_right->_right->_right == nullptr);
-		assert(a.contains(8));
-		assert(a.contains(4));
-		assert(a.contains(12));
-		assert(a.contains(2));
-		assert(a.contains(6));
-		assert(a.contains(10));
-		assert(a.contains(14));
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
 	}
+
+	END_TEST;
+}
+
+bool test_copy_oper_empty() {
+	BinarySearchTree<int> bst;
+	assert(bst.root() == nullptr);
+
+	BinarySearchTree<int> a;
+	assert(a.root() == nullptr);
+	a.insert(7);
+	a.insert(3);
+	a.insert(11);
+	a.insert(1);
+	a.insert(5);
+	a.insert(9);
+	a.insert(13);
+	a.insert(0);
+	a.insert(2);
+	a.insert(4);
+	a.insert(6);
+	a.insert(8);
+	a.insert(10);
+	a.insert(12);
+	a.insert(14);
+	{
+		const BinarySearchTree<int>::Node* root = a.root();
+		assert(root != nullptr);
+		assert(root->_value == 7);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left != nullptr);
+		assert(root->_right->_left->_left->_value == 8);
+		assert(root->_right->_left->_left->_left == nullptr);
+		assert(root->_right->_left->_left->_right == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
+	}
+
+	a = bst;
+	assert(a.root() == nullptr);
 
 	END_TEST;
 }
@@ -1820,7 +2102,9 @@ int main() {
 	test(print_empty);
 	test(print);
 	test(copy);
+	test(copy_empty);
 	test(copy_oper);
+	test(copy_oper_empty);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";

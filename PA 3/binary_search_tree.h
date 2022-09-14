@@ -22,34 +22,33 @@ public:
      *
      * @tparam T a data type that overloads the comparison operators
      */
-    template <typename T>
     struct Node {
         /**
          * @brief the value stored by this node
          */
-        T _value;
+        Comparable _value;
 
         /**
          * @brief a pointer to the left subtree
          */
-        Node<T>* _left;
+        Node* _left;
 
         /**
          * @brief a pointer to the right subtree
          */
-        Node<T>* _right;
+        Node* _right;
 
         /**
          * @brief Construct a new Node object
          */
-        Node() : _value{T()}, _left{nullptr}, _right{nullptr} {}
+        Node() : _value{Comparable()}, _left{nullptr}, _right{nullptr} {}
 
         /**
          * @brief Construct a new Node object
          *
          * @param val value stored in the node
          */
-        Node(T val) : _value{val}, _left{nullptr}, _right{nullptr} {}
+        Node(const Comparable& val) : _value{Comparable(val)}, _left{nullptr}, _right{nullptr} {}
 
         /**
          * @brief Determine if both subtree pointers are nullptr
@@ -57,7 +56,7 @@ public:
          * @return true is both _left and _right are nullptr
          * @return false otherwise
          */
-        bool is_leaf() const {
+        bool isLeaf() const {
             return !this->_left && !this->_right;
         }
     };
@@ -66,7 +65,7 @@ private:
     /**
      * @brief a pointer to the root of the tree
      */
-    Node<Comparable>* _root;
+    Node* _root;
 
     /**
      * @brief Determine if this tree contains a specified value
@@ -76,7 +75,7 @@ private:
      * @return true if the value is found
      * @return false otherwise
      */
-    bool contains(const Node<Comparable>* root, const Comparable& val) const {
+    bool contains(const Node* root, const Comparable& val) const {
         if (!root)
             return false;
         if (root->_value == val)
@@ -90,9 +89,9 @@ private:
      * @brief Prevents memory leaks by deallocating subtrees
      *
      * @param root current subtree being cleared
-     * @return Node<Comparable>* nullptr
+     * @return Node* nullptr
      */
-    Node<Comparable>* clear(Node<Comparable>* root) {
+    Node* clear(Node* root) {
         if (root) {
             root->_left = this->clear(root->_left);
             root->_right = this->clear(root->_right);
@@ -109,7 +108,7 @@ private:
      * @param os ostream to push to
      * @param trace how much to indent each line
      */
-    void print_tree(const Node<Comparable>* root, ostream& os, size_t trace) const {
+    void print_tree(const Node* root, ostream& os, size_t trace) const {
         if (!root) {
             os << "<empty>\n";
             return;
@@ -126,13 +125,13 @@ private:
      * @brief Copy a subtree into the current subtree
      *
      * @param root current subtree to copy into
-     * @return Node<Comparable>* a new subtree
+     * @return Node* a new subtree
      */
-    Node<Comparable>* copy(const Node<Comparable>* root) {
+    Node* copy(const Node* root) {
         if (!root)
             return nullptr;
 
-        Node<Comparable>* new_root = new Node<Comparable>(root->_value);
+        Node* new_root = new Node(root->_value);
         new_root->_left = this->copy(root->_left);
         new_root->_right = this->copy(root->_right);
         return new_root;
@@ -143,11 +142,11 @@ private:
      *
      * @param node current subtree being inserted into
      * @param val value to insert
-     * @return Node<Comparable>* new subtree
+     * @return Node* new subtree
      */
-    Node<Comparable>* insert(Node<Comparable>*& node, const Comparable& val) {
+    Node* insert(Node*& node, const Comparable& val) {
         if (!node)
-            return new Node<Comparable>(val);
+            return new Node(val);
         if (node->_value < val)
             node->_right = this->insert(node->_right, val);
         else
@@ -160,9 +159,9 @@ private:
      *
      * @param root current subtree being removed from
      * @param val value to remove
-     * @return Node<Comparable>* the right subtree of the node removed
+     * @return Node* the right subtree of the node removed
      */
-    Node<Comparable>* remove(Node<Comparable>* root, const Comparable& val) {
+    Node* remove(Node* root, const Comparable& val) {
         if (!root)
             return nullptr;
 
@@ -171,21 +170,21 @@ private:
         else if (val > root->_value)
             root->_right = this->remove(root->_right, val);
         else if (val == root->_value) {
-            if (root->is_leaf()) {
+            if (root->isLeaf()) {
                 delete root;
                 return nullptr;
             } else if (!root->_left) {
-                Node<Comparable>* temp = root->_right;
+                Node* temp = root->_right;
                 delete root;
                 root = nullptr;
                 return temp;
             } else if (!root->_right) {
-                Node<Comparable>* temp = root->_left;
+                Node* temp = root->_left;
                 delete root;
                 root = nullptr;
                 return temp;
             } else {
-                const Node<Comparable>* temp = this->find_min(root->_right);
+                const Node* temp = this->find_min(root->_right);
                 root->_value = temp->_value;
                 root->_right = this->remove(root->_right, temp->_value);
             }
@@ -198,10 +197,10 @@ private:
      * @brief Find the node whose value is the smallets in the subtree
      *
      * @param root subtree to search through
-     * @return const Node<Comparable>* a pointer to the smallest node
+     * @return const Node* a pointer to the smallest node
      */
-    const Node<Comparable>* find_min(const Node<Comparable>* root) const {
-        const Node<Comparable>* curr = root;
+    const Node* find_min(const Node* root) const {
+        const Node* curr = root;
         while (curr && curr->_left)
             curr = curr->_left;
 
@@ -286,7 +285,7 @@ public:
         if (!this->_root)
             throw invalid_argument("Binary Search Tree is empty");
 
-        Node<Comparable>* curr = this->_root;
+        Node* curr = this->_root;
         while (curr->_left)
             curr = curr->_left;
 
@@ -302,7 +301,7 @@ public:
         if (!this->_root)
             throw invalid_argument("Binary Search Tree is empty");
 
-        Node<Comparable>* curr = this->_root;
+        Node* curr = this->_root;
         while (curr->_right)
             curr = curr->_right;
 
@@ -322,9 +321,9 @@ public:
     /**
      * @brief Return the root of the tree
      *
-     * @return const Node<Comparable>* this->_root
+     * @return const Node* this->_root
      */
-    const Node<Comparable>* root() const {
+    const Node* root() const {
         return this->_root;
     }
 

@@ -23,12 +23,11 @@ public:
      *
      * @tparam T data type that will overload the comparison operators
      */
-    template <typename T>
     struct Node {
         /**
          * @brief Value stored in this node
          */
-        T _value;
+        Comparable _value;
 
         /**
          * @brief Largets distance to a leaf node
@@ -38,19 +37,19 @@ public:
         /**
          * @brief A pointer to the left node
          */
-        Node<T>* _left;
+        Node* _left;
 
         /**
          * @brief A pointer to the right node
          */
-        Node<T>* _right;
+        Node* _right;
 
         /**
          * @brief Construct a new Node object
          *
          * @param value value to put in this node
          */
-        Node(const T& value) : _value{T(value)}, _height{1}, _left{nullptr}, _right{nullptr} {}
+        Node(const Comparable& value) : _value{Comparable(value)}, _height{1}, _left{nullptr}, _right{nullptr} {}
 
         /**
          * @brief Determine if this node is a leaf.
@@ -66,7 +65,7 @@ public:
     /**
      * @brief typedef for a pointer to nodes
      */
-    typedef Node<Comparable>* nodeptr;
+    typedef Node* nodeptr;
 private:
     /**
      * @brief A pointer for the root of the AVL Tree.
@@ -151,7 +150,7 @@ private:
         if (!root)
             return nullptr;
 
-        nodeptr new_root = new Node<Comparable>(root->_value);
+        nodeptr new_root = new Node(root->_value);
         new_root->_left = this->copy(root->_left);
         new_root->_right = this->copy(root->_right);
         return new_root;
@@ -166,7 +165,7 @@ private:
      */
     nodeptr insert(nodeptr node, const Comparable& value) {
         if (!node)
-            return new Node<Comparable>(value);
+            return new Node(value);
         else if (value == node->_value)
             return node;
         else if (value < node->_value)
@@ -478,7 +477,7 @@ public:
 
     /**
      * @brief Determine if this AVL tree is empty
-     * 
+     *
      * @return true if this tree is empty
      * @return false otherwise
      */
