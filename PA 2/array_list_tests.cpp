@@ -283,6 +283,20 @@ bool test_copy() {
 	END_TEST;
 }
 
+bool test_copy_empty() {
+	ArrayList<int> list;
+	assert(list.size() == 0);
+	assert(list.capacity() == 1);
+	assert(list.data() == nullptr);
+
+	ArrayList<int> a(list);
+	assert(a.size() == 0);
+	assert(a.capacity() == 1);
+	assert(a.data() == nullptr);
+
+	END_TEST;
+}
+
 bool test_assignment() {
 	ArrayList<int> list;
 	assert(list.size() == 0);
@@ -315,6 +329,34 @@ bool test_assignment() {
 	END_TEST;
 }
 
+bool test_assignment_empty() {
+	ArrayList<int> list;
+	assert(list.size() == 0);
+	assert(list.capacity() == 1);
+	assert(list.data() == nullptr);
+
+	ArrayList<int> a;
+	assert(a.size() == 0);
+	assert(a.capacity() == 1);
+	assert(a.data() == nullptr);
+	a.insert(0, 3);
+	a.insert(1, 4);
+	a.insert(2, 5);
+	a.insert(3, 6);
+	assert(a.size() == 4);
+	assert(a[0] == 3);
+	assert(a[1] == 4);
+	assert(a[2] == 5);
+	assert(a[3] == 6);
+
+	a = list;
+	assert(a.size() == 0);
+	assert(a.capacity() == 1);
+	assert(a.data() == nullptr);
+
+	END_TEST;
+}
+
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
@@ -330,7 +372,9 @@ int main() {
 	test(remove_middle);
 	test(remove_invalid);
 	test(copy);
+	test(copy_empty);
 	test(assignment);
+	test(assignment_empty);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";

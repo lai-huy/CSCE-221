@@ -41,6 +41,9 @@ private:
     }
 
     void copy(const ArrayList& rhs) {
+        if (!rhs.size())
+            return;
+
         this->_size = rhs.size();
         this->_capacity = rhs.capacity();
         this->_data = new Object[this->_capacity]{};
