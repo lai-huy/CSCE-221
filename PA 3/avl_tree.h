@@ -462,14 +462,16 @@ public:
         return this->_root;
     }
 
-    // OPTIONAL
-    // AVLTree(AVLTree&& rhs) : _root{rhs.root()} { rhs.clearRoot() }
-    // AVLTree& operator=(AVLTree&& rhs) {
-    //     if (this != &rhs) {
-    //         this->_root = rhs.root();
-    //         rhs.clearRoot();
-    //     }
-    // }
+    // ----------------------- Optional ----------------------- //
+    
+    AVLTree(AVLTree&& rhs) : _root{rhs.root()} { rhs.clearRoot() }
+    
+    AVLTree& operator=(AVLTree&& rhs) {
+        if (this != &rhs) {
+            this->_root = rhs.root();
+            rhs.clearRoot();
+        }
+    }
 
     // void insert(Comparable&& value) {
 
