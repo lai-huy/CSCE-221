@@ -5,6 +5,8 @@
 using std::cout;
 using std::out_of_range;
 
+// ----------------------------- From Dr. Ritchey ----------------------------- //
+
 #define black   "\033[30m"
 #define red     "\033[31m"
 #define green   "\033[32m"
@@ -68,118 +70,126 @@ else { std::cout << red << "[FAIL] "; fail_cnt++; }\
 std::cout << #x << reset << "\n";
 #define skip(x) std::cout << yellow << "[SKIP] " << #x << reset << "\n"; skip_cnt++;
 
-#define to_be ==
-#define not_to_be !=
-#define is to_be
-#define is_not not_to_be
-
 namespace {
 	bool test_passed = true;
 }
 
+// ----------------------------- END ----------------------------- //
+
 bool test_create() {
 	ArrayList<int> list;
 
-	assert(list.size() is 0);
-	assert(list.capacity() is 1);
+	assert(list.size() == 0);
+	assert(list.capacity() == 1);
 
 	END_TEST;
 }
 
 bool test_create_size() {
 	ArrayList<int> list(10);
-	assert(list.size() is 10);
+	assert(list.size() == 10);
 
 	END_TEST;
 }
 
 bool test_insert_head() {
 	ArrayList<int> list;
-	assert(list.size() is 0);
+	assert(list.size() == 0);
 
 	list.insert(0, 2);
 	list.insert(0, 1);
 	list.insert(0, 0);
-	assert(list.size() is 3);
-	assert(list[0] is 0);
-	assert(list[1] is 1);
-	assert(list[2] is 2);
+	assert(list.size() == 3);
+	assert(list[0] == 0);
+	assert(list[1] == 1);
+	assert(list[2] == 2);
 
 	END_TEST;
 }
 
 bool test_insert_tail() {
 	ArrayList<int> list;
-	assert(list.size() is 0);
+	assert(list.size() == 0);
 
 	list.insert(0, 0);
 	list.insert(1, 1);
 	list.insert(2, 2);
-	assert(list.size() is 3);
-	assert(list[0] is 0);
-	assert(list[1] is 1);
-	assert(list[2] is 2);
+	assert(list.size() == 3);
+	assert(list[0] == 0);
+	assert(list[1] == 1);
+	assert(list[2] == 2);
 
 	END_TEST;
 }
 
 bool test_insert_middle() {
 	ArrayList<int> list;
-	assert(list.size() is 0);
+	assert(list.size() == 0);
 
 	list.insert(0, 0);
 	list.insert(1, 2);
 	list.insert(1, 1);
-	assert(list.size() is 3);
-	assert(list[0] is 0);
-	assert(list[1] is 1);
-	assert(list[2] is 2);
+	assert(list.size() == 3);
+	assert(list[0] == 0);
+	assert(list[1] == 1);
+	assert(list[2] == 2);
 
 	END_TEST;
 }
 
 bool test_insert_invalid() {
 	ArrayList<int> list;
-	assert(list.size() is 0);
+	assert(list.size() == 0);
 
 	list.insert(0, 0);
 	list.insert(1, 1);
 	list.insert(2, 2);
-	assert(list.size() is 3);
-	assert(list[0] is 0);
-	assert(list[1] is 1);
-	assert(list[2] is 2);
+	assert(list.size() == 3);
+	assert(list[0] == 0);
+	assert(list[1] == 1);
+	assert(list[2] == 2);
 
 	expect_throw(list.insert(5, 5), out_of_range);
 
 	END_TEST;
 }
 
+bool test_at_invalid() {
+	ArrayList<int> list;
+	assert(list.size() == 0);
+	assert(list.capacity() == 1);
+	assert(list.data() == nullptr);
+
+	expect_throw(list[10] = 0, out_of_range);
+
+	END_TEST;
+}
+
 bool test_remove_head() {
 	ArrayList<int> list;
-	assert(list.size() is 0);
+	assert(list.size() == 0);
 
 	list.insert(0, 0);
 	list.insert(1, 1);
 	list.insert(2, 2);
-	assert(list.size() is 3);
-	assert(list[0] is 0);
-	assert(list[1] is 1);
-	assert(list[2] is 2);
+	assert(list.size() == 3);
+	assert(list[0] == 0);
+	assert(list[1] == 1);
+	assert(list[2] == 2);
 
 	list.remove(0);
-	assert(list.size() is 2);
-	assert(list[0] is 1);
-	assert(list[1] is 2);
+	assert(list.size() == 2);
+	assert(list[0] == 1);
+	assert(list[1] == 2);
 	expect_throw(list[2], out_of_range);
 
 	list.remove(0);
-	assert(list.size() is 1);
-	assert(list[0] is 2);
+	assert(list.size() == 1);
+	assert(list[0] == 2);
 	expect_throw(list[1], out_of_range);
 
 	list.remove(0);
-	assert(list.size() is 0);
+	assert(list.size() == 0);
 	expect_throw(list[0], out_of_range);
 
 	END_TEST;
@@ -187,29 +197,29 @@ bool test_remove_head() {
 
 bool test_remove_tail() {
 	ArrayList<int> list;
-	assert(list.size() is 0);
+	assert(list.size() == 0);
 
 	list.insert(0, 0);
 	list.insert(1, 1);
 	list.insert(2, 2);
-	assert(list.size() is 3);
-	assert(list[0] is 0);
-	assert(list[1] is 1);
-	assert(list[2] is 2);
+	assert(list.size() == 3);
+	assert(list[0] == 0);
+	assert(list[1] == 1);
+	assert(list[2] == 2);
 
 	list.remove(2);
-	assert(list.size() is 2);
-	assert(list[0] is 0);
-	assert(list[1] is 1);
+	assert(list.size() == 2);
+	assert(list[0] == 0);
+	assert(list[1] == 1);
 	expect_throw(list[2], out_of_range);
 
 	list.remove(1);
-	assert(list.size() is 1);
-	assert(list[0] is 0);
+	assert(list.size() == 1);
+	assert(list[0] == 0);
 	expect_throw(list[1], out_of_range);
 
 	list.remove(0);
-	assert(list.size() is 0);
+	assert(list.size() == 0);
 	expect_throw(list[0], out_of_range);
 
 	END_TEST;
@@ -217,90 +227,90 @@ bool test_remove_tail() {
 
 bool test_remove_middle() {
 	ArrayList<int> list;
-	assert(list.size() is 0);
+	assert(list.size() == 0);
 
 	list.insert(0, 0);
 	list.insert(1, 1);
 	list.insert(2, 2);
-	assert(list.size() is 3);
-	assert(list[0] is 0);
-	assert(list[1] is 1);
-	assert(list[2] is 2);
+	assert(list.size() == 3);
+	assert(list[0] == 0);
+	assert(list[1] == 1);
+	assert(list[2] == 2);
 
 	list.remove(1);
-	assert(list.size() is 2);
-	assert(list[0] is 0);
-	assert(list[1] is 2);
+	assert(list.size() == 2);
+	assert(list[0] == 0);
+	assert(list[1] == 2);
 
 	END_TEST;
 }
 
 bool test_remove_invalid() {
 	ArrayList<int> list;
-	assert(list.size() is 0);
+	assert(list.size() == 0);
 
 	list.insert(0, 0);
 	list.insert(1, 1);
 	list.insert(2, 2);
-	assert(list.size() is 3);
-	assert(list[0] is 0);
-	assert(list[1] is 1);
-	assert(list[2] is 2);
+	assert(list.size() == 3);
+	assert(list[0] == 0);
+	assert(list[1] == 1);
+	assert(list[2] == 2);
 
 	expect_throw(list.remove(5), out_of_range);
 
 	END_TEST;
 }
 
-bool test_create_copy_const() {
+bool test_copy() {
 	ArrayList<int> list;
-	assert(list.size() is 0);
+	assert(list.size() == 0);
 
 	list.insert(0, 0);
 	list.insert(1, 1);
 	list.insert(2, 2);
-	assert(list.size() is 3);
-	assert(list[0] is 0);
-	assert(list[1] is 1);
-	assert(list[2] is 2);
+	assert(list.size() == 3);
+	assert(list[0] == 0);
+	assert(list[1] == 1);
+	assert(list[2] == 2);
 
 	ArrayList<int> a(list);
-	assert(a.size() is list.size());
-	assert(a[0] is list[0]);
-	assert(a[1] is list[1]);
-	assert(a[2] is list[2]);
+	assert(a.size() == list.size());
+	assert(a[0] == list[0]);
+	assert(a[1] == list[1]);
+	assert(a[2] == list[2]);
 
 	END_TEST;
 }
 
-bool test_create_copy_oper() {
+bool test_assignment() {
 	ArrayList<int> list;
-	assert(list.size() is 0);
+	assert(list.size() == 0);
 
 	list.insert(0, 0);
 	list.insert(1, 1);
 	list.insert(2, 2);
-	assert(list.size() is 3);
-	assert(list[0] is 0);
-	assert(list[1] is 1);
-	assert(list[2] is 2);
+	assert(list.size() == 3);
+	assert(list[0] == 0);
+	assert(list[1] == 1);
+	assert(list[2] == 2);
 
 	ArrayList<int> a;
 	a.insert(0, 3);
 	a.insert(1, 4);
 	a.insert(2, 5);
 	a.insert(3, 6);
-	assert(a.size() is 4);
-	assert(a[0] is 3);
-	assert(a[1] is 4);
-	assert(a[2] is 5);
-	assert(a[3] is 6);
+	assert(a.size() == 4);
+	assert(a[0] == 3);
+	assert(a[1] == 4);
+	assert(a[2] == 5);
+	assert(a[3] == 6);
 
 	a = list;
-	assert(a.size() is list.size());
-	assert(a[0] is list[0]);
-	assert(a[1] is list[1]);
-	assert(a[2] is list[2]);
+	assert(a.size() == list.size());
+	assert(a[0] == list[0]);
+	assert(a[1] == list[1]);
+	assert(a[2] == list[2]);
 
 	END_TEST;
 }
@@ -314,12 +324,13 @@ int main() {
 	test(insert_tail);
 	test(insert_middle);
 	test(insert_invalid);
+	test(at_invalid);
 	test(remove_head);
 	test(remove_tail);
 	test(remove_middle);
 	test(remove_invalid);
-	test(create_copy_const);
-	test(create_copy_oper);
+	test(copy);
+	test(assignment);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";

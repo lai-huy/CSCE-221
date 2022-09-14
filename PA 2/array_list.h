@@ -26,12 +26,30 @@ private:
      */
     size_t _capacity;
 
-public:
     /**
      * @brief Internal pointer to underlying data
      */
     Object* _data;
 
+    void clear() {
+        if (this->_data)
+            delete[] this->_data;
+
+        this->_size = 0;
+        this->_capacity = 1;
+        this->_data = nullptr;
+    }
+
+    void copy(const ArrayList& rhs) {
+        this->_size = rhs.size();
+        this->_capacity = rhs.capacity();
+        this->_data = new Object[this->_capacity]{};
+
+        for (size_t i = 0; i < this->_capacity; ++i)
+            this->_data[i] = i < this->_size ? rhs[i] : Object();
+    }
+
+public:
     /**
      * @brief Construct a new Array List object
      */
@@ -55,21 +73,14 @@ public:
      * @param rhs ArrayList to copy from
      */
     ArrayList(const ArrayList& rhs) : _size{rhs._size}, _capacity{rhs._capacity}, _data{nullptr} {
-        this->_data = new Object[this->_capacity]{};
-        for (size_t i = 0; i < this->_capacity; ++i)
-            this->_data[i] = i < this->_size ? rhs._data[i] : Object();
+        this->copy(rhs);
     }
 
     /**
      * @brief Destroy the Array List object
      */
     ~ArrayList() {
-        if (this->_data)
-            delete[] this->_data;
-
-        this->_size = 0;
-        this->_capacity = 1;
-        this->_data = nullptr;
+        this->clear();
     }
 
     /**
@@ -80,15 +91,8 @@ public:
      */
     ArrayList& operator=(const ArrayList& rhs) {
         if (this != &rhs) {
-            if (this->_data)
-                delete[] this->_data;
-
-            this->_size = rhs.size();
-            this->_capacity = rhs.capacity();
-            this->_data = new Object[this->_capacity]{};
-
-            for (size_t i = 0; i < this->_capacity; ++i)
-                this->_data[i] = i < this->_size ? rhs._data[i] : Object();
+            this->clear();
+            this->copy(rhs);
         }
 
         return *this;
@@ -110,6 +114,15 @@ public:
      */
     size_t capacity() const {
         return this->_capacity;
+    }
+
+    /**
+     * @brief Return the internal pointer
+     *
+     * @return Object* this->_data;
+     */
+    Object* data() const {
+        return this->_data;
     }
 
     /**
@@ -243,6 +256,8 @@ public:
         ++this->_size;
         this->_data[index] = obj;
     }
+
+    // -----------------------Optional----------------------- //
 
     /**
      * @brief returns a constant reference to the element at the specified index

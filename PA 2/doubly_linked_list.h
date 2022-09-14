@@ -47,6 +47,7 @@ private:
      */
     Node* _tail;
 
+public:
     /**
      * @brief clear the list
      */
@@ -73,25 +74,28 @@ private:
      */
     void copy(const DoublyLinkedList& rhs) {
         const Node* head = rhs.head();
+        if (!head)
+            return;
+
         this->_head = new Node(head->_value);
 
         Node* curr = this->_head;
         Node* next = head->_next;
-        Node* temp = nullptr;
+        Node* prev = this->_head;
 
         while (next) {
             curr->_next = new Node(next->_value);
-            temp = curr;
+            prev = curr;
             curr = curr->_next;
-            curr->_prev = temp;
+            curr->_prev = prev;
             next = next->_next;
         }
 
         this->_size = rhs.size();
         this->_tail = curr;
-        this->_tail->_prev = temp;
+        this->_tail->_prev = prev;
     }
-public:
+
     /**
      * @brief Construct a new Doubly Linked List object
      */

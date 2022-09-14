@@ -265,7 +265,7 @@ bool test_oper_sq() {
 	END_TEST;
 }
 
-bool test_create_copy() {
+bool test_copy() {
 	DoublyLinkedList<int> list;
 	assert(list.size() is 0);
 	assert(list.head() is nullptr);
@@ -283,6 +283,17 @@ bool test_create_copy() {
 	assert(a.size() is list.size());
 	assert(a.head() is_not list.head());
 	assert(a.head()->_value is list.head()->_value);
+
+	END_TEST;
+}
+
+bool test_copy_empty() {
+	DoublyLinkedList<int> list;
+	assert(list.head() == nullptr);
+	assert(list.tail() == nullptr);
+	assert(list.size() == 0);
+
+	DoublyLinkedList<int> a(list);
 
 	END_TEST;
 }
@@ -317,6 +328,32 @@ bool test_copy_oper() {
 	END_TEST;
 }
 
+bool test_copy_oper_empty() {
+	DoublyLinkedList<int> list;
+	assert(list.size() == 0);
+	assert(list.head() == nullptr);
+	assert(list.tail() == nullptr);
+
+	DoublyLinkedList<int> a;
+	assert(a.size() == 0);
+	assert(a.head() == nullptr);
+	assert(a.tail() == nullptr);
+
+	a.insert(0, 0);
+	a.insert(1, 1);
+	a.insert(2, 2);
+	a.insert(3, 3);
+	a.insert(4, 4);
+	a.insert(5, 5);
+	assert(a.size() == 6);
+	assert(a.head() != nullptr);
+	assert(a.tail() != nullptr);
+
+	a = list;
+
+	END_TEST;
+}
+
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
@@ -330,8 +367,10 @@ int main() {
 	test(remove_middle);
 	test(remove_invalid);
 	test(oper_sq);
-	test(create_copy);
+	test(copy);
+	test(copy_empty);
 	test(copy_oper);
+	test(copy_oper_empty);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";
