@@ -260,7 +260,7 @@ public:
         this->_data[index] = obj;
     }
 
-    // -----------------------Optional----------------------- //
+    // ----------------------- Optional ----------------------- //
 
     /**
      * @brief returns a constant reference to the element at the specified index

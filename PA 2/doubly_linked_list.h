@@ -166,8 +166,6 @@ public:
      * @param obj
      */
     void insert(size_t index, const Object& obj) {
-        // cout << "list.insert(" << std::to_string(index) << ", " << std::to_string(obj) << ");\n";
-
         if (index > this->_size)
             throw out_of_range("Index out of bounds");
 
@@ -204,8 +202,6 @@ public:
      * @param index index to remove
      */
     void remove(size_t index) {
-        // cout << "list.remove(" << std::to_string(index) << ");\n";
-
         if (index >= this->_size)
             throw out_of_range("Index out of bounds");
 
@@ -247,13 +243,19 @@ public:
         return this->_tail;
     }
 
+    // ----------------------- Optional ----------------------- //
+
     class iterator {
-        const Node* _node;
+        Node* _node;
     public:
         iterator() : _node{DoublyLinkedList::_head} {}
         iterator(const Node* node) : _node{node} {}
 
-        iterator& operator=(const Node* node) {
+        Node* data() const {
+            return this->_node;
+        }
+
+        iterator& operator=(const Node*& node) {
             this->_node = node;
             return *this;
         }
@@ -266,7 +268,7 @@ public:
 
         iterator operator++(int) {
             iterator it = *this;
-            ++* this;
+            ++(*this);
             return it;
         }
 
@@ -278,16 +280,32 @@ public:
 
         iterator operator--(int) {
             iterator it = *this;
-            --* this;
+            --(*this);
             return it;
         }
 
         bool operator!=(const iterator& rhs) {
-            return this->_node != rhs._node;
+            return this->_node != rhs.data();
         }
 
         bool operator==(const iterator& rhs) {
-            return this->_node == rhs._node;
+            return this->_node == rhs.data();
+        }
+
+        bool operator<(const iterator& rhs) {
+            return this->_node < rhs.data();
+        }
+
+        bool operator<=(const iterator& rhs) {
+            return this->_node < rhs.data();
+        }
+
+        bool operator>(const iterator& rhs) {
+            return this->_node > rhs.data();
+        }
+
+        bool operator>=(const iterator& rhs) {
+            return this->_node >= rhs.data();
         }
 
         Object operator*() {
@@ -295,35 +313,36 @@ public:
         }
     };
 
-    //OPTIONAL
-    // DoublyLinkedList(DoublyLinkedList&& rhs) : _size{rhs._size}, _head{rhs._head}, _tail{rhs._tail} {
-    //     rhs._size = 0;
-    //     rhs._head = nullptr;
-    //     rhs._tail = nullptr;
-    // }
+    DoublyLinkedList(DoublyLinkedList&& rhs) : _size{rhs._size}, _head{rhs._head}, _tail{rhs._tail} {
+        rhs._size = 0;
+        rhs._head = nullptr;
+        rhs._tail = nullptr;
+    }
 
-    // DoublyLinkedList& operator=(DoublyLinkedList&& rhs) {
-    //     if (this != &rhs) {
-    //         this->clear();
-    //         this->copy(rhs);
-    //     }
+    DoublyLinkedList& operator=(DoublyLinkedList&& rhs) {
+        if (this != &rhs) {
+            this->clear();
+            std::swap(this->_size, rhs._size);
+            std::swap(this->_head, rhs._head);
+            std::swap(this->_tail, rhs._tail);
+        }
 
-    //     return *this;
-    // }
+        return *this;
+    }
 
-    // iterator begin() {
-    //     return iterator(this->_head);
-    // }
+    iterator begin() {
+        return iterator(this->_head);
+    }
 
-    // const iterator begin() const {
-    //     return iterator(this->_head);
-    // }
+    const iterator begin() const {
+        return iterator(this->_head);
+    }
 
-    // iterator end() {
-    //     return iterator(this->_tail);
-    // }
+    iterator end() {
+        return iterator(this->_tail);
+    }
 
-    // const iterator end() const {
-    //     return iterator(this->_tail);
-    // }
+    const iterator end() const {
+        return iterator(this->_tail);
+    }
 };
