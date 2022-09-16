@@ -12,11 +12,11 @@ private:
     DoublyLinkedList<Object> _data;
 public:
     Queue() : _data{DoublyLinkedList<Object>()} {}
-    
+
     Queue(const Queue& rhs) : _data{DoublyLinkedList<Object>(rhs._data)} {}
 
     ~Queue() {
-        this->_data.~DoublyLinkedList();
+        this->_data.clear();
     }
 
     Queue& operator=(const Queue& rhs) {
@@ -52,11 +52,22 @@ public:
         }
     }
 
-    //OPTIONAL
+    // ----------------------- Optional ----------------------- //
     // Queue(Queue&&)
     // Queue& operator=(Queue&&)
-    // void enqueue(Object&&)
-    // const Object& front() const
+
+    void enqueue(Object&& obj) {
+        this->_data.insert(obj);
+    }
+
+    const Object& front() const {
+        try {
+            return this->_data[0];
+        } catch (const out_of_range& err) {
+            throw out_of_range("Queue is empty");
+        }
+    }
+
     size_t size() const {
         return this->_data.size();
     }

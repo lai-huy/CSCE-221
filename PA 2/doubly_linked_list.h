@@ -330,6 +330,12 @@ public:
         return *this;
     }
 
+    void insert(Object&& obj) {
+        Object o = Object();
+        std::swap(o, obj);
+        this->insert(this->_size, obj);
+    }
+
     iterator begin() {
         return iterator(this->_head);
     }

@@ -1526,6 +1526,7 @@ bool test_remove_middle() {
         assert(root->right->left->right == nullptr);
         assert(root->right->right != nullptr);
     }
+
     END_TEST;
 }
 
@@ -2637,29 +2638,29 @@ bool test_self_assignment() {
 int main() {
     unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
-    // test(create);
-    // test(insert);
-    // test(insert_duplicate);
-    // test(insert_dup_many);
-    // test(insert_right);
-    // test(insert_left);
-    // test(insert_rl);
-    // test(insert_lr);
-    // test(contains);
+    test(create);
+    test(insert);
+    test(insert_duplicate);
+    test(insert_dup_many);
+    test(insert_right);
+    test(insert_left);
+    test(insert_rl);
+    test(insert_lr);
+    test(contains);
     test(remove_leaf);
-    // test(remove_middle);
-    // test(remove_root);
-    // test(remove_empty);
-    // test(remove_invalid);
-    // test(find_min);
-    // test(find_min_empty);
-    // test(find_max);
-    // test(find_max_empty);
-    // test(copy);
-    // test(copy_empty);
-    // test(copy_oper);
-    // test(copy_oper_empty);
-    // test(self_assignment);
+    test(remove_middle);
+    test(remove_root);
+    test(remove_empty);
+    test(remove_invalid);
+    test(find_min);
+    test(find_min_empty);
+    test(find_max);
+    test(find_max_empty);
+    test(copy);
+    test(copy_empty);
+    test(copy_oper);
+    test(copy_oper_empty);
+    test(self_assignment);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";

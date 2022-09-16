@@ -258,7 +258,7 @@ private:
     }
 
     void remove(Node*& node) {
-        Node* replace = this->find_min(node->right);
+        Node* replace = this->replace(node);
 
         // True when replace and node are both black
         bool doubleBlack = node->isBlack() && (!replace || replace->isBlack());
@@ -363,11 +363,22 @@ private:
         return node;
     }
 
+    Node* replace(Node*& root) {
+        switch (root->countChildren()) {
+        case 1:
+            return root->right ? root->right : root->left;
+        case 2:
+            return this->find_min(root->right);
+        default:
+            return nullptr;
+        }
+    }
+
     Node* find_min(Node*& root) {
-        Node* temp = root;
-        while (temp && temp->left)
-            temp = temp->left;
-        return temp;
+        Node* node = root;
+        while (node && node->left)
+            node = node->left;
+        return node;
     }
 
     void print_tree(const Node* root, ostream& os, size_t trace) const {

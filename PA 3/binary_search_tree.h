@@ -327,7 +327,8 @@ public:
         return this->_root;
     }
 
-    // Optional
+    // ----------------------- Optional ----------------------- //
+
     // BinarySearchTree(BinarySearchTree&& rhs) : _root{rhs.root()} {
     //     rhs._root = nullptr; 
     // }

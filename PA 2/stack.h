@@ -49,7 +49,8 @@ public:
       }
    }
 
-   //OPTIONAL
+   // ----------------------- Optional ----------------------- //
+
    //Stack(Stack&& rhs);
    //Stack& operator=(Stack&& rhs);
    //void push(Object&& obj);
