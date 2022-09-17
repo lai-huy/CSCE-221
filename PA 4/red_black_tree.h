@@ -43,13 +43,11 @@ public:
             return os;
         }
 
-        bool isLeft() const { return this == parent->left; }
+        bool isLeft() const { return this->parent ? this == this->parent->left : false; }
 
-        bool hasRedChild() {
-            return (this->left && this->left->color == Color::RED) || (this->right && this->right->color == Color::RED);
-        }
+        bool isRight() const { return this->parent ? this == this->parent->right : false; }
 
-        bool isLeaf() const { return !this->left && !this->right; }
+        bool hasRedChild() { return (this->left && this->left->color == Color::RED) || (this->right && this->right->color == Color::RED); }
 
         bool isBlack() const { return this->color == Color::BLACK; }
 
@@ -308,59 +306,82 @@ private:
     }
     */
 
-    void rotateTriangle(Node*& child, Node*& parent) {
-        Node* root = parent->parent;
-        if (parent->isLeft()) {
-            root->left = child;
-            child->left = parent;
-            parent->parent = child;
-        } else {
-            root->right = child;
-            child->right = parent;
-            parent->parent = child;
-        }
+    void rotateLeft(Node*& node) {
+        Node* y = node->right;
+        node->right = y->left;
+        if (y->left)
+            y->left->parent = node;
+
+        y->parent = node->parent;
+        if (!node->parent)
+            this->root = y;
+        else if (node->isLeft())
+            node->parent->left = y;
+        else
+            node->parent->right = y;
+
+        y->left = node;
+        node->parent = y;
     }
 
-    void rotateLine(Node*& child, Node*& parent) {
-        cout << child << "\n";
-        cout << parent << "\n";
+    void rotateRight(Node*& node) {
+        Node* y = node->left;
+        node->left = y->right;
+        if (y->right)
+            y->right->parent = node;
+
+        y->parent = node->parent;
+        if (!node->parent)
+            this->root = y;
+        else if (node->isRight())
+            node->parent->right = y;
+        else
+            node->parent->left = y;
+
+        y->right = node;
+        node->parent = y;
     }
 
-    void fixViolation(Node*& root) {
-        if (!root)
-            return;
-
-        if (root == this->root)
-            this->root->color = Color::BLACK;
-        else {
-            Node* uncle = root->uncle();
-            if (uncle)
-                switch (uncle->color) {
-                case Color::RED:
-                    root->color = Color::RED;
-                    root->parent->color = Color::BLACK;
+    void fixInsert(Node*& node) {
+        Node* uncle = node->uncle();
+        while (node->parent && node->parent->color == Color::RED) {
+            if (node->parent->isRight()) {
+                if (uncle->color == Color::RED) {
                     uncle->color = Color::BLACK;
-                    root->parent->parent->color = Color::RED;
-                    break;
-                default:
-                {
-                    if (root->isLeft() ^ root->parent->isLeft())
-                        this->rotateTriangle(root, root->parent);
-                    else
-                        cout << root->isLeft() << ", " << root->parent->isLeft() << "\n";
-                    break;
+                    node->parent->color = Color::BLACK;
+                    node->parent->parent->color = Color::RED;
+                    node = node->parent->parent;
+                } else {
+                    if (node->isLeft()) {
+                        node = node->parent;
+                        this->rotateRight(node);
+                    }
+                    node->parent->color = Color::BLACK;
+                    node->parent->parent->color = Color::RED;
+                    this->rotateLeft(node->parent->parent);
                 }
+            } else {
+                if (uncle->color == Color::RED) {
+                    uncle->color = Color::BLACK;
+                    node->parent->color = Color::BLACK;
+                    node->parent->parent->color = Color::RED;
+                    node = node->parent->parent;
+                } else {
+                    if (node == node->parent->right) {
+                        node = node->parent;
+                        this->rotateLeft(node);
+                    }
+                    node->parent->color = Color::BLACK;
+                    node->parent->parent->color = Color::RED;
+                    this->rotateRight(node->parent->parent);
                 }
+            }
 
-            this->fixViolation(root->left);
-            this->fixViolation(root->right);
+            if (node == this->root)
+                break;
         }
-    }
 
-    void recolor() {
-        this->fixViolation(this->root->left);
-        this->fixViolation(this->root->right);
-        this->fixViolation(this->root);
+        this->root->color = Color::BLACK;
     }
 
     Node* search(Node* root, const Comparable& value) const {
@@ -371,13 +392,13 @@ private:
         return root->value < value ? this->search(root->right, value) : this->search(root->left, value);
     }
 
-    Node* insert(Node*& root, const Comparable& value) {
+    Node* insert(Node*& root, Node*& value) {
         if (!root)
-            return new Node(value);
-        if (value < root->value) {
+            return value;
+        if (value->value < root->value) {
             root->left = this->insert(root->left, value);
             root->left->parent = root;
-        } else if (value > root->value) {
+        } else if (value->value > root->value) {
             root->right = this->insert(root->right, value);
             root->right->parent = root;
         }
@@ -457,8 +478,9 @@ public:
         if (this->contains(value))
             return;
 
-        this->root = this->insert(this->root, value);
-        this->recolor();
+        Node* z = new Node(value);
+        this->root = this->insert(this->root, z);
+        this->fixInsert(z);
     }
 
     void remove(const Comparable& value) {

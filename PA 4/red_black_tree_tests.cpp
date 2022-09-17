@@ -92,8 +92,6 @@ bool test_insert() {
     rbt.insert(11);
     rbt.insert(1);
     rbt.insert(5);
-    rbt.print_tree();
-    /**
     rbt.insert(9);
     rbt.insert(13);
     rbt.insert(0);
@@ -104,7 +102,6 @@ bool test_insert() {
     rbt.insert(10);
     rbt.insert(12);
     rbt.insert(14);
-    rbt.print_tree();
     {
         const RedBlackTree<int>::Node* root = rbt.get_root();
         assert(root != nullptr);
@@ -169,7 +166,6 @@ bool test_insert() {
         assert(root->right->right->right->left == nullptr);
         assert(root->right->right->right->right == nullptr);
     }
-    */
 
     END_TEST;
 }
@@ -2784,10 +2780,10 @@ int main() {
     unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
     // test(create);
-    test(insert);
+    // test(insert);
     // test(insert_duplicate);
     // test(insert_dup_many);
-    // test(insert_right);
+    test(insert_right);
     // test(insert_left);
     // test(insert_rl);
     // test(insert_lr);
