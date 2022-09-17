@@ -2697,16 +2697,111 @@ bool test_self_assignment() {
     END_TEST;
 }
 
-bool test_sibling() {
-    RedBlackTree<int> rbt;
-    assert(rbt.get_root() == nullptr);
-
-    rbt.insert(0);
-    assert(rbt.get_root()->sibling() == nullptr);
+bool test_node() {
+    RedBlackTree<int>::Node node = RedBlackTree<int>::Node(0, static_cast<RedBlackTree<int>::Color>(4));
+    assert(node.sibling() == nullptr);
+    cout << node << "\n";
 
     END_TEST;
 }
 
+bool test_print() {
+    RedBlackTree<int> rbt;
+    assert(rbt.get_root() == nullptr);
+
+    rbt.insert(7);
+    rbt.insert(3);
+    rbt.insert(11);
+    rbt.insert(1);
+    rbt.insert(5);
+    rbt.insert(9);
+    rbt.insert(13);
+    rbt.insert(0);
+    rbt.insert(2);
+    rbt.insert(4);
+    rbt.insert(6);
+    rbt.insert(8);
+    rbt.insert(10);
+    rbt.insert(12);
+    rbt.insert(14);
+    {
+        const RedBlackTree<int>::Node* root = rbt.get_root();
+        assert(root != nullptr);
+        assert(root->value == 7);
+        assert(root->color == RedBlackTree<int>::Color::BLACK);
+        assert(root->left != nullptr);
+        assert(root->left->value == 3);
+        assert(root->left->color == RedBlackTree<int>::Color::RED);
+        assert(root->left->left != nullptr);
+        assert(root->left->left->value == 1);
+        assert(root->left->left->color == RedBlackTree<int>::Color::BLACK);
+        assert(root->left->left->left != nullptr);
+        assert(root->left->left->left->value == 0);
+        assert(root->left->left->left->color == RedBlackTree<int>::Color::RED);
+        assert(root->left->left->left->left == nullptr);
+        assert(root->left->left->left->right == nullptr);
+        assert(root->left->left->right != nullptr);
+        assert(root->left->left->right->value == 2);
+        assert(root->left->left->right->color == RedBlackTree<int>::Color::RED);
+        assert(root->left->left->right->left == nullptr);
+        assert(root->left->left->right->right == nullptr);
+        assert(root->left->right != nullptr);
+        assert(root->left->right->value == 5);
+        assert(root->left->right->color == RedBlackTree<int>::Color::BLACK);
+        assert(root->left->right->left != nullptr);
+        assert(root->left->right->left->value == 4);
+        assert(root->left->right->left->color == RedBlackTree<int>::Color::RED);
+        assert(root->left->right->left->left == nullptr);
+        assert(root->left->right->left->right == nullptr);
+        assert(root->left->right->right != nullptr);
+        assert(root->left->right->right->value == 6);
+        assert(root->left->right->right->color == RedBlackTree<int>::Color::RED);
+        assert(root->left->right->right->left == nullptr);
+        assert(root->left->right->right->right == nullptr);
+        assert(root->right != nullptr);
+        assert(root->right->value == 11);
+        assert(root->right->color == RedBlackTree<int>::Color::RED);
+        assert(root->right->left != nullptr);
+        assert(root->right->left->value == 9);
+        assert(root->right->left->color == RedBlackTree<int>::Color::BLACK);
+        assert(root->right->left->left != nullptr);
+        assert(root->right->left->left->value == 8);
+        assert(root->right->left->left->color == RedBlackTree<int>::Color::RED);
+        assert(root->right->left->left->left == nullptr);
+        assert(root->right->left->left->right == nullptr);
+        assert(root->right->left->right != nullptr);
+        assert(root->right->left->right->value == 10);
+        assert(root->right->left->right->color == RedBlackTree<int>::Color::RED);
+        assert(root->right->left->right->left == nullptr);
+        assert(root->right->left->right->right == nullptr);
+        assert(root->right->right != nullptr);
+        assert(root->right->right->value == 13);
+        assert(root->right->right->color == RedBlackTree<int>::Color::BLACK);
+        assert(root->right->right->left != nullptr);
+        assert(root->right->right->left->value == 12);
+        assert(root->right->right->left->color == RedBlackTree<int>::Color::RED);
+        assert(root->right->right->left->left == nullptr);
+        assert(root->right->right->left->right == nullptr);
+        assert(root->right->right->right != nullptr);
+        assert(root->right->right->right->value == 14);
+        assert(root->right->right->right->color == RedBlackTree<int>::Color::RED);
+        assert(root->right->right->right->left == nullptr);
+        assert(root->right->right->right->right == nullptr);
+    }
+
+    rbt.print_tree();
+
+    END_TEST;
+}
+
+bool test_print_empty() {
+    RedBlackTree<int> rbt;
+    rbt.print_tree();
+
+    END_TEST;
+}
+
+/**
 bool test_bruh() {
     RedBlackTree<int> rbt;
     rbt.insert(5);
@@ -2774,37 +2869,39 @@ bool test_bruh() {
     assert(!rbt.contains(26));
 
     END_TEST;
-}
+}*/
 
 int main() {
     unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
-    // test(create);
-    // test(insert);
-    // test(insert_duplicate);
-    // test(insert_dup_many);
+    test(create);
+    test(insert);
+    test(insert_duplicate);
+    test(insert_dup_many);
     test(insert_right);
-    // test(insert_left);
-    // test(insert_rl);
-    // test(insert_lr);
-    // test(contains);
-    // test(remove_leaf);
-    // test(remove_middle);
-    // test(remove_root);
-    // test(remove_root_l);
-    // test(remove_root_r);
-    // test(remove_empty);
-    // test(remove_invalid);
-    // test(find_min);
-    // test(find_min_empty);
-    // test(find_max);
-    // test(find_max_empty);
-    // test(copy);
-    // test(copy_empty);
-    // test(copy_oper);
-    // test(copy_oper_empty);
-    // test(self_assignment);
-    // test(sibling);
+    test(insert_left);
+    test(insert_rl);
+    test(insert_lr);
+    test(contains);
+    test(remove_leaf);
+    test(remove_middle);
+    test(remove_root);
+    test(remove_root_l);
+    test(remove_root_r);
+    test(remove_empty);
+    test(remove_invalid);
+    test(find_min);
+    test(find_min_empty);
+    test(find_max);
+    test(find_max_empty);
+    test(copy);
+    test(copy_empty);
+    test(copy_oper);
+    test(copy_oper_empty);
+    test(self_assignment);
+    test(node);
+    test(print);
+    test(print_empty);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";

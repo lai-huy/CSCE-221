@@ -76,7 +76,6 @@ public:
 private:
     Node* root;
 
-    /*
     void rotateLeft(Node*& root, Node*& parent) {
         Node* right = parent->right;
         parent->right = right->left;
@@ -113,13 +112,13 @@ private:
         parent->parent = left;
     }
 
-    void rebalance(Node*& root, Node*& parent) {
+    void fixInsert(Node*& root, Node*& node) {
         Node* parent_pt = nullptr;
         Node* grand_parent_pt = nullptr;
 
-        while ((parent != root) && (parent->color != Color::BLACK) && (parent->parent->color == Color::RED)) {
-            parent_pt = parent->parent;
-            grand_parent_pt = parent->parent->parent;
+        while ((node != this->root) && (node->color != Color::BLACK) && (node->parent->color == Color::RED)) {
+            parent_pt = node->parent;
+            grand_parent_pt = node->parent->parent;
             Node* uncle;
 
             // Case : A Parent of pt is left child of Grand-parent of pt
@@ -131,19 +130,19 @@ private:
                     grand_parent_pt->color = Color::RED;
                     parent_pt->color = Color::BLACK;
                     uncle->color = Color::BLACK;
-                    parent = grand_parent_pt;
+                    node = grand_parent_pt;
                 } else {
                     // Case : 2 pt is right child of its parent Left-rotation required
-                    if (parent == parent_pt->right) {
+                    if (node == parent_pt->right) {
                         this->rotateLeft(root, parent_pt);
-                        parent = parent_pt;
-                        parent_pt = parent->parent;
+                        node = parent_pt;
+                        parent_pt = node->parent;
                     }
 
                     // Case : 3 pt is left child of its parent Right-rotation required
                     this->rotateRight(root, grand_parent_pt);
                     std::swap(parent_pt->color, grand_parent_pt->color);
-                    parent = parent_pt;
+                    node = parent_pt;
                 }
             }
 
@@ -156,24 +155,24 @@ private:
                     grand_parent_pt->color = Color::RED;
                     parent_pt->color = Color::BLACK;
                     uncle->color = Color::BLACK;
-                    parent = grand_parent_pt;
+                    node = grand_parent_pt;
                 } else {
                     // Case : 2 pt is left child of its parent Right-rotation required
-                    if (parent == parent_pt->left) {
+                    if (node == parent_pt->left) {
                         this->rotateRight(root, parent_pt);
-                        parent = parent_pt;
-                        parent_pt = parent->parent;
+                        node = parent_pt;
+                        parent_pt = node->parent;
                     }
 
                     // Case : 3 pt is right child of its parent Left-rotation required
                     this->rotateLeft(root, grand_parent_pt);
                     std::swap(parent_pt->color, grand_parent_pt->color);
-                    parent = parent_pt;
+                    node = parent_pt;
                 }
             }
         }
 
-        root->color = Color::BLACK;
+        this->root->color = Color::BLACK;
     }
 
     void fixDoubleBlack(Node*& node) {
@@ -202,7 +201,7 @@ private:
             {
                 if (sibling->hasRedChild()) {
                     // at least 1 red children
-                    if (sibling->left != NULL && sibling->left->color == Color::RED) {
+                    if (sibling->left && sibling->left->color == Color::RED) {
                         if (sibling->isLeft()) {
                             // left left
                             sibling->left->color = sibling->color;
@@ -304,8 +303,8 @@ private:
         }
         }
     }
-    */
 
+    /*
     void rotateLeft(Node*& node) {
         Node* y = node->right;
         node->right = y->left;
@@ -383,6 +382,7 @@ private:
 
         this->root->color = Color::BLACK;
     }
+    */
 
     Node* search(Node* root, const Comparable& value) const {
         if (!root)
@@ -480,7 +480,7 @@ public:
 
         Node* z = new Node(value);
         this->root = this->insert(this->root, z);
-        this->fixInsert(z);
+        this->fixInsert(this->root, z);
     }
 
     void remove(const Comparable& value) {
@@ -491,7 +491,7 @@ public:
         if (!node)
             return;
 
-        // this->remove(node);
+        this->remove(node);
     }
 
     bool contains(const Comparable& value) const {
