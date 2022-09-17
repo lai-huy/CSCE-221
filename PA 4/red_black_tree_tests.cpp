@@ -92,6 +92,8 @@ bool test_insert() {
     rbt.insert(11);
     rbt.insert(1);
     rbt.insert(5);
+    rbt.print_tree();
+    /**
     rbt.insert(9);
     rbt.insert(13);
     rbt.insert(0);
@@ -102,6 +104,7 @@ bool test_insert() {
     rbt.insert(10);
     rbt.insert(12);
     rbt.insert(14);
+    rbt.print_tree();
     {
         const RedBlackTree<int>::Node* root = rbt.get_root();
         assert(root != nullptr);
@@ -166,6 +169,7 @@ bool test_insert() {
         assert(root->right->right->right->left == nullptr);
         assert(root->right->right->right->right == nullptr);
     }
+    */
 
     END_TEST;
 }
@@ -1624,6 +1628,68 @@ bool test_remove_root() {
     END_TEST;
 }
 
+bool test_remove_root_l() {
+    RedBlackTree<int> rbt;
+
+    rbt.insert(1);
+    rbt.insert(0);
+    {
+        const RedBlackTree<int>::Node* root = rbt.get_root();
+        assert(root != nullptr);
+        assert(root->value == 1);
+        assert(root->color == RedBlackTree<int>::BLACK);
+        assert(root->left != nullptr);
+        assert(root->left->value == 0);
+        assert(root->left->color == RedBlackTree<int>::RED);
+        assert(root->left->left == nullptr);
+        assert(root->left->right == nullptr);
+        assert(root->right == nullptr);
+    }
+
+    rbt.remove(1);
+    {
+        const RedBlackTree<int>::Node* root = rbt.get_root();
+        assert(root != nullptr);
+        assert(root->value == 0);
+        assert(root->color == RedBlackTree<int>::BLACK);
+        assert(root->left == nullptr);
+        assert(root->right == nullptr);
+    }
+
+    END_TEST;
+}
+
+bool test_remove_root_r() {
+    RedBlackTree<int> rbt;
+
+    rbt.insert(0);
+    rbt.insert(1);
+    {
+        const RedBlackTree<int>::Node* root = rbt.get_root();
+        assert(root != nullptr);
+        assert(root->value == 0);
+        assert(root->color == RedBlackTree<int>::BLACK);
+        assert(root->left == nullptr);
+        assert(root->right != nullptr);
+        assert(root->right->value == 1);
+        assert(root->right->color == RedBlackTree<int>::RED);
+        assert(root->right->left == nullptr);
+        assert(root->right->right == nullptr);
+    }
+
+    rbt.remove(0);
+    {
+        const RedBlackTree<int>::Node* root = rbt.get_root();
+        assert(root != nullptr);
+        assert(root->value == 1);
+        assert(root->color == RedBlackTree<int>::BLACK);
+        assert(root->left == nullptr);
+        assert(root->right == nullptr);
+    }
+
+    END_TEST;
+}
+
 bool test_remove_empty() {
     RedBlackTree<int> rbt;
 
@@ -2635,32 +2701,114 @@ bool test_self_assignment() {
     END_TEST;
 }
 
+bool test_sibling() {
+    RedBlackTree<int> rbt;
+    assert(rbt.get_root() == nullptr);
+
+    rbt.insert(0);
+    assert(rbt.get_root()->sibling() == nullptr);
+
+    END_TEST;
+}
+
+bool test_bruh() {
+    RedBlackTree<int> rbt;
+    rbt.insert(5);
+    rbt.insert(26);
+    rbt.insert(27);
+    rbt.insert(24);
+    rbt.insert(15);
+    rbt.insert(28);
+    rbt.insert(17);
+    rbt.insert(11);
+    rbt.insert(21);
+    rbt.insert(10);
+    rbt.insert(4);
+    rbt.insert(30);
+    rbt.insert(2);
+    rbt.insert(18);
+    rbt.insert(1);
+    rbt.insert(25);
+    rbt.insert(23);
+    rbt.insert(6);
+    rbt.insert(7);
+    rbt.insert(8);
+    rbt.insert(22);
+    rbt.insert(3);
+    rbt.insert(20);
+    rbt.insert(13);
+    rbt.insert(12);
+    rbt.insert(19);
+    rbt.insert(29);
+    rbt.insert(14);
+    rbt.insert(16);
+    rbt.insert(9);
+
+    rbt.print_tree();
+    cout << "\n\n";
+
+    rbt.remove(21);
+    assert(!rbt.contains(21));
+    rbt.print_tree();
+    cout << "\n\n";
+
+    rbt.remove(22);
+    assert(!rbt.contains(22));
+    rbt.print_tree();
+    cout << "\n\n";
+
+    rbt.remove(23);
+    assert(!rbt.contains(23));
+    rbt.print_tree();
+    cout << "\n\n";
+
+    rbt.remove(24);
+    assert(!rbt.contains(24));
+    rbt.print_tree();
+    cout << "\n\n";
+
+    rbt.remove(25);
+    assert(!rbt.contains(25));
+    rbt.print_tree();
+    cout << "\n\n";
+
+    rbt.remove(26);
+    rbt.print_tree();
+    cout << "\n\n";
+    assert(!rbt.contains(26));
+
+    END_TEST;
+}
+
 int main() {
     unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
-    test(create);
+    // test(create);
     test(insert);
-    test(insert_duplicate);
-    test(insert_dup_many);
-    test(insert_right);
-    test(insert_left);
-    test(insert_rl);
-    test(insert_lr);
-    test(contains);
-    test(remove_leaf);
-    test(remove_middle);
-    test(remove_root);
-    test(remove_empty);
-    test(remove_invalid);
-    test(find_min);
-    test(find_min_empty);
-    test(find_max);
-    test(find_max_empty);
-    test(copy);
-    test(copy_empty);
-    test(copy_oper);
-    test(copy_oper_empty);
-    test(self_assignment);
+    // test(insert_duplicate);
+    // test(insert_dup_many);
+    // test(insert_right);
+    // test(insert_left);
+    // test(insert_rl);
+    // test(insert_lr);
+    // test(contains);
+    // test(remove_leaf);
+    // test(remove_middle);
+    // test(remove_root);
+    // test(remove_root_l);
+    // test(remove_root_r);
+    // test(remove_empty);
+    // test(remove_invalid);
+    // test(find_min);
+    // test(find_min_empty);
+    // test(find_max);
+    // test(find_max_empty);
+    // test(copy);
+    // test(copy_empty);
+    // test(copy_oper);
+    // test(copy_oper_empty);
+    // test(self_assignment);
+    // test(sibling);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";

@@ -46,7 +46,7 @@ public:
         bool isLeft() const { return this == parent->left; }
 
         bool hasRedChild() {
-            return (this->left && left->color == Color::RED) || (this->right && right->color == Color::RED);
+            return (this->left && this->left->color == Color::RED) || (this->right && this->right->color == Color::RED);
         }
 
         bool isLeaf() const { return !this->left && !this->right; }
@@ -57,6 +57,12 @@ public:
             if (!this->parent)
                 return nullptr;
             return this->isLeft() ? this->parent->right : this->parent->left;
+        }
+
+        Node* uncle() const {
+            if (!this->parent)
+                return nullptr;
+            return this->parent->sibling();
         }
 
         size_t countChildren() {
@@ -72,6 +78,7 @@ public:
 private:
     Node* root;
 
+    /*
     void rotateLeft(Node*& root, Node*& parent) {
         Node* right = parent->right;
         parent->right = right->left;
@@ -115,70 +122,54 @@ private:
         while ((parent != root) && (parent->color != Color::BLACK) && (parent->parent->color == Color::RED)) {
             parent_pt = parent->parent;
             grand_parent_pt = parent->parent->parent;
-            Node* uncle_pt;
+            Node* uncle;
 
-            /*  Case : A
-                Parent of pt is left child
-                of Grand-parent of pt */
+            // Case : A Parent of pt is left child of Grand-parent of pt
             if (parent_pt == grand_parent_pt->left) {
-                uncle_pt = grand_parent_pt->right;
+                uncle = grand_parent_pt->right;
 
-                /* Case : 1
-                   The uncle of pt is also red
-                   Only Recoloring required */
-                if (uncle_pt && uncle_pt->color == Color::RED) {
+                // Case : 1 The uncle of pt is also red Only Recoloring required
+                if (uncle && uncle->color == Color::RED) {
                     grand_parent_pt->color = Color::RED;
                     parent_pt->color = Color::BLACK;
-                    uncle_pt->color = Color::BLACK;
+                    uncle->color = Color::BLACK;
                     parent = grand_parent_pt;
                 } else {
-                    /* Case : 2
-                       pt is right child of its parent
-                       Left-rotation required */
+                    // Case : 2 pt is right child of its parent Left-rotation required
                     if (parent == parent_pt->right) {
                         this->rotateLeft(root, parent_pt);
                         parent = parent_pt;
                         parent_pt = parent->parent;
                     }
 
-                    /* Case : 3
-                       pt is left child of its parent
-                       Right-rotation required */
+                    // Case : 3 pt is left child of its parent Right-rotation required
                     this->rotateRight(root, grand_parent_pt);
                     std::swap(parent_pt->color, grand_parent_pt->color);
                     parent = parent_pt;
                 }
             }
 
-            /* Case : B
-               Parent of pt is right child
-               of Grand-parent of pt */
+            // Case : B Parent of pt is right child of Grand-parent of pt
             else {
-                uncle_pt = grand_parent_pt->left;
+                uncle = grand_parent_pt->left;
 
-                /*  Case : 1
-                    The uncle of pt is also red
-                    Only Recoloring required */
-                if (uncle_pt && (uncle_pt->color == Color::RED)) {
-                    grand_parent_pt->color = RED;
-                    parent_pt->color = BLACK;
-                    uncle_pt->color = BLACK;
+                //  Case : 1 The uncle of pt is also red Only Recoloring required
+                if (uncle && uncle->color == Color::RED) {
+                    grand_parent_pt->color = Color::RED;
+                    parent_pt->color = Color::BLACK;
+                    uncle->color = Color::BLACK;
                     parent = grand_parent_pt;
                 } else {
-                    /* Case : 2
-                       pt is left child of its parent
-                       Right-rotation required */
+                    // Case : 2 pt is left child of its parent Right-rotation required
                     if (parent == parent_pt->left) {
-                        rotateRight(root, parent_pt);
+                        this->rotateRight(root, parent_pt);
                         parent = parent_pt;
                         parent_pt = parent->parent;
                     }
 
-                    /* Case : 3
-                       pt is right child of its parent
-                       Left-rotation required */
-                    rotateLeft(root, grand_parent_pt);
-                    swap(parent_pt->color, grand_parent_pt->color);
+                    // Case : 3 pt is right child of its parent Left-rotation required
+                    this->rotateLeft(root, grand_parent_pt);
+                    std::swap(parent_pt->color, grand_parent_pt->color);
                     parent = parent_pt;
                 }
             }
@@ -213,7 +204,7 @@ private:
             {
                 if (sibling->hasRedChild()) {
                     // at least 1 red children
-                    if (sibling->left != NULL and sibling->left->color == RED) {
+                    if (sibling->left != NULL && sibling->left->color == Color::RED) {
                         if (sibling->isLeft()) {
                             // left left
                             sibling->left->color = sibling->color;
@@ -248,10 +239,6 @@ private:
                         parent->color = Color::BLACK;
                 }
                 break;
-            }
-            default:
-            {
-                throw std::runtime_error("Illegal Node Color:\t" + sibling->color);
             }
             }
         }
@@ -319,6 +306,62 @@ private:
         }
         }
     }
+    */
+
+    void rotateTriangle(Node*& child, Node*& parent) {
+        Node* root = parent->parent;
+        if (parent->isLeft()) {
+            root->left = child;
+            child->left = parent;
+            parent->parent = child;
+        } else {
+            root->right = child;
+            child->right = parent;
+            parent->parent = child;
+        }
+    }
+
+    void rotateLine(Node*& child, Node*& parent) {
+        cout << child << "\n";
+        cout << parent << "\n";
+    }
+
+    void fixViolation(Node*& root) {
+        if (!root)
+            return;
+
+        if (root == this->root)
+            this->root->color = Color::BLACK;
+        else {
+            Node* uncle = root->uncle();
+            if (uncle)
+                switch (uncle->color) {
+                case Color::RED:
+                    root->color = Color::RED;
+                    root->parent->color = Color::BLACK;
+                    uncle->color = Color::BLACK;
+                    root->parent->parent->color = Color::RED;
+                    break;
+                default:
+                {
+                    if (root->isLeft() ^ root->parent->isLeft())
+                        this->rotateTriangle(root, root->parent);
+                    else
+                        cout << root->isLeft() << ", " << root->parent->isLeft() << "\n";
+                    break;
+                }
+                }
+
+            this->fixViolation(root->left);
+            this->fixViolation(root->right);
+        }
+    }
+
+    void recolor() {
+        this->fixViolation(this->root->left);
+        this->fixViolation(this->root->right);
+        this->fixViolation(this->root);
+    }
 
     Node* search(Node* root, const Comparable& value) const {
         if (!root)
@@ -328,14 +371,14 @@ private:
         return root->value < value ? this->search(root->right, value) : this->search(root->left, value);
     }
 
-    Node* insert(Node*& root, Node*& parent) {
+    Node* insert(Node*& root, const Comparable& value) {
         if (!root)
-            return parent;
-        if (parent->value < root->value) {
-            root->left = this->insert(root->left, parent);
+            return new Node(value);
+        if (value < root->value) {
+            root->left = this->insert(root->left, value);
             root->left->parent = root;
-        } else if (parent->value > root->value) {
-            root->right = this->insert(root->right, parent);
+        } else if (value > root->value) {
+            root->right = this->insert(root->right, value);
             root->right->parent = root;
         }
 
@@ -363,7 +406,7 @@ private:
         return node;
     }
 
-    Node* replace(Node*& root) {
+    Node* replace(Node*& root) const {
         switch (root->countChildren()) {
         case 1:
             return root->right ? root->right : root->left;
@@ -374,7 +417,7 @@ private:
         }
     }
 
-    Node* find_min(Node*& root) {
+    Node* find_min(Node*& root) const {
         Node* node = root;
         while (node && node->left)
             node = node->left;
@@ -414,9 +457,8 @@ public:
         if (this->contains(value))
             return;
 
-        Node* new_node = new Node(value);
-        this->root = this->insert(this->root, new_node);
-        this->rebalance(this->root, new_node);
+        this->root = this->insert(this->root, value);
+        this->recolor();
     }
 
     void remove(const Comparable& value) {
@@ -427,7 +469,7 @@ public:
         if (!node)
             return;
 
-        this->remove(node);
+        // this->remove(node);
     }
 
     bool contains(const Comparable& value) const {
