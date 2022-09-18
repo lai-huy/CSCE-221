@@ -53,11 +53,18 @@ public:
     }
 
     // ----------------------- Optional ----------------------- //
-    // Queue(Queue&&)
-    // Queue& operator=(Queue&&)
+    Queue(Queue&& rhs) : _data{DoublyLinkedList(rhs._data)} {}
+    Queue& operator=(Queue&& rhs) {
+        if (this != &rhs) {
+            this->_data.clear();
+            this->_data = rhs._data;
+        }
 
-    void enqueue(Object&& obj) {
-        this->_data.insert(obj);
+        return *this;
+    }
+
+    void enqueue(Object&& value) {
+        this->_data.insert(this->_data.size(), value);
     }
 
     const Object& front() const {

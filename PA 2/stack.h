@@ -29,8 +29,8 @@ public:
       return *this;
    }
 
-   void push(const Object& obj) {
-      this->_data.insert(0, obj);
+   void push(const Object& value) {
+      this->_data.insert(0, value);
    }
 
    void pop() {
@@ -51,10 +51,25 @@ public:
 
    // ----------------------- Optional ----------------------- //
 
-   //Stack(Stack&& rhs);
-   //Stack& operator=(Stack&& rhs);
-   //void push(Object&& obj);
-   //const Object& top() const;
+   Stack(Stack&& rhs) : _data{DoublyLinkedList<Object>(rhs._data)} {}
+   Stack& operator=(Stack&& rhs) {
+      if (this != &rhs) {
+         this->_data.clear();
+         this->_data = DoublyLinkedList<Object>(rhs._data);
+      }
+   }
+
+   void push(Object&& value) {
+      this->_data.insert(0, value);
+   }
+
+   const Object& top() const {
+      try {
+         return this->_data[0];
+      } catch (const out_of_range& err) {
+         throw out_of_range("Stack is empty");
+      }
+   }
 
    size_t size() const {
       return this->_data.size();

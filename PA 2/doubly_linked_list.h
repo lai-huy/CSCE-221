@@ -249,9 +249,13 @@ public:
         Node* _node;
     public:
         iterator() : _node{DoublyLinkedList::_head} {}
-        iterator(const Node* node) : _node{node} {}
+        iterator(Node* node) : _node{node} {}
 
-        Node* data() const {
+        Node& operator*() {
+            return *(this->_node);
+        }
+
+        Node* operator->() {
             return this->_node;
         }
 
@@ -284,32 +288,28 @@ public:
             return it;
         }
 
-        bool operator!=(const iterator& rhs) {
-            return this->_node != rhs.data();
+        friend bool operator==(const iterator& lhs, const iterator& rhs) {
+            return lhs._node == rhs._node;
         }
 
-        bool operator==(const iterator& rhs) {
-            return this->_node == rhs.data();
+        friend bool operator!=(const iterator& lhs, const iterator& rhs) {
+            return lhs._node != rhs._node;
         }
 
-        bool operator<(const iterator& rhs) {
-            return this->_node < rhs.data();
+        friend bool operator<(const iterator& lhs, const iterator& rhs) {
+            return lhs._node < rhs._node;
         }
 
-        bool operator<=(const iterator& rhs) {
-            return this->_node < rhs.data();
+        friend bool operator<=(const iterator& lhs, const iterator& rhs) {
+            return lhs._node <= rhs._node;
         }
 
-        bool operator>(const iterator& rhs) {
-            return this->_node > rhs.data();
+        friend bool operator>(const iterator& lhs, const iterator& rhs) {
+            return lhs._node > rhs._node;
         }
 
-        bool operator>=(const iterator& rhs) {
-            return this->_node >= rhs.data();
-        }
-
-        Object operator*() {
-            return this->_node->_value;
+        friend bool operator>=(const iterator& lhs, const iterator& rhs) {
+            return lhs._node >= rhs._node;
         }
     };
 
@@ -330,10 +330,10 @@ public:
         return *this;
     }
 
-    void insert(Object&& obj) {
-        Object o = Object();
-        std::swap(o, obj);
-        this->insert(this->_size, obj);
+    void insert(size_t index, Object&& value) {
+        Object o;
+        std::swap(o, value);
+        this->insert(index, o);
     }
 
     iterator begin() {
