@@ -65,26 +65,26 @@ std::cout << #x << reset << "\n";
 #define skip(x) std::cout << yellow << "[SKIP] " << #x << reset << "\n"; skip_cnt++;
 
 namespace {
-    bool test_passed = true;
+	bool test_passed = true;
 }
 
 bool test_create() {
-    Set<int> set;
-    assert(set.size() == 0);
+	Set<int> set;
+	assert(set.size() == 0);
 
-    END_TEST;
+	END_TEST;
 }
 
 int main() {
-    unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
+	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
-    test(create);
+	test(create);
 
-    cout << "\n";
-    cout << magenta << "summary:" << reset << "\n";
-    cout << green << pass_cnt << " tests passing." << reset << "\n";
-    cout << red << fail_cnt << " tests failing." << reset << "\n";
-    cout << yellow << skip_cnt << " tests skipped." << reset << "\n";
+	cout << "\n";
+	cout << magenta << "summary:" << reset << "\n";
+	cout << green << pass_cnt << " tests passing." << reset << "\n";
+	cout << red << fail_cnt << " tests failing." << reset << "\n";
+	cout << yellow << skip_cnt << " tests skipped." << reset << "\n";
 
-    return 0;
+	return 0;
 }

@@ -463,9 +463,9 @@ public:
     }
 
     // ----------------------- Optional ----------------------- //
-    
+
     AVLTree(AVLTree&& rhs) : _root{rhs.root()} { rhs.clearRoot() }
-    
+
     AVLTree& operator=(AVLTree&& rhs) {
         if (this != &rhs) {
             this->_root = rhs.root();

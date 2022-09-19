@@ -9,13 +9,13 @@
 
 using std::pair;
 using std::cout, std::ostream;
+using std::runtime_error, std::out_of_range;
 
 // forward declarations
 template <class T> class Set;
 template <class T> class Set_const_iterator;
 template <class T> class Set_iterator;
 
-// TODO(student): implement this
 template <class Comparable>
 class Set_Node {
     friend class Set<Comparable>;
@@ -60,7 +60,66 @@ class Set_Node {
     }
 };
 
-// TODO(student): implement this
+template <class Comparable>
+class Stack {
+    friend class Set<Comparable>;
+public:
+    struct Node {
+        Comparable _value;
+        Node* _next;
+        Node* _prev;
+
+        Node() : _value{Comparable()}, _next{nullptr}, _prev{nullptr} {}
+        Node(const Node& rhs) : _value{rhs._value}, _next{nullptr}, _prev{nullptr} {}
+        Node(const Comparable& value) : _value{Comparable(value)}, _next{nullptr}, _prev{nullptr} {}
+    };
+
+private:
+    Stack<Comparable>::Node* _head;
+    Stack<Comparable>::Node* _tail;
+
+    void clear() {
+        if (this->_head) {
+            Node* node = this->_head;
+            while (node->_next) {
+                node = node->_next;
+                delete node->_prev;
+            }
+
+            delete this->_tail;
+        }
+
+        this->_size = 0;
+        this->_head = nullptr;
+        this->_tail = nullptr;
+    }
+
+public:
+    Stack() : _head{nullptr}, _tail{nullptr} {}
+    ~Stack() { this->clear(); }
+
+    void push(const Comparable& value) {
+        Stack<Comparable>::Node* head = this->_head;
+        this->_head = new Stack<Comparable>::Node(value);
+        this->_head->_next = head;
+        if (head)
+            head->_prev = this->_head;
+    }
+
+    void pop() {
+        if (!this->_head)
+            throw out_of_range("Stack underflow");
+        this->_head = this->_head->_next;
+        delete this->_head->_prev;
+    }
+
+    const Comparable& top() const {
+        if (!this->_head)
+            throw out_of_range("Stack is empty");
+        return this->_head->_value;
+    }
+};
+
 template <class Comparable>
 class Set_const_iterator {
     friend class Set<Comparable>;
@@ -142,28 +201,31 @@ public:
     }
 };
 
-// TODO(student): implement this
 template <class Comparable>
 class Set_iterator : public Set_const_iterator<Comparable> {
     friend class Set<Comparable>;
     typedef Set_Node<Comparable> Node;
     typedef Set_const_iterator<Comparable> const_iterator;
 
-    Node* _root;
-
+    Stack<Set_Node<Comparable>*> _stack;
 public:
-    Set_iterator(const Node*& node) : _root{node} {}
+    Set_iterator() : _stack{Stack<Set_Node<Comparable>*>()} {}
+    Set_iterator(Set_Node<Comparable>* node) : _stack{Stack<Set_Node<Comparable>*>()} { this->_stack.push(node); }
 
     Node& operator*() const {
-        return *(this->_root);
+        return *(this->_stack.top());
     }
 
     Node* operator->() {
-        return this->_root;
+        return this->_stack.top();
     }
 
     Set_iterator& operator++() {
-        this->_root = this->_root->_right;
+        Node* node = this->_stack.top();
+        if (node->_right)
+            this->_stack.push(node->_right);
+        else
+            this->_stack.pop();
         return *this;
     }
 
@@ -174,7 +236,11 @@ public:
     }
 
     Set_iterator& operator--() {
-        this->_root = this->_root->_left;
+        Node* node = this->_stack.top();
+        if (node->_left)
+            this->_stack.push(node->_left);
+        else
+            this->_stack.pop();
         return *this;
     }
 
@@ -185,11 +251,11 @@ public:
     }
 
     friend bool operator==(const Set_iterator& lhs, const Set_iterator& rhs) {
-        return (*lhs)._value == (*rhs)._value;
+        return lhs->_stack == rhs->_stack;
     }
 
     friend bool operator!=(const Set_iterator& lhs, const Set_iterator& rhs) {
-        return (*lhs)._value != (*rhs)._value;
+        return (*lhs) == (*rhs);
     }
 
     friend bool operator<(const Set_iterator& lhs, const Set_iterator& rhs) {
@@ -215,7 +281,6 @@ public:
     }
 };
 
-// TODO(student): implement this
 template <class Comparable>
 class Set {
     typedef Set_Node<Comparable> Node;
@@ -242,6 +307,28 @@ class Set {
         new_root->_left = this->copy(root->_left);
         new_root->_right = this->copy(root->_right);
         return new_root;
+    }
+
+    Node* search(const Node*& root, const Comparable& value) {
+        if (!root)
+            return nullptr;
+        if (root->_value == value)
+            return root;
+        return this->search(root->_value < value ? root->_right : root->_left, value);
+    }
+
+    Node* insert(Node* node, const Comparable& value) {
+        if (!node)
+            return new Node(value);
+        else if (value == node->_value)
+            return node;
+        else if (value < node->_value)
+            node->_left = this->insert(node->_left, value);
+        else if (value > node->_value)
+            node->_right = this->insert(node->_right, value);
+
+        node = this->balance(node);
+        return node;
     }
 
 public:
@@ -306,14 +393,30 @@ public:
         this->_root = this->clear(this->_root);
     }
 
-    pair<iterator, bool> insert(const Comparable& value);
-    iterator insert(const_iterator iter, const Comparable& value);
+    pair<iterator, bool> insert(const Comparable& value) {
+        return std::make_pair(iterator(this->insert(value)), this->contains(value));
+    }
+
+    iterator insert(const_iterator iter, const Comparable& value) {
+
+    }
+
     size_t remove(const Comparable& value);
     iterator remove(const_iterator iter);
 
-    bool contains(const Comparable& value) const;
-    iterator find(const Comparable& key);
-    const_iterator find(const Comparable& key) const;
+    bool contains(const Comparable& value) const {
+        return this->search(this->_root, value);
+    }
+
+    iterator find(const Comparable& key) {
+        Node* node = this->search(this->_root, key);
+        return node ? iterator(node) : this->end();
+    }
+
+    const_iterator find(const Comparable& key) const {
+        Node* node = this->search(this->_root, key);
+        return node ? const_iterator(node) : this->end();
+    }
 
     void print_set(ostream os = cout) {
         os << "{ ";
