@@ -295,16 +295,16 @@ public:
     /**
      * @brief returns a pointer to the end of the list
      *
-     * @return Object* a pointer to the beginning of the list
+     * @return Object* a pointer to the end of the list
      */
     Object* end() {
         return this->_size ? &this->_data[this->_size - 1] : nullptr;
     }
 
     /**
-     * @brief returns a pointer to the beginning of the list
+     * @brief returns a pointer to the end of the list
      *
-     * @return const Object* a pointer to the beginning of the list
+     * @return const Object* a pointer to the end of the list
      */
     const Object* end() const {
         return this->_size ? &this->_data[this->_size - 1] : nullptr;
