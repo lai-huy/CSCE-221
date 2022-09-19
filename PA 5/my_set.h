@@ -7,9 +7,10 @@
 #include <utility>
 #include <tuple>
 
-using std::pair;
+using std::pair, std::swap;
 using std::cout, std::ostream;
 using std::runtime_error, std::out_of_range;
+using std::string;
 
 // forward declarations
 template <class T> class Set;
@@ -42,6 +43,7 @@ class Set_Node {
      */
     Set_Node* _right;
 
+public:
     /**
      * @brief Construct a new Node object
      *
@@ -58,25 +60,41 @@ class Set_Node {
     bool is_leaf() const {
         return !this->_left && !this->_right;
     }
+
+    const Comparable& value() const {
+        return this->_value;
+    }
 };
 
-template <class Comparable>
+template <class Object>
 class Stack {
-    friend class Set<Comparable>;
 public:
     struct Node {
-        Comparable _value;
+        Object _value;
         Node* _next;
         Node* _prev;
 
-        Node() : _value{Comparable()}, _next{nullptr}, _prev{nullptr} {}
+        Node() : _value{Object()}, _next{nullptr}, _prev{nullptr} {}
         Node(const Node& rhs) : _value{rhs._value}, _next{nullptr}, _prev{nullptr} {}
-        Node(const Comparable& value) : _value{Comparable(value)}, _next{nullptr}, _prev{nullptr} {}
+        Node(const Object& value) : _value{Object(value)}, _next{nullptr}, _prev{nullptr} {}
     };
 
 private:
-    Stack<Comparable>::Node* _head;
-    Stack<Comparable>::Node* _tail;
+    Stack<Object>::Node* _head;
+    size_t _size;
+
+public:
+    Stack() : _head{nullptr}, _size{size_t()} {}
+    ~Stack() { this->clear(); }
+    Stack(const Stack& rhs) : _head{nullptr}, _size{size_t()} { this->copy(rhs); }
+    Stack& operator=(const Stack& rhs) {
+        if (this != &rhs) {
+            this->clear();
+            this->copy(rhs);
+        }
+
+        return *this;
+    }
 
     void clear() {
         if (this->_head) {
@@ -86,37 +104,56 @@ private:
                 delete node->_prev;
             }
 
-            delete this->_tail;
+            delete node;
         }
 
-        this->_size = 0;
         this->_head = nullptr;
-        this->_tail = nullptr;
+        this->_size = 0;
     }
 
-public:
-    Stack() : _head{nullptr}, _tail{nullptr} {}
-    ~Stack() { this->clear(); }
+    void copy(const Stack& rhs) {
+        const Node* head = rhs._head;
+        if (!head)
+            return;
 
-    void push(const Comparable& value) {
-        Stack<Comparable>::Node* head = this->_head;
-        this->_head = new Stack<Comparable>::Node(value);
+        this->_head = new Node(head->_value);
+
+        Node* curr = this->_head;
+        Node* next = head->_next;
+        Node* prev = this->_head;
+
+        while (next) {
+            curr->_next = new Node(next->_value);
+            prev = curr;
+            curr = curr->_next;
+            curr->_prev = prev;
+            next = next->_next;
+        }
+
+        this->_size = rhs._size;
+    }
+
+    void push(Object value) {
+        ++this->_size;
+        Stack<Object>::Node* head = this->_head;
+        this->_head = new Stack<Object>::Node(value);
         this->_head->_next = head;
         if (head)
             head->_prev = this->_head;
     }
 
     void pop() {
-        if (!this->_head)
-            throw out_of_range("Stack underflow");
+        --this->_size;
         this->_head = this->_head->_next;
         delete this->_head->_prev;
     }
 
-    const Comparable& top() const {
-        if (!this->_head)
-            throw out_of_range("Stack is empty");
+    const Object& top() const {
         return this->_head->_value;
+    }
+
+    size_t size() const {
+        return this->_size;
     }
 };
 
@@ -125,31 +162,45 @@ class Set_const_iterator {
     friend class Set<Comparable>;
     typedef Set_Node<Comparable> Node;
 
-    Node* _root;
-
+protected:
+    Stack<Node*> _stack;
 public:
-    Set_const_iterator() : _root{nullptr} {}
-    // Set_const_iterator(const Set_const_iterator& rhs) : _root{*rhs} {}
-    // ~Set_const_iterator() { if (this->_root) delete this->_root }
-    // Set_const_iterator& operator==(const Set_const_iterator& rhs) {
-    //     if (this->_root)
-    //         delete this->_root;
+    Set_const_iterator() : _stack{Stack<Node*>()} {}
+    Set_const_iterator(const Set_const_iterator& rhs) : _stack{rhs._stack} {}
+    Set_const_iterator(Node* node) : _stack{Stack<Node*>()} {
+        Node* curr = node;
+        while (curr) {
+            this->_stack.push(curr);
+            curr = curr->_left;
+        }
+    }
+    virtual ~Set_const_iterator() { this->_stack.clear(); }
 
-    //     this->_root = *rhs;
-    // }
+    Set_const_iterator& operator=(const Set_const_iterator& rhs) {
+        if (this != &rhs) {
+            this->_stack.clear();
+            this->_stack.copy(rhs._stack);
+        }
 
-    Set_const_iterator(const Node*& node) : _root{node} {}
+        return *this;
+    }
 
     const Node& operator*() const {
-        return *(this->_root);
+        return *(this->_stack.top());
     }
 
     const Node* operator->() {
-        return this->_root;
+        return this->_stack.top();
     }
 
     Set_const_iterator& operator++() {
-        this->_root = this->_root->_right;
+        Node* node = this->_stack.top();
+        if (node->_right)
+            this->_stack.push(node->_right);
+        else if (this->_stack.size() == 1)
+            throw runtime_error("Cannot increment the end iterator");
+        else
+            this->_stack.pop();
         return *this;
     }
 
@@ -160,7 +211,13 @@ public:
     }
 
     Set_const_iterator& operator--() {
-        this->_root = this->_root->_left;
+        Node* node = this->_stack.top();
+        if (node->_left)
+            this->_stack.push(node->_left);
+        else if (this->_stack.size() == 1)
+            throw runtime_error("Cannot decrement the begin iterator");
+        else
+            this->_stack.pop();
         return *this;
     }
 
@@ -170,34 +227,38 @@ public:
         return iter;
     }
 
+    void push(Set_Node<Comparable>*& node) {
+        this->_stack.push(node);
+    }
+
     friend bool operator==(const Set_const_iterator& lhs, const Set_const_iterator& rhs) {
-        return (*lhs)._value == (*rhs)._value;
+        return (*lhs).value() == (*rhs).value();
     }
 
     friend bool operator!=(const Set_const_iterator& lhs, const Set_const_iterator& rhs) {
-        return (*lhs)._value != (*rhs)._value;
+        return (*lhs).value() != (*rhs).value();
     }
 
     friend bool operator<(const Set_const_iterator& lhs, const Set_const_iterator& rhs) {
-        return (*lhs)._value < (*rhs)._value;
+        return (*lhs).value() < (*rhs).value();
     }
 
     friend bool operator<=(const Set_const_iterator& lhs, const Set_const_iterator& rhs) {
-        return (*lhs)._value <= (*rhs)._value;
+        return (*lhs).value() <= (*rhs).value();
     }
 
     friend bool operator>(const Set_const_iterator& lhs, const Set_const_iterator& rhs) {
-        return (*lhs)._value > (*rhs)._value;
+        return (*lhs).value() > (*rhs).value();
     }
 
     friend bool operator>=(const Set_const_iterator& lhs, const Set_const_iterator& rhs) {
-        return (*lhs)._value < (*rhs)._value;
+        return (*lhs).value() < (*rhs).value();
     }
 
     virtual std::string to_string() const {
         // make a string that represents the state of the iterator
         //   e.g. "<Set::const_iterator -> [value]>"
-        return "<Set::const_iterator -> [" + this->_root->_value + "]";
+        return "<Set::const_iterator -> [" + std::to_string(this->operator*().value()) + "]";
     }
 };
 
@@ -207,10 +268,22 @@ class Set_iterator : public Set_const_iterator<Comparable> {
     typedef Set_Node<Comparable> Node;
     typedef Set_const_iterator<Comparable> const_iterator;
 
-    Stack<Set_Node<Comparable>*> _stack;
 public:
-    Set_iterator() : _stack{Stack<Set_Node<Comparable>*>()} {}
-    Set_iterator(Set_Node<Comparable>* node) : _stack{Stack<Set_Node<Comparable>*>()} { this->_stack.push(node); }
+    Set_iterator() : Set_const_iterator<Comparable>() {}
+    Set_iterator(const Set_iterator& rhs) : Set_const_iterator<Comparable>() {
+        this->_stack.copy(rhs._stack);
+    }
+    Set_iterator(Node* node) : Set_const_iterator<Comparable>(node) {}
+    ~Set_iterator() { this->_stack.clear(); }
+
+    Set_iterator& operator=(const Set_iterator& rhs) {
+        if (this != &rhs) {
+            this->_stack.clear();
+            this->_stack.copy(rhs._stack);
+        }
+
+        return *this;
+    }
 
     Node& operator*() const {
         return *(this->_stack.top());
@@ -224,6 +297,8 @@ public:
         Node* node = this->_stack.top();
         if (node->_right)
             this->_stack.push(node->_right);
+        else if (this->_stack.size() == 1)
+            throw runtime_error("Cannot increment the end iterator");
         else
             this->_stack.pop();
         return *this;
@@ -239,6 +314,8 @@ public:
         Node* node = this->_stack.top();
         if (node->_left)
             this->_stack.push(node->_left);
+        else if (this->_stack.size() == 1)
+            throw runtime_error("Cannot decrement the begin iterator");
         else
             this->_stack.pop();
         return *this;
@@ -251,33 +328,33 @@ public:
     }
 
     friend bool operator==(const Set_iterator& lhs, const Set_iterator& rhs) {
-        return lhs->_stack == rhs->_stack;
+        return (*lhs).value() == (*rhs).value();
     }
 
     friend bool operator!=(const Set_iterator& lhs, const Set_iterator& rhs) {
-        return (*lhs) == (*rhs);
+        return (*lhs).value() != (*rhs).value();
     }
 
     friend bool operator<(const Set_iterator& lhs, const Set_iterator& rhs) {
-        return (*lhs)._value < (*rhs)._value;
+        return (*lhs).value() < (*rhs).value();
     }
 
     friend bool operator<=(const Set_iterator& lhs, const Set_iterator& rhs) {
-        return (*lhs)._value <= (*rhs)._value;
+        return (*lhs).value() <= (*rhs).value();
     }
 
     friend bool operator>(const Set_iterator& lhs, const Set_iterator& rhs) {
-        return (*lhs)._value > (*rhs)._value;
+        return (*lhs).value() > (*rhs).value();
     }
 
     friend bool operator>=(const Set_iterator& lhs, const Set_iterator& rhs) {
-        return (*lhs)._value < (*rhs)._value;
+        return (*lhs).value() < (*rhs).value();
     }
 
     std::string to_string() const override {
         // make a string that represents the state of the iterator
         //   e.g. "<Set::iterator -> [value]>"
-        return "<Set::iterator -> [" + this->_root->_value + "]";
+        return "<Set::iterator -> [" + std::to_string(this->operator*().value()) + "]";
     }
 };
 
@@ -285,8 +362,27 @@ template <class Comparable>
 class Set {
     typedef Set_Node<Comparable> Node;
 
-    Node* _root;
+    Set_Node<Comparable>* _root;
     size_t _size;
+
+    template <typename Type>
+    Type max(const Type& a, const Type& b) const {
+        return a > b ? a : b;
+    }
+
+    long height(Node*& root) const {
+        return !root ? 0l : root->_height;
+    }
+
+    long balace_factor(Node*& root) const {
+        return !root ?
+            0l :
+            this->height(root->_left) - this->height(root->_right);
+    }
+
+    size_t calcHeight(Node*& root) const {
+        return 1 + this->max<long>(this->height(root->_left), this->height(root->_right));
+    }
 
     Node*& clear(Node*& node) {
         if (node) {
@@ -303,34 +399,93 @@ class Set {
         if (!root)
             return nullptr;
 
-        Node* new_root = new Node(root->_value);
+        Node* new_root = new Node(root->value());
         new_root->_left = this->copy(root->_left);
         new_root->_right = this->copy(root->_right);
         return new_root;
     }
 
-    Node* search(const Node*& root, const Comparable& value) {
+    Node* search(Node* root, const Comparable& value) const {
         if (!root)
             return nullptr;
-        if (root->_value == value)
+        if (root->value() == value)
             return root;
-        return this->search(root->_value < value ? root->_right : root->_left, value);
+        return this->search(root->value() < value ? root->_right : root->_left, value);
     }
 
-    Node* insert(Node* node, const Comparable& value) {
-        if (!node)
-            return new Node(value);
-        else if (value == node->_value)
+    Node* insert(Set_iterator<Comparable> iter, Node* node, const Comparable& value) {
+        if (!node) {
+            Node* new_node = new Node(value);
+            iter.push(new_node);
+            return new_node;
+        } else if (value == node->value())
             return node;
-        else if (value < node->_value)
-            node->_left = this->insert(node->_left, value);
-        else if (value > node->_value)
-            node->_right = this->insert(node->_right, value);
+        else if (value < node->value())
+            node->_left = this->insert(iter, node->_left, value);
+        else
+            node->_right = this->insert(iter, node->_right, value);
 
         node = this->balance(node);
+        iter.push(node);
         return node;
     }
 
+    Node* balance(Node* root) {
+        root->_height = 1 + this->max(this->height(root->_left), this->height(root->_right));
+        long bf = this->balace_factor(root);
+        if (bf > 1)
+            root = this->balace_factor(root->_left) > 0 ? ll_rotate(root) : lr_rotate(root);
+        else if (bf < -1)
+            root = this->balace_factor(root->_right) > 0 ? rl_rotate(root) : rr_rotate(root);
+        return root;
+    }
+
+    Node* rr_rotate(Node*& root) {
+        Node* temp = root->_right;
+        root->_right = temp->_left;
+        temp->_left = root;
+
+        root->_height = this->calcHeight(root);
+        temp->_height = this->calcHeight(temp);
+
+        return temp;
+    }
+
+    Node* ll_rotate(Node*& root) {
+        Node* temp = root->_left;
+        root->_left = temp->_right;
+        temp->_right = root;
+
+        root->_height = this->calcHeight(root);
+        temp->_height = this->calcHeight(temp);
+
+        return temp;
+    }
+
+    Node* lr_rotate(Node*& root) {
+        Node* temp = root->_left;
+        root->_left = this->rr_rotate(temp);
+        return this->ll_rotate(root);
+    }
+
+    Node* rl_rotate(Node*& root) {
+        Node* temp = root->_right;
+        root->_right = this->ll_rotate(temp);
+        return this->rr_rotate(root);
+    }
+
+    void print_tree(const Node*& root, ostream& os, size_t trace) const {
+        if (!root) {
+            os << "<empty>\n";
+            return;
+        }
+
+        if (root->_right)
+            this->print_tree(const_cast<const Node*&>(root->_right), os, trace + 1);
+        os << string(trace * 2, ' ') << root->value() << "\n";
+        if (root->_left)
+            this->print_tree(const_cast<const Node*&>(root->_left), os, trace + 1);
+    }
 public:
     typedef Set_const_iterator<Comparable> const_iterator;
     typedef Set_iterator<Comparable> iterator;
@@ -343,42 +498,52 @@ public:
             this->make_empty();
             this->copy(rhs._root);
         }
+
+        return *this;
     }
 
     iterator begin() {
         Node* node = this->_root;
+        iterator iter(this->_root);
         while (node && node->_left) {
             node = node->_left;
+            iter.push(node);
         }
 
-        return iterator(node);
+        return iter;
     }
 
     const_iterator begin() const {
         Node* node = this->_root;
+        const_iterator iter(this->_root);
         while (node && node->_left) {
             node = node->_left;
+            iter.push(node);
         }
 
-        return const_iterator(node);
+        return iter;
     }
 
     iterator end() {
         Node* node = this->_root;
+        iterator iter(const_cast<const Node*&>(this->_root));
         while (node && node->_right) {
             node = node->_right;
+            iter.push(node);
         }
 
-        return iterator(node);
+        return iter;
     }
 
     const_iterator end() const {
         Node* node = this->_root;
+        const_iterator iter(const_cast<const Node*&>(this->_root));
         while (node && node->_right) {
             node = node->_right;
+            iter.push(node);
         }
 
-        return const_iterator(node);
+        return iter;
     }
 
     bool is_empty() const {
@@ -394,11 +559,33 @@ public:
     }
 
     pair<iterator, bool> insert(const Comparable& value) {
-        return std::make_pair(iterator(this->insert(value)), this->contains(value));
+        Node* node = this->search(this->_root, value);
+        if (node)
+            return pair(iterator(node), false);
+
+        iterator iter(this->_root);
+        Node* inserted = this->insert(iter, this->_root, value);
+        if (!this->_root)
+            this->_root = inserted;
+
+        ++this->_size;
+        return pair(iter, !node);
     }
 
     iterator insert(const_iterator iter, const Comparable& value) {
+        Node* node = this->search(this->_root, value);
+        if (node)
+            return iterator(node);
 
+        iterator it = iterator();
+        it._stack.copy(iter._stack);
+        Node* inserted = this->insert(it, const_cast<Node*>(iter.operator->()), value);
+        if (!this->_root)
+            this->_root = inserted;
+
+
+        ++this->_size;
+        return it;
     }
 
     size_t remove(const Comparable& value);
@@ -418,22 +605,46 @@ public:
         return node ? const_iterator(node) : this->end();
     }
 
-    void print_set(ostream os = cout) {
+    void print_set(ostream& os = cout) const {
         os << "{ ";
-        for (Set_const_iterator iter = this->begin(), end = this->end(); iter < end; ++iter) {
-            os << iter->_value;
+        for (Set_const_iterator iter = this->begin(), end = this->end(); iter != end; ++iter) {
+            os << (*iter).value();
             if (iter != end)
                 os << ", ";
         }
-        os << "}";
+        os << "}\n";
     }
 
     // ----------------------- Optional ----------------------- //
-    // Set(Set&& set);
-    // Set& operator=(Set&& set);
-    // pair<iterator, bool> insert(Comparable&& value);
-    // iterator insert(const_iterator, Comparable&& value) const;
-    // void print_tree(ostream os = cout);
+    // Set(Set&& rhs) : _root{nullptr}, _size{0} {
+    //     swap(this->_root, rhs._root);
+    //     swap(this->_size, rhs._size);
+    // }
+
+    // Set& operator=(Set&& rhs) {
+    //     if (this != &rhs) {
+    //         this->clear();
+    //         swap(this->_root, rhs._root);
+    //         swap(this->_size, rhs._size);
+    //     }
+    // }
+
+    // pair<iterator, bool> insert(Comparable&& value) {
+    //     Comparable v = Comparable();
+    //     swap(v, value);
+    //     return this->insert(v);
+    // }
+
+    // iterator insert(const_iterator iter, Comparable&& value) const {
+    //     Comparable v = Comparable();
+    //     swap(v, value);
+    //     return this->insert(iter, v);
+    // }
+
+    void print_tree(ostream& os = cout) const {
+        size_t i = 0;
+        this->print_tree(const_cast<const Node*&>(this->_root), os, i);
+    }
 };
 
 template <class Comparable>
