@@ -106,16 +106,12 @@ public:
      *
      * @param rhs DoublyLinkedList to copy from
      */
-    DoublyLinkedList(const DoublyLinkedList& rhs) : _size{0}, _head{nullptr}, _tail{nullptr} {
-        this->copy(rhs);
-    }
+    DoublyLinkedList(const DoublyLinkedList& rhs) : _size{0}, _head{nullptr}, _tail{nullptr} { this->copy(rhs); }
 
     /**
      * @brief Destroy the Doubly Linked List object
      */
-    ~DoublyLinkedList() {
-        this->clear();
-    }
+    ~DoublyLinkedList() { this->clear(); }
 
     /**
      * @brief Copy assignment operator
@@ -137,9 +133,7 @@ public:
      *
      * @return size_t this->_size;
      */
-    size_t size() const {
-        return this->_size;
-    }
+    size_t size() const { return this->_size; }
 
     /**
      * @brief Access a current element at a specified index
@@ -235,13 +229,9 @@ public:
      *
      * @return const Node* this->_head;
      */
-    const Node* head() const {
-        return this->_head;
-    }
+    const Node* head() const { return this->_head; }
 
-    const Node* tail() const {
-        return this->_tail;
-    }
+    const Node* tail() const { return this->_tail; }
 
     // ----------------------- Optional ----------------------- //
 
