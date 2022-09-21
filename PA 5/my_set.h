@@ -152,6 +152,10 @@ public:
         return this->_head->_value;
     }
 
+    bool isEmpty() const {
+        return !this->_size;
+    }
+
     size_t size() const {
         return this->_size;
     }
@@ -186,10 +190,14 @@ public:
     }
 
     const Node& operator*() const {
+        if (this->_stack.isEmpty())
+            throw runtime_error("Stack is empty");
         return *(this->_stack.top());
     }
 
     const Node* operator->() {
+        if (this->_stack.isEmpty())
+            throw runtime_error("Stack is empty");
         return this->_stack.top();
     }
 
@@ -577,14 +585,21 @@ public:
         if (node)
             return iterator(node);
 
+        ++this->_size;
+        if (!this->_root) {
+            this->_root = new Node(value);
+            return iterator(this->_root);
+        }
+
         iterator it = iterator();
         it._stack.copy(iter._stack);
-        Node* inserted = this->insert(it, const_cast<Node*>(iter.operator->()), value);
-        if (!this->_root)
-            this->_root = inserted;
+        Node* inserted;
+        try {
+            inserted = this->insert(it, const_cast<Node*>(iter.operator->()), value);
+        } catch (const runtime_error& err) {
+            inserted = this->insert(it, this->_root, value);
+        }
 
-
-        ++this->_size;
         return it;
     }
 

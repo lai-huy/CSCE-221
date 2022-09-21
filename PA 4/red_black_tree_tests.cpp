@@ -2801,7 +2801,6 @@ bool test_print_empty() {
     END_TEST;
 }
 
-/**
 bool test_bruh() {
     RedBlackTree<int> rbt;
     rbt.insert(5);
@@ -2869,39 +2868,40 @@ bool test_bruh() {
     assert(!rbt.contains(26));
 
     END_TEST;
-}*/
+}
 
 int main() {
     unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
-    test(create);
-    test(insert);
-    test(insert_duplicate);
-    test(insert_dup_many);
-    test(insert_right);
-    test(insert_left);
-    test(insert_rl);
-    test(insert_lr);
-    test(contains);
-    test(remove_leaf);
-    test(remove_middle);
-    test(remove_root);
-    test(remove_root_l);
-    test(remove_root_r);
-    test(remove_empty);
-    test(remove_invalid);
-    test(find_min);
-    test(find_min_empty);
-    test(find_max);
-    test(find_max_empty);
-    test(copy);
-    test(copy_empty);
-    test(copy_oper);
-    test(copy_oper_empty);
-    test(self_assignment);
-    test(node);
-    test(print);
-    test(print_empty);
+    // test(create);
+    // test(insert);
+    // test(insert_duplicate);
+    // test(insert_dup_many);
+    // test(insert_right);
+    // test(insert_left);
+    // test(insert_rl);
+    // test(insert_lr);
+    // test(contains);
+    // test(remove_leaf);
+    // test(remove_middle);
+    // test(remove_root);
+    // test(remove_root_l);
+    // test(remove_root_r);
+    // test(remove_empty);
+    // test(remove_invalid);
+    // test(find_min);
+    // test(find_min_empty);
+    // test(find_max);
+    // test(find_max_empty);
+    // test(copy);
+    // test(copy_empty);
+    // test(copy_oper);
+    // test(copy_oper_empty);
+    // test(self_assignment);
+    // test(node);
+    // test(print);
+    // test(print_empty);
+    test(bruh);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";
