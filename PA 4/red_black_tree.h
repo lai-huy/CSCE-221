@@ -302,15 +302,13 @@ private:
     }
     */
 
-    void rotateLeft(Node*& node) {
+    void rotateLeft(Node* node) {
         Node* right = node->right;
-        Node* temp = node;
         node->right = right->left;
         if (right->left)
             right->left->parent = node;
 
         right->parent = node->parent;
-        node = temp;
         if (!node->parent)
             this->root = right;
         else if (node->isLeft())
@@ -322,15 +320,13 @@ private:
         node->parent = right;
     }
 
-    void rotateRight(Node*& node) {
+    void rotateRight(Node* node) {
         Node* left = node->left;
-        Node* temp = node;
         node->left = left->right;
         if (left->right)
             left->right->parent = node;
 
         left->parent = node->parent;
-        node = temp;
         if (!node->parent)
             this->root = left;
         else if (node->isRight())
