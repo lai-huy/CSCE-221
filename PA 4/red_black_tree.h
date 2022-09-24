@@ -358,7 +358,7 @@ public:
             y_orig_color = y->color;
             x = y->right;
             if (y->parent == z)
-                x->parent = y;
+                x->parent = y;  // seg fault
             else {
                 this->transplant(y, y->right);
                 y->right = z->right;
