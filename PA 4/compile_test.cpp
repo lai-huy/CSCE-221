@@ -1,5 +1,4 @@
 #include "red_black_tree.h"
-#include "red_black_tree.h"
 #include <iostream>
 
 struct ComparableValue {
@@ -54,7 +53,7 @@ int main() {
         tree.find_min();
         tree.find_max();
         tree.remove(1);
-        //tree.print_tree();
+        tree.print_tree();
         get_root_color_node_members(tree);
     }
 
@@ -67,7 +66,7 @@ int main() {
         tree.find_min();
         tree.find_max();
         tree.remove(ComparableValue(1));
-        //tree.print_tree();
+        tree.print_tree();
         get_root_color_node_members(tree);
     }
 

@@ -65,7 +65,7 @@ public:
             return this->parent->sibling();
         }
 
-        size_t countChildren() {
+        size_t countChildren() const {
             size_t count = 0;
             if (this->left)
                 ++count;
@@ -219,6 +219,20 @@ private:
         x->color = Color::RED;
     }
 
+    void remove(Node*& z) {
+        Node* replace = this->replace(const_cast<const Node*&>(z));
+        if (z->isLeaf()) {
+            if (z->isLeft())
+                z->parent->left = nullptr;
+            else
+                z->parent->right = nullptr;
+            delete z;
+        } else {
+            swap(z->value, replace->value);
+            this->remove(replace);
+        }
+    }
+
     Node* search(Node* root, const Comparable& value) const {
         if (!root)
             return nullptr;
@@ -262,7 +276,7 @@ private:
         return node;
     }
 
-    Node* replace(Node*& root) const {
+    Node* replace(const Node*& root) const {
         switch (root->countChildren()) {
         case 1:
             return root->right ? root->right : root->left;
@@ -333,48 +347,7 @@ public:
         if (!z)
             return;
 
-        Node* x = nullptr;
-        Node* y = z;
-        Color y_orig_color = y->color;
-
-        switch (z->countChildren()) {
-        case 0:
-            if (z->isLeft())
-                z->parent->left = nullptr;
-            else
-                z->parent->right = nullptr;
-            break;
-        case 1:
-            if (z->right) {
-                x = z->left;
-                this->transplant(z, z->left);
-            } else {
-                x = z->right;
-                this->transplant(z, z->right);
-            }
-            break;
-        case 2:
-            y = this->find_min(z->right);
-            y_orig_color = y->color;
-            x = y->right;
-            if (y->parent == z)
-                x->parent = y;  // seg fault
-            else {
-                this->transplant(y, y->right);
-                y->right = z->right;
-                y->right->parent = y;
-            }
-
-            this->transplant(z, y);
-            y->left = z->left;
-            y->left->parent = y;
-            y->color = z->color;
-            break;
-        }
-
-        delete z;
-        if (y_orig_color == Color::BLACK)
-            this->fixRemove(x);
+        this->remove(z);
     }
 
     bool contains(const Comparable& value) const { return this->search(this->root, value); }
