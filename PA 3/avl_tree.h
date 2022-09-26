@@ -9,6 +9,7 @@
 using std::ostream, std::cout;
 using std::invalid_argument;
 using std::string;
+using std::swap;
 
 /**
  * @brief Adelson-Velsky Landis Tree
@@ -61,16 +62,11 @@ public:
             return !this->_left && !this->_right;
         }
     };
-
-    /**
-     * @brief typedef for a pointer to nodes
-     */
-    typedef Node* nodeptr;
 private:
     /**
      * @brief A pointer for the root of the AVL Tree.
      */
-    nodeptr _root;
+    Node* _root;
 
     /**
      * @brief Determine the max of the two values supplied
@@ -81,9 +77,7 @@ private:
      * @return Type the max of the two supplied values
      */
     template <typename Type>
-    Type max(const Type& a, const Type& b) const {
-        return a > b ? a : b;
-    }
+    Type max(const Type& a, const Type& b) const { return a > b ? a : b; }
 
     /**
      * @brief Determine if this AVL tree contains a value
@@ -93,7 +87,7 @@ private:
      * @return true if this tree contains specified value
      * @return false otherwise
      */
-    bool contains(nodeptr& root, const Comparable& value) const {
+    bool contains(Node*& root, const Comparable& value) const {
         if (!root)
             return false;
         if (root->_value == value)
@@ -107,9 +101,9 @@ private:
      * @brief Prevents memory leaks by deallocating the entire tree
      *
      * @param node current subtree being deallocated
-     * @return nodeptr& reference to nullptr
+     * @return Node*& reference to nullptr
      */
-    nodeptr& clear(nodeptr& node) {
+    Node*& clear(Node*& node) {
         if (node) {
             node->_left = this->clear(node->_left);
             node->_right = this->clear(node->_right);
@@ -127,30 +121,30 @@ private:
      * @param os ostream to write to
      * @param trace how much to indent each line
      */
-    void print_tree(const nodeptr& root, ostream& os, size_t trace) const {
+    void print_tree(const Node*& root, ostream& os, size_t trace) const {
         if (!root) {
             os << "<empty>\n";
             return;
         }
 
         if (root->_right)
-            this->print_tree(const_cast<const nodeptr&>(root->_right), os, trace + 1);
+            this->print_tree(const_cast<const Node*&>(root->_right), os, trace + 1);
         os << string(trace * 2, ' ') << root->_value << "\n";
         if (root->_left)
-            this->print_tree(const_cast<const nodeptr&>(root->_left), os, trace + 1);
+            this->print_tree(const_cast<const Node*&>(root->_left), os, trace + 1);
     }
 
     /**
      * @brief Copies a avl tree into this one
      *
      * @param root current subtree being copies
-     * @return nodeptr a pointer to nodes created
+     * @return Node* a pointer to nodes created
      */
-    nodeptr copy(const nodeptr& root) {
+    Node* copy(const Node* root) {
         if (!root)
             return nullptr;
 
-        nodeptr new_root = new Node(root->_value);
+        Node* new_root = new Node(root->_value);
         new_root->_left = this->copy(root->_left);
         new_root->_right = this->copy(root->_right);
         return new_root;
@@ -161,9 +155,9 @@ private:
      *
      * @param node current subtree being inserted into
      * @param value value to insert
-     * @return nodeptr new node created or node inputed if the value is already in the tree
+     * @return Node* new node created or node inputed if the value is already in the tree
      */
-    nodeptr insert(nodeptr node, const Comparable& value) {
+    Node* insert(Node* node, const Comparable& value) {
         if (!node)
             return new Node(value);
         else if (value == node->_value)
@@ -182,9 +176,9 @@ private:
      *
      * @param root current subtree being remove
      * @param value value to remove
-     * @return nodeptr
+     * @return Node*
      */
-    nodeptr remove(nodeptr root, const Comparable& value) {
+    Node* remove(Node* root, const Comparable& value) {
         if (!root)
             return nullptr;
 
@@ -197,17 +191,17 @@ private:
                 delete root;
                 return nullptr;
             } else if (!root->_left) {
-                nodeptr temp = root->_right;
+                Node* temp = root->_right;
                 delete root;
                 root = nullptr;
                 return temp;
             } else if (!root->_right) {
-                nodeptr temp = root->_left;
+                Node* temp = root->_left;
                 delete root;
                 root = nullptr;
                 return temp;
             } else {
-                const nodeptr temp = this->find_min(root->_right);
+                const Node* temp = this->find_min(root->_right);
                 root->_value = temp->_value;
                 root->_right = this->remove(root->_right, temp->_value);
             }
@@ -221,9 +215,9 @@ private:
      * @brief Determine the height of a subtree
      *
      * @param root subtree to determine the height of
-     * @return signed long height of the subtree
+     * @return long height of the subtree
      */
-    signed long height(const nodeptr& root) const {
+    long height(const Node* root) const {
         if (!root)
             return 0;
 
@@ -236,35 +230,35 @@ private:
      * @param root subtree to calculate the height of
      * @return size_t height calculated
      */
-    size_t calcHeight(const nodeptr& root) const {
-        return 1 + this->max(this->height(const_cast<const nodeptr&>(root->_left)), this->height(const_cast<const nodeptr&>(root->_right)));
+    size_t calcHeight(const Node*& root) const {
+        return 1 + this->max(this->height(root->_left), this->height(root->_right));
     }
 
     /**
      * @brief Determine the balance factor of an inputed subtree
      *
      * @param root subtree to determine the balance factor of
-     * @return signed long balance factor
+     * @return long balance factor
      */
-    signed long balace_factor(const nodeptr& root) const {
+    long balace_factor(const Node*& root) const {
         return !root ?
             0l :
-            this->height(const_cast<const nodeptr&>(root->_left)) - this->height(const_cast<const nodeptr&>(root->_right));
+            this->height(const_cast<const Node*&>(root->_left)) - this->height(const_cast<const Node*&>(root->_right));
     }
 
     /**
      * @brief Right rotate the inputed subtree
      *
      * @param root subtree to rotate
-     * @return nodeptr rotated subtree
+     * @return Node* rotated subtree
      */
-    nodeptr rr_rotate(nodeptr& root) {
-        nodeptr temp = root->_right;
+    Node* rr_rotate(Node*& root) {
+        Node* temp = root->_right;
         root->_right = temp->_left;
         temp->_left = root;
 
-        root->_height = this->calcHeight(const_cast<const nodeptr&>(root));
-        temp->_height = this->calcHeight(const_cast<const nodeptr&>(temp));
+        root->_height = this->calcHeight(const_cast<const Node*&>(root));
+        temp->_height = this->calcHeight(const_cast<const Node*&>(temp));
 
         return temp;
     }
@@ -273,15 +267,15 @@ private:
      * @brief Left rotate the inputed subtree
      *
      * @param root subtree to rotate
-     * @return nodeptr rotated subtree
+     * @return Node* rotated subtree
      */
-    nodeptr ll_rotate(nodeptr& root) {
-        nodeptr temp = root->_left;
+    Node* ll_rotate(Node*& root) {
+        Node* temp = root->_left;
         root->_left = temp->_right;
         temp->_right = root;
 
-        root->_height = this->calcHeight(const_cast<const nodeptr&>(root));
-        temp->_height = this->calcHeight(const_cast<const nodeptr&>(temp));
+        root->_height = this->calcHeight(const_cast<const Node*&>(root));
+        temp->_height = this->calcHeight(const_cast<const Node*&>(temp));
 
         return temp;
     }
@@ -290,10 +284,10 @@ private:
      * @brief Left right rotate
      *
      * @param root subtree to rotate
-     * @return nodeptr rotated subtree
+     * @return Node* rotated subtree
      */
-    nodeptr lr_rotate(nodeptr& root) {
-        nodeptr temp = root->_left;
+    Node* lr_rotate(Node*& root) {
+        Node* temp = root->_left;
         root->_left = this->rr_rotate(temp);
         return this->ll_rotate(root);
     }
@@ -302,10 +296,10 @@ private:
      * @brief Right Left rotate
      *
      * @param root subtree to rotate
-     * @return nodeptr rotated subtree
+     * @return Node* rotated subtree
      */
-    nodeptr rl_rotate(nodeptr& root) {
-        nodeptr temp = root->_right;
+    Node* rl_rotate(Node*& root) {
+        Node* temp = root->_right;
         root->_right = this->ll_rotate(temp);
         return this->rr_rotate(root);
     }
@@ -314,14 +308,14 @@ private:
      * @brief Rebalance the a subtree of the avl tree
      *
      * @param root subtree to rebalance
-     * @return nodeptr rebalanced subtree
+     * @return Node* rebalanced subtree
      */
-    nodeptr balance(nodeptr& root) {
-        const nodeptr& left = const_cast<const nodeptr&>(root->_left);
-        const nodeptr& right = const_cast<const nodeptr&>(root->_right);
+    Node* balance(Node*& root) {
+        const Node*& left = const_cast<const Node*&>(root->_left);
+        const Node*& right = const_cast<const Node*&>(root->_right);
 
         root->_height = 1 + this->max(this->height(left), this->height(right));
-        signed long bf = this->balace_factor(const_cast<const nodeptr&>(root));
+        signed long bf = this->balace_factor(const_cast<const Node*&>(root));
         if (bf > 1)
             root = this->balace_factor(left) > 0 ? ll_rotate(root) : lr_rotate(root);
         else if (bf < -1)
@@ -333,21 +327,14 @@ private:
      * @brief Find the smallest node in the avl tree
      *
      * @param root current subtree being searched
-     * @return nodeptr pointer to the smallest node
+     * @return Node* pointer to the smallest node
      */
-    nodeptr find_min(nodeptr& root) const {
-        nodeptr node = root;
+    Node* find_min(Node*& root) const {
+        Node* node = root;
         while (node && node->_left)
             node = node->_left;
 
         return node;
-    }
-
-    /**
-     * @brief Sets the root of the avl tree to nullptr
-     */
-    void clearRoot() {
-        this->_root = nullptr;
     }
 
 public:
@@ -361,7 +348,7 @@ public:
      *
      * @param rhs AVLTree to copy from
      */
-    AVLTree(const AVLTree& rhs) : _root{this->copy(rhs.root())} {}
+    AVLTree(const AVLTree& rhs) : _root{this->copy(rhs._root)} {}
 
     /**
      * @brief Destroy the AVLTree object
@@ -420,7 +407,7 @@ public:
         if (!this->_root)
             throw invalid_argument("AVL Tree is empty");
 
-        nodeptr root = this->_root;
+        Node* root = this->_root;
         while (root->_left)
             root = root->_left;
 
@@ -436,7 +423,7 @@ public:
         if (!this->_root)
             throw invalid_argument("AVL Tree is empty");
 
-        nodeptr root = this->_root;
+        Node* root = this->_root;
         while (root->_right)
             root = root->_right;
 
@@ -450,32 +437,34 @@ public:
      */
     void print_tree(ostream& os = cout) const {
         size_t i = 0;
-        this->print_tree(const_cast<const nodeptr&>(this->_root), os, i);
+        this->print_tree(const_cast<const Node*&>(this->_root), os, i);
     }
 
     /**
      * @brief Return the root of the tree
      *
-     * @return const nodeptr& this->_root;
+     * @return const Node*& this->_root;
      */
-    const nodeptr& root() const {
-        return this->_root;
-    }
+    const Node* root() const { return this->_root; }
 
     // ----------------------- Optional ----------------------- //
 
-    AVLTree(AVLTree&& rhs) : _root{rhs.root()} { rhs.clearRoot() }
+    AVLTree(AVLTree&& rhs) : _root{rhs.root()} { rhs._root = nullptr; }
 
     AVLTree& operator=(AVLTree&& rhs) {
         if (this != &rhs) {
-            this->_root = rhs.root();
-            rhs.clearRoot();
+            this->_root = this->clear(this->_root);
+            swap(this->_root, rhs._root);
         }
+
+        return *this;
     }
 
-    // void insert(Comparable&& value) {
-
-    // }
+    void insert(Comparable&& value) {
+        Comparable v;
+        swap(v, value);
+        this->_root = this->insert(this->_root, v);
+    }
 
     /**
      * @brief Determine if this AVL tree is empty
@@ -483,14 +472,10 @@ public:
      * @return true if this tree is empty
      * @return false otherwise
      */
-    bool is_empty() const {
-        return !this->_root;
-    }
+    bool is_empty() const { return !this->_root; }
 
     /**
      * @brief Prevents memory errors by deallocating the entire AVL tree
      */
-    void make_empty() {
-        this->_root = this->clear(this->_root);
-    }
+    void make_empty() { this->_root = this->clear(this->_root); }
 };
