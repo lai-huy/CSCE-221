@@ -119,17 +119,17 @@ private:
      * @param os ostream to write to
      * @param trace how much to indent each line
      */
-    void print_tree(const Node*& root, ostream& os, size_t trace) const {
+    void print_tree(Node* root, ostream& os, size_t trace) const {
         if (!root) {
             os << "<empty>\n";
             return;
         }
 
         if (root->_right)
-            this->print_tree(const_cast<const Node*&>(root->_right), os, trace + 1);
+            this->print_tree(root->_right, os, trace + 1);
         os << string(trace * 2, ' ') << root->_value << "\n";
         if (root->_left)
-            this->print_tree(const_cast<const Node*&>(root->_left), os, trace + 1);
+            this->print_tree(root->_left, os, trace + 1);
     }
 
     /**
@@ -228,7 +228,7 @@ private:
      * @param root subtree to calculate the height of
      * @return size_t height calculated
      */
-    size_t calcHeight(const Node*& root) const {
+    size_t calcHeight(Node*& root) const {
         return 1 + this->max(this->height(root->_left), this->height(root->_right));
     }
 
@@ -238,10 +238,10 @@ private:
      * @param root subtree to determine the balance factor of
      * @return long balance factor
      */
-    long balace_factor(const Node*& root) const {
+    long balace_factor(Node*& root) const {
         return !root ?
             0l :
-            this->height(const_cast<const Node*&>(root->_left)) - this->height(const_cast<const Node*&>(root->_right));
+            this->height(root->_left) - this->height(root->_right);
     }
 
     /**
@@ -255,8 +255,8 @@ private:
         root->_right = temp->_left;
         temp->_left = root;
 
-        root->_height = this->calcHeight(const_cast<const Node*&>(root));
-        temp->_height = this->calcHeight(const_cast<const Node*&>(temp));
+        root->_height = this->calcHeight(root);
+        temp->_height = this->calcHeight(temp);
 
         return temp;
     }
@@ -272,8 +272,8 @@ private:
         root->_left = temp->_right;
         temp->_right = root;
 
-        root->_height = this->calcHeight(const_cast<const Node*&>(root));
-        temp->_height = this->calcHeight(const_cast<const Node*&>(temp));
+        root->_height = this->calcHeight(root);
+        temp->_height = this->calcHeight(temp);
 
         return temp;
     }
@@ -309,15 +309,13 @@ private:
      * @return Node* rebalanced subtree
      */
     Node* balance(Node*& root) {
-        const Node*& left = const_cast<const Node*&>(root->_left);
-        const Node*& right = const_cast<const Node*&>(root->_right);
 
-        root->_height = 1 + this->max(this->height(left), this->height(right));
-        signed long bf = this->balace_factor(const_cast<const Node*&>(root));
+        root->_height = 1 + this->max(this->height(root->_left), this->height(root->_right));
+        signed long bf = this->balace_factor(root);
         if (bf > 1)
-            root = this->balace_factor(left) > 0 ? ll_rotate(root) : lr_rotate(root);
+            root = this->balace_factor(root->_left) > 0 ? ll_rotate(root) : lr_rotate(root);
         else if (bf < -1)
-            root = this->balace_factor(right) > 0 ? rl_rotate(root) : rr_rotate(root);
+            root = this->balace_factor(root->_right) > 0 ? rl_rotate(root) : rr_rotate(root);
         return root;
     }
 
@@ -435,7 +433,7 @@ public:
      */
     void print_tree(ostream& os = cout) const {
         size_t i = 0;
-        this->print_tree(const_cast<const Node*&>(this->_root), os, i);
+        this->print_tree(this->_root, os, i);
     }
 
     /**
