@@ -21,8 +21,6 @@ class AVLTree {
 public:
     /**
      * @brief Internal node struct
-     *
-     * @tparam T data type that will overload the comparison operators
      */
     struct Node {
         /**
