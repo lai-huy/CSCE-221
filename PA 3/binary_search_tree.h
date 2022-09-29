@@ -8,6 +8,7 @@
 
 using std::ostream, std::cout;
 using std::invalid_argument;
+using std::string;
 
 /**
  * @brief A Binary Search Tree
@@ -56,9 +57,7 @@ public:
          * @return true is both _left and _right are nullptr
          * @return false otherwise
          */
-        bool isLeaf() const {
-            return !this->_left && !this->_right;
-        }
+        bool isLeaf() const { return !this->_left && !this->_right; }
     };
 
 private:
@@ -80,9 +79,27 @@ private:
             return false;
         if (root->_value == val)
             return true;
-        if (root->_value < val)
-            return this->contains(root->_right, val);
-        return this->contains(root->_left, val);
+        return this->contains(root->_value < val ? root->_right : root->_left, val);
+    }
+
+    /**
+     * @brief pushed this tree to an ostream
+     *
+     * @param root current subtree being pushed
+     * @param os ostream to push to
+     * @param trace how much to indent each line
+     */
+    void print_tree(const Node* root, ostream& os, size_t trace) const {
+        if (!root) {
+            os << "<empty>\n";
+            return;
+        }
+
+        if (root->_right)
+            this->print_tree(root->_right, os, trace + 1);
+        os << string(trace * 2, ' ') << root->_value << "\n";
+        if (root->_left)
+            this->print_tree(root->_left, os, trace + 1);
     }
 
     /**
@@ -102,26 +119,6 @@ private:
     }
 
     /**
-     * @brief pushed this tree to an ostream
-     *
-     * @param root current subtree being pushed
-     * @param os ostream to push to
-     * @param trace how much to indent each line
-     */
-    void print_tree(const Node* root, ostream& os, size_t trace) const {
-        if (!root) {
-            os << "<empty>\n";
-            return;
-        }
-
-        if (root->_right)
-            this->print_tree(root->_right, os, trace + 1);
-        os << std::string(trace * 2, ' ') << root->_value << "\n";
-        if (root->_left)
-            this->print_tree(root->_left, os, trace + 1);
-    }
-
-    /**
      * @brief Copy a subtree into the current subtree
      *
      * @param root current subtree to copy into
@@ -131,10 +128,10 @@ private:
         if (!root)
             return nullptr;
 
-        Node* new_root = new Node(root->_value);
-        new_root->_left = this->copy(root->_left);
-        new_root->_right = this->copy(root->_right);
-        return new_root;
+        Node* node = new Node(root->_value);
+        node->_left = this->copy(root->_left);
+        node->_right = this->copy(root->_right);
+        return node;
     }
 
     /**
@@ -149,7 +146,7 @@ private:
             return new Node(val);
         if (node->_value < val)
             node->_right = this->insert(node->_right, val);
-        else
+        else if (node->_value > val)
             node->_left = this->insert(node->_left, val);
         return node;
     }
@@ -223,9 +220,7 @@ public:
     /**
      * @brief Destroy the Binary Search Tree object
      */
-    ~BinarySearchTree() {
-        this->make_empty();
-    }
+    ~BinarySearchTree() { this->make_empty(); }
 
     /**
      * @brief Copy assignment operator
@@ -249,32 +244,21 @@ public:
      * @return true if this tree contains the value
      * @return false otherwise
      */
-    bool contains(const Comparable& val) {
-        return this->contains(this->_root, val);
-    }
+    bool contains(const Comparable& val) { return this->contains(this->_root, val); }
 
     /**
      * @brief Insert a value into the tree
      *
      * @param val value to insert
      */
-    void insert(const Comparable& val) {
-        // cout << "bst.insert(" << std::to_string(val) << ");\n";
-        if (this->contains(val))
-            return;
-
-        this->_root = this->insert(this->_root, val);
-    }
+    void insert(const Comparable& val) { this->_root = this->insert(this->_root, val); }
 
     /**
      * @brief Remove a value from the tree
      *
      * @param val value to remove
      */
-    void remove(const Comparable& val) {
-        // cout << "bst.remove(" << std::to_string(val) << ");\n";
-        this->_root = this->remove(this->_root, val);
-    }
+    void remove(const Comparable& val) { this->_root = this->remove(this->_root, val); }
 
     /**
      * @brief find the smallest value in the tree
@@ -323,9 +307,7 @@ public:
      *
      * @return const Node* this->_root
      */
-    const Node* root() const {
-        return this->_root;
-    }
+    const Node* root() const { return this->_root; }
 
     // ----------------------- Optional ----------------------- //
 
@@ -354,14 +336,10 @@ public:
      * @return true if the tree is empty
      * @return false otherwise
      */
-    bool is_empty() const {
-        return !this->_root;
-    }
+    bool is_empty() const { return !this->_root; }
 
     /**
      * @brief Prevents memory leaks by dellocating the entire tree
      */
-    void make_empty() {
-        this->_root = this->clear(this->_root);
-    }
+    void make_empty() { this->_root = this->clear(this->_root); }
 };
