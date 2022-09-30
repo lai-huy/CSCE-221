@@ -74,8 +74,9 @@ public:
     };
 
 private:
-    Node* root;
+    Node* _root;
 
+    /*
     void rotateLeft(Node*& root, Node*& parent) {
         Node* right = parent->right;
         parent->right = right->left;
@@ -116,7 +117,7 @@ private:
         Node* parent_pt = nullptr;
         Node* grand_parent_pt = nullptr;
 
-        while ((node != this->root) && (node->color != Color::BLACK) && (node->parent->color == Color::RED)) {
+        while ((node != this->_root) && (node->color != Color::BLACK) && (node->parent->color == Color::RED)) {
             parent_pt = node->parent;
             grand_parent_pt = node->parent->parent;
             Node* uncle;
@@ -172,11 +173,89 @@ private:
             }
         }
 
-        this->root->color = Color::BLACK;
+        this->_root->color = Color::BLACK;
+    }*/
+
+    void rotateLeft(Node*& x) {
+        Node* y = x->right;
+        x->right = y->left;
+        if (y->left)
+            y->left->parent = x;
+        y->parent = x->parent;
+        if (!x->parent)
+            this->_root = y;
+        else if (x->isLeft())
+            x->parent->left = y;
+        else
+            x->parent->right = y;
+        y->left = x;
+        x->parent = y;
     }
 
+    void rotateRight(Node*& x) {
+        Node* y = x->left;
+        x->left = y->right;
+        if (y->right)
+            y->right->parent = x;
+        y->parent = x->parent;
+        if (y->parent)
+            this->_root = y;
+        else if (x->isRight())
+            x->parent->right = y;
+        else
+            x->parent->left = y;
+        y->right = x;
+        x->parent = y;
+    }
+
+    void fixInsert(Node* node) {
+        Node* uncle = node->uncle();
+        if (!uncle)
+            return;
+        while (node->parent->color == Color::BLACK) {
+            if (node->parent->isRight()) {
+                if (uncle->color == Color::RED) {
+                    uncle->color = Color::BLACK;
+                    node->parent->color = Color::BLACK;
+                    node->parent->parent->color = Color::RED;
+                    node = node->parent->parent;
+                } else {
+                    if (node->isLeft()) {
+                        node = node->parent;
+                        this->rotateRight(node);
+                    }
+                    node->parent->color = Color::BLACK;
+                    node->parent->parent->color = Color::RED;
+                    this->rotateLeft(node->parent->parent);
+                }
+            } else {
+                if (uncle->color == Color::RED) {
+                    uncle->color = Color::BLACK;
+                    node->parent->color = Color::BLACK;
+                    node->parent->parent->color = Color::RED;
+                    node = node->parent->parent;
+                } else {
+                    if (node->isRight()) {
+                        node = node->parent;
+                        this->rotateLeft(node);
+                    }
+                    node->parent->color = Color::BLACK;
+                    node->parent->parent->color = Color::RED;
+                    this->rotateRight(node->parent->parent);
+                }
+            }
+            if (node == this->_root)
+                break;
+        }
+
+        this->_root->color = Color::BLACK;
+    }
+
+    void remove(Node*& node) { cout << *node << "\n"; }
+
+    /*
     void fixDoubleBlack(Node*& node) {
-        if (node == this->root)
+        if (node == this->_root)
             return;
 
         Node* sibling = node->sibling(), * parent = node->parent;
@@ -251,8 +330,8 @@ private:
         switch (node->countChildren()) {
         case 0:
         {
-            if (node == this->root) {   // Node being removed is the root of the tree
-                this->root = nullptr;
+            if (node == this->_root) {   // Node being removed is the root of the tree
+                this->_root = nullptr;
             } else {
                 if (doubleBlack) {
                     this->fixDoubleBlack(node);
@@ -274,7 +353,7 @@ private:
         }
         case 1:
         {
-            if (node == this->root) { // Node being removed is the root of the tree, assign the value of replace to node, and delete replace
+            if (node == this->_root) { // Node being removed is the root of the tree, assign the value of replace to node, and delete replace
                 node->value = replace->value;
                 node->left = nullptr;
                 node->right = nullptr;
@@ -304,7 +383,6 @@ private:
         }
     }
 
-    /*
     void rotateLeft(Node*& node) {
         Node* y = node->right;
         node->right = y->left;
@@ -313,7 +391,7 @@ private:
 
         y->parent = node->parent;
         if (!node->parent)
-            this->root = y;
+            this->_root = y;
         else if (node->isLeft())
             node->parent->left = y;
         else
@@ -331,7 +409,7 @@ private:
 
         y->parent = node->parent;
         if (!node->parent)
-            this->root = y;
+            this->_root = y;
         else if (node->isRight())
             node->parent->right = y;
         else
@@ -376,11 +454,11 @@ private:
                 }
             }
 
-            if (node == this->root)
+            if (node == this->_root)
                 break;
         }
 
-        this->root->color = Color::BLACK;
+        this->_root->color = Color::BLACK;
     }
     */
 
@@ -459,16 +537,16 @@ private:
     }
 
 public:
-    RedBlackTree() : root{nullptr} {}
+    RedBlackTree() : _root{nullptr} {}
 
-    RedBlackTree(const RedBlackTree& rhs) : root{this->copy(rhs.get_root())} {}
+    RedBlackTree(const RedBlackTree& rhs) : _root{this->copy(rhs.get_root())} {}
 
     ~RedBlackTree() { this->make_empty(); }
 
     RedBlackTree& operator=(const RedBlackTree& rhs) {
         if (this != &rhs) {
             this->make_empty();
-            this->root = this->copy(rhs.get_root());
+            this->_root = this->copy(rhs.get_root());
         }
 
         return *this;
@@ -479,15 +557,15 @@ public:
             return;
 
         Node* z = new Node(value);
-        this->root = this->insert(this->root, z);
-        this->fixInsert(this->root, z);
+        this->_root = this->insert(this->_root, z);
+        this->fixInsert(z);
     }
 
     void remove(const Comparable& value) {
-        if (!this->root)
+        if (!this->_root)
             return;
 
-        Node* node = this->search(this->root, value);
+        Node* node = this->search(this->_root, value);
         if (!node)
             return;
 
@@ -495,14 +573,14 @@ public:
     }
 
     bool contains(const Comparable& value) const {
-        return this->search(this->root, value);
+        return this->search(this->_root, value);
     }
 
     const Comparable& find_min() const {
-        if (!this->root)
+        if (!this->_root)
             throw invalid_argument("Red Black Tree is empty");
 
-        Node* node = this->root;
+        Node* node = this->_root;
         while (node->left)
             node = node->left;
 
@@ -510,10 +588,10 @@ public:
     }
 
     const Comparable& find_max() const {
-        if (!this->root)
+        if (!this->_root)
             throw invalid_argument("Red Black Tree is empty");
 
-        Node* node = this->root;
+        Node* node = this->_root;
         while (node->right)
             node = node->right;
 
@@ -525,16 +603,16 @@ public:
     }
 
     const Node* get_root() const {
-        return this->root;
+        return this->_root;
     }
 
     // ----------------------- Optional ----------------------- //
-    // RedBlackTree(RedBlackTree&& rhs) : root{nullptr} { swap(this->root, rhs.root); }
+    // RedBlackTree(RedBlackTree&& rhs) : root{nullptr} { swap(this->_root, rhs.root); }
 
     // RedBlackTree& operator=(RedBlackTree&& rhs) {
     //     if (this != &rhs) {
-    //         this->root = this->clear(this->root);
-    //         swap(this->root, rhs.root);
+    //         this->_root = this->clear(this->_root);
+    //         swap(this->_root, rhs.root);
     //     }
 
     //     return *this;
@@ -547,16 +625,16 @@ public:
     //     Comparable v = Comparable();
     //     swap(v, value);
     //     Node* z = new Node(v);
-    //     this->root = this->insert(this->root, z);
-    //     this->fixInsert(this->root, z);
+    //     this->_root = this->insert(this->_root, z);
+    //     this->fixInsert(this->_root, z);
     // }
 
-    bool is_empty() const { return !this->root; }
+    bool is_empty() const { return !this->_root; }
 
-    void make_empty() { this->root = this->clear(this->root); }
+    void make_empty() { this->_root = this->clear(this->_root); }
 
     void print_tree(ostream& os = cout) const {
         size_t i = 0;
-        this->print_tree(this->root, os, i);
+        this->print_tree(this->_root, os, i);
     }
 };
