@@ -56,15 +56,33 @@ public:
          * @return true if this node is a leaf
          * @return false otherwise
          */
-        bool is_leaf() const {
-            return !this->_left && !this->_right;
-        }
+        bool is_leaf() const { return !this->_left && !this->_right; }
     };
 private:
     /**
      * @brief A pointer for the root of the AVL Tree.
      */
     Node* _root;
+
+    /**
+     * @brief Writes this tree into an ostream.
+     *
+     * @param root current subtree being written
+     * @param os ostream to write to
+     * @param trace how much to indent each line
+     */
+    void print_tree(Node* root, ostream& os, size_t trace) const {
+        if (!root) {
+            os << "<empty>\n";
+            return;
+        }
+
+        if (root->_right)
+            this->print_tree(root->_right, os, trace + 1);
+        os << string(trace * 2, ' ') << root->_value << "\n";
+        if (root->_left)
+            this->print_tree(root->_left, os, trace + 1);
+    }
 
     /**
      * @brief Determine the max of the two values supplied
@@ -96,6 +114,30 @@ private:
     }
 
     /**
+     * @brief Determine the height of a subtree
+     *
+     * @param root subtree to determine the height of
+     * @return long height of the subtree
+     */
+    long height(const Node* root) const { return root ? root->_height : 0; }
+
+    /**
+     * @brief Determine the balance factor of an inputed subtree
+     *
+     * @param root subtree to determine the balance factor of
+     * @return long balance factor
+     */
+    long balace_factor(Node*& root) const { return !root ? 0l : this->height(root->_left) - this->height(root->_right); }
+
+    /**
+     * @brief Calculates the raw height of a subtree
+     *
+     * @param root subtree to calculate the height of
+     * @return size_t height calculated
+     */
+    size_t calcHeight(Node*& root) const { return 1 + this->max(this->height(root->_left), this->height(root->_right)); }
+
+    /**
      * @brief Prevents memory leaks by deallocating the entire tree
      *
      * @param node current subtree being deallocated
@@ -110,26 +152,6 @@ private:
 
         node = nullptr;
         return node;
-    }
-
-    /**
-     * @brief Writes this tree into an ostream.
-     *
-     * @param root current subtree being written
-     * @param os ostream to write to
-     * @param trace how much to indent each line
-     */
-    void print_tree(Node* root, ostream& os, size_t trace) const {
-        if (!root) {
-            os << "<empty>\n";
-            return;
-        }
-
-        if (root->_right)
-            this->print_tree(root->_right, os, trace + 1);
-        os << string(trace * 2, ' ') << root->_value << "\n";
-        if (root->_left)
-            this->print_tree(root->_left, os, trace + 1);
     }
 
     /**
@@ -207,41 +229,6 @@ private:
 
         root = this->balance(root);
         return root;
-    }
-
-    /**
-     * @brief Determine the height of a subtree
-     *
-     * @param root subtree to determine the height of
-     * @return long height of the subtree
-     */
-    long height(const Node* root) const {
-        if (!root)
-            return 0;
-
-        return root->_height;
-    }
-
-    /**
-     * @brief Calculates the raw height of a subtree
-     *
-     * @param root subtree to calculate the height of
-     * @return size_t height calculated
-     */
-    size_t calcHeight(Node*& root) const {
-        return 1 + this->max(this->height(root->_left), this->height(root->_right));
-    }
-
-    /**
-     * @brief Determine the balance factor of an inputed subtree
-     *
-     * @param root subtree to determine the balance factor of
-     * @return long balance factor
-     */
-    long balace_factor(Node*& root) const {
-        return !root ?
-            0l :
-            this->height(root->_left) - this->height(root->_right);
     }
 
     /**

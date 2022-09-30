@@ -105,33 +105,52 @@ bool test_insert_pair() {
 	Set<int> set;
 	assert(set.size() == 0);
 
-	pair<Set_iterator<int>, bool> p = set.insert(7);
+	pair<Set_iterator<int>, bool> p(set.insert(7));
 	{
-		assert((*p.first).value() == 7);
+		assert(set.size() == 1);
+		assert(p.first->value() == 7);
 		assert(p.second);
 	}
 
 	p = set.insert(3);
 	{
-		assert((*p.first).value() == 3);
+		assert(set.size() == 2);
+		assert(p.first->value() == 3);
 		assert(p.second);
 	}
 
 	p = set.insert(11);
 	{
-		assert((*p.first).value() == 11);
+		assert(set.size() == 3);
+		assert(p.first->value() == 11);
 		assert(p.second);
 	}
 
 	p = set.insert(1);
 	{
-		assert((*p.first).value() == 1);
+		assert(set.size() == 4);
+		assert(p.first->value() == 1);
 		assert(p.second);
 	}
 
 	p = set.insert(5);
 	{
-		assert((*p.first).value() == 5);
+		assert(set.size() == 5);
+		assert(p.first->value() == 5);
+		assert(p.second);
+	}
+
+	p = set.insert(9);
+	{
+		assert(set.size() == 6);
+		assert(p.first->value() == 9);
+		assert(p.second);
+	}
+
+	p = set.insert(13);
+	{
+		assert(set.size() == 7);
+		assert(p.first->value() == 13);
 		assert(p.second);
 	}
 
@@ -142,8 +161,8 @@ int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
 	test(create);
-	test(insert_iter);
-	// test(insert_pair);
+	test(insert_pair);
+	// test(insert_iter);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";

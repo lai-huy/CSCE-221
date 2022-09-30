@@ -5,11 +5,13 @@ clean:
 
 set: clean my_set.h set_tests.cpp
 	g++ -std=c++17 -Wall -Wextra -Weffc++ -pedantic-errors -g --coverage -o main.out set_tests.cpp
-	./main.out && gcov -mr set_tests.cpp
+	./main.out
+	gcov -mr set_tests.cpp
 
 map: clean my_map.h map_tests.cpp
 	g++ -std=c++17 -Wall -Wextra -Weffc++ -pedantic-errors -g --coverage -o main.out map_tests.cpp
-	./main.out && gcov -mr map_tests.cpp
+	./main.out
+	gcov -mr map_tests.cpp
 
 set_memory_errors: clean my_set.h set_tests.cpp
 	g++ -std=c++17 -Wall -Wextra -Weffc++ -pedantic-errors -g -o valgrind.out set_tests.cpp
