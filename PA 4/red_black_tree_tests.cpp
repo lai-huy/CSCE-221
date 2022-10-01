@@ -2816,7 +2816,6 @@ bool test_fail() {
     rbt.insert(20);
     rbt.insert(29);
     rbt.insert(16);
-    rbt.print_tree();
 
     rbt.remove(21);
     rbt.remove(22);

@@ -176,7 +176,7 @@ private:
         this->_root->color = Color::BLACK;
     }*/
 
-    void rotateLeft(Node*& x) {
+    void rotateLeft(Node* x) {
         Node* y = x->right;
         x->right = y->left;
         if (y->left)
@@ -192,7 +192,7 @@ private:
         x->parent = y;
     }
 
-    void rotateRight(Node*& x) {
+    void rotateRight(Node* x) {
         Node* y = x->left;
         x->left = y->right;
         if (y->right)
@@ -208,44 +208,39 @@ private:
         x->parent = y;
     }
 
-    void fixInsert(Node* node) {
+    void fixInsert(Node*& node) {
+        this->_root->color = Color::BLACK;
+        if (node == this->_root) return;
+
         Node* uncle = node->uncle();
-        if (!uncle)
-            return;
-        while (node->parent->color == Color::BLACK) {
-            if (node->parent->isRight()) {
-                if (uncle->color == Color::RED) {
-                    uncle->color = Color::BLACK;
-                    node->parent->color = Color::BLACK;
-                    node->parent->parent->color = Color::RED;
-                    node = node->parent->parent;
-                } else {
-                    if (node->isLeft()) {
-                        node = node->parent;
-                        this->rotateRight(node);
-                    }
-                    node->parent->color = Color::BLACK;
-                    node->parent->parent->color = Color::RED;
-                    this->rotateLeft(node->parent->parent);
+        while (node->parent->color == Color::RED) {
+            if (uncle && uncle->color == Color::RED) {
+                uncle->color = Color::BLACK;
+                node->parent->color = Color::BLACK;
+                node->parent->parent->color = Color::RED;
+                node = node->parent->parent;
+            } else if (node->parent->isRight()) {
+                if (node->isLeft()) {
+                    node = node->parent;
+                    this->rotateRight(node);
                 }
+                node->parent->color = Color::BLACK;
+                node->parent->parent->color = Color::RED;
+                this->rotateLeft(node->parent->parent);
             } else {
-                if (uncle->color == Color::RED) {
-                    uncle->color = Color::BLACK;
-                    node->parent->color = Color::BLACK;
-                    node->parent->parent->color = Color::RED;
-                    node = node->parent->parent;
-                } else {
-                    if (node->isRight()) {
-                        node = node->parent;
-                        this->rotateLeft(node);
-                    }
-                    node->parent->color = Color::BLACK;
-                    node->parent->parent->color = Color::RED;
-                    this->rotateRight(node->parent->parent);
+                if (node->isRight()) {
+                    node = node->parent;
+                    this->rotateLeft(node);
                 }
+                node->parent->color = Color::BLACK;
+                node->parent->parent->color = Color::RED;
+                this->rotateRight(node->parent->parent);
             }
-            if (node == this->_root)
-                break;
+
+            this->print_tree();
+            cout << "\n";
+
+            if (node == this->_root) break;
         }
 
         this->_root->color = Color::BLACK;
@@ -558,7 +553,11 @@ public:
 
         Node* z = new Node(value);
         this->_root = this->insert(this->_root, z);
+        this->print_tree();
+        cout << "\nFix Insert\n";
         this->fixInsert(z);
+        this->print_tree();
+        cout << "\n----------------------------------------------\n";
     }
 
     void remove(const Comparable& value) {
@@ -572,9 +571,7 @@ public:
         this->remove(node);
     }
 
-    bool contains(const Comparable& value) const {
-        return this->search(this->_root, value);
-    }
+    bool contains(const Comparable& value) const { return this->search(this->_root, value); }
 
     const Comparable& find_min() const {
         if (!this->_root)
@@ -598,13 +595,9 @@ public:
         return node->value;
     }
 
-    int color(const Node* node) const {
-        return node ? node->color : Color::BLACK;
-    }
+    int color(const Node* node) const { return node ? node->color : Color::BLACK; }
 
-    const Node* get_root() const {
-        return this->_root;
-    }
+    const Node* get_root() const { return this->_root; }
 
     // ----------------------- Optional ----------------------- //
     // RedBlackTree(RedBlackTree&& rhs) : root{nullptr} { swap(this->_root, rhs.root); }
