@@ -1526,6 +1526,10 @@ bool test_remove_middle() {
         assert(root->right->left->left == nullptr);
         assert(root->right->left->right == nullptr);
         assert(root->right->right != nullptr);
+        assert(root->right->right->value == 12);
+        assert(root->right->right->color == RedBlackTree<int>::BLACK);
+        assert(root->right->right->left == nullptr);
+        assert(root->right->right->right == nullptr);
     }
 
     END_TEST;
@@ -2815,7 +2819,6 @@ bool test_fail() {
     rbt.insert(22);
     rbt.insert(20);
     rbt.insert(29);
-    rbt.insert(16);
 
     rbt.remove(21);
     rbt.remove(22);
@@ -2843,7 +2846,7 @@ int main() {
     // test(insert_rl);
     // test(insert_lr);
     // test(contains);
-    // test(remove_leaf);
+    test(remove_leaf);
     // test(remove_middle);
     // test(remove_root);
     // test(remove_root_l);
@@ -2862,7 +2865,7 @@ int main() {
     // test(node);
     // test(print);
     // test(print_empty);
-    test(fail);
+    // test(fail);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";

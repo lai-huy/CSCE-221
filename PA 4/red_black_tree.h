@@ -198,7 +198,7 @@ private:
         if (y->right)
             y->right->parent = x;
         y->parent = x->parent;
-        if (y->parent)
+        if (!x->parent)
             this->_root = y;
         else if (x->isRight())
             x->parent->right = y;
@@ -212,8 +212,9 @@ private:
         this->_root->color = Color::BLACK;
         if (node == this->_root) return;
 
-        Node* uncle = node->uncle();
+        Node* uncle;
         while (node->parent->color == Color::RED) {
+            uncle = node->uncle();
             if (uncle && uncle->color == Color::RED) {
                 uncle->color = Color::BLACK;
                 node->parent->color = Color::BLACK;
@@ -237,225 +238,136 @@ private:
                 this->rotateRight(node->parent->parent);
             }
 
-            this->print_tree();
-            cout << "\n";
-
             if (node == this->_root) break;
         }
 
         this->_root->color = Color::BLACK;
     }
 
-    void remove(Node*& node) { cout << *node << "\n"; }
-
-    /*
-    void fixDoubleBlack(Node*& node) {
-        if (node == this->_root)
+    void fixRemove(Node*& x) {
+        if (!x)
             return;
 
-        Node* sibling = node->sibling(), * parent = node->parent;
-        if (!sibling) // No sibiling, double black pushed up
-            this->fixDoubleBlack(parent);
-        else {
-            switch (sibling->color) {
-            case Color::RED:
-            {
-                parent->color = Color::RED;
-                sibling->color = Color::BLACK;
+        Node* sibling = x->sibling();
+        if (!sibling) {
+            x->color = Color::BLACK;
+            return;
+        }
 
-                if (sibling->isLeft()) // left case
-                    this->rotateRight(parent, parent->parent);
-                else // right case
-                    this->rotateLeft(parent, parent->parent);
+        while (x != this->_root && x->color == Color::BLACK) {
+            if (x->isLeft()) {
+                if (sibling->color == Color::RED) {
+                    sibling->color = Color::BLACK;
+                    x->parent->color = Color::RED;
+                    this->rotateLeft(x->parent);
+                    sibling = x->parent->right;
+                }
 
-                this->fixDoubleBlack(node);
-                break;
-            }
-            case Color::BLACK:
-            {
-                if (sibling->hasRedChild()) {
-                    // at least 1 red children
-                    if (sibling->left && sibling->left->color == Color::RED) {
-                        if (sibling->isLeft()) {
-                            // left left
-                            sibling->left->color = sibling->color;
-                            sibling->color = parent->color;
-                            this->rotateRight(parent, parent->parent);
-                        } else {
-                            // right left
-                            sibling->left->color = parent->color;
-                            this->rotateRight(sibling, sibling->parent);
-                            this->rotateLeft(parent, parent->parent);
-                        }
-                    } else {
-                        if (sibling->isLeft()) {
-                            // left right
-                            sibling->right->color = parent->color;
-                            this->rotateLeft(sibling, sibling->parent);
-                            this->rotateRight(parent, parent->parent);
-                        } else {
-                            // right right
-                            sibling->right->color = sibling->color;
-                            sibling->color = parent->color;
-                            this->rotateLeft(parent, parent->parent);
-                        }
-                    }
-                    parent->color = Color::BLACK;
-                } else {
-                    // 2 black children
+                if (sibling->left->color == Color::BLACK && sibling->right->color == Color::BLACK) {
                     sibling->color = Color::RED;
-                    if (parent->color == Color::BLACK)
-                        this->fixDoubleBlack(parent);
-                    else
-                        parent->color = Color::BLACK;
-                }
-                break;
-            }
-            }
-        }
-    }
-
-    void remove(Node*& node) {
-        Node* replace = this->replace(node);
-
-        // True when replace and node are both black
-        bool doubleBlack = node->isBlack() && (!replace || replace->isBlack());
-        Node* parent = node->parent;
-
-        switch (node->countChildren()) {
-        case 0:
-        {
-            if (node == this->_root) {   // Node being removed is the root of the tree
-                this->_root = nullptr;
-            } else {
-                if (doubleBlack) {
-                    this->fixDoubleBlack(node);
+                    x = x->parent;
                 } else {
-                    Node* sibling = node->sibling();
-                    if (sibling) // sibling is not null, make it red"
+                    if (sibling->right->color == Color::BLACK) {
+                        sibling->left->color = Color::BLACK;
                         sibling->color = Color::RED;
+                        this->rotateRight(sibling);
+                        sibling = x->parent->right;
+                    }
+
+                    sibling->color = x->parent->color;
+                    x->parent->color = Color::BLACK;
+                    sibling->right->color = Color::BLACK;
+                    this->rotateLeft(x->parent);
+                    x = this->_root;
+                }
+            } else {
+                if (sibling->color == Color::RED) {
+                    sibling->color = Color::BLACK;
+                    x->parent->color = Color::RED;
+                    this->rotateRight(x->parent);
+                    sibling = x->parent->left;
                 }
 
-                // delete root from the tree
-                if (node->isLeft())
-                    parent->left = nullptr;
-                else
-                    parent->right = nullptr;
-            }
+                if (sibling->left->color == Color::BLACK && sibling->right->color == Color::BLACK) {
+                    sibling->color = Color::RED;
+                    x = x->parent;
+                } else {
+                    if (sibling->left->color == Color::RED) {
+                        sibling->right->color = Color::BLACK;
+                        sibling->color = Color::RED;
+                        this->rotateLeft(sibling);
+                        sibling = x->parent->left;
+                    }
 
-            delete node;
-            return;
+                    sibling->color = x->parent->color;
+                    x->parent->color = Color::BLACK;
+                    sibling->left->color = Color::BLACK;
+                    this->rotateRight(x->parent);
+                    x = this->_root;
+                }
+            }
         }
+
+        x->color = Color::BLACK;
+    }
+
+    void transplant(Node*& u, Node*& v) {
+        if (!u->parent)
+            this->_root = v;
+        else if (u->isLeft())
+            u->parent->left = v;
+        else
+            u->parent->right = v;
+        if (v)
+            v->parent = u->parent;
+    }
+
+    void remove(Node*& z) {
+        Node* x = nullptr;
+        Node* y = z;
+        Color y_og_color = y->color;
+        switch (z->countChildren()) {
+        case 0:
+            break;
         case 1:
-        {
-            if (node == this->_root) { // Node being removed is the root of the tree, assign the value of replace to node, and delete replace
-                node->value = replace->value;
-                node->left = nullptr;
-                node->right = nullptr;
-                delete replace;
-            } else {
-                // Detach root from tree and move replace up
-                if (node->isLeft()) {
-                    parent->left = replace;
-                } else {
-                    parent->right = replace;
-                }
-
-                delete node;
-                replace->parent = parent;
-                if (doubleBlack) // replace and root both black, fix double black at replace
-                    this->fixDoubleBlack(replace);
-                else // replace or root red, color replace black
-                    replace->color = Color::BLACK;
+            if (!z->left) {
+                x = z->right;
+                this->transplant(z, z->right);
+            } else if (!z->right) {
+                x = z->left;
+                this->transplant(z, z->left);
             }
-            return;
-        }
+            break;
         case 2:
-        {
-            std::swap(replace->value, node->value);
-            this->remove(replace);
-        }
-        }
-    }
-
-    void rotateLeft(Node*& node) {
-        Node* y = node->right;
-        node->right = y->left;
-        if (y->left)
-            y->left->parent = node;
-
-        y->parent = node->parent;
-        if (!node->parent)
-            this->_root = y;
-        else if (node->isLeft())
-            node->parent->left = y;
-        else
-            node->parent->right = y;
-
-        y->left = node;
-        node->parent = y;
-    }
-
-    void rotateRight(Node*& node) {
-        Node* y = node->left;
-        node->left = y->right;
-        if (y->right)
-            y->right->parent = node;
-
-        y->parent = node->parent;
-        if (!node->parent)
-            this->_root = y;
-        else if (node->isRight())
-            node->parent->right = y;
-        else
-            node->parent->left = y;
-
-        y->right = node;
-        node->parent = y;
-    }
-
-    void fixInsert(Node*& node) {
-        Node* uncle = node->uncle();
-        while (node->parent && node->parent->color == Color::RED) {
-            if (node->parent->isRight()) {
-                if (uncle->color == Color::RED) {
-                    uncle->color = Color::BLACK;
-                    node->parent->color = Color::BLACK;
-                    node->parent->parent->color = Color::RED;
-                    node = node->parent->parent;
-                } else {
-                    if (node->isLeft()) {
-                        node = node->parent;
-                        this->rotateRight(node);
-                    }
-                    node->parent->color = Color::BLACK;
-                    node->parent->parent->color = Color::RED;
-                    this->rotateLeft(node->parent->parent);
-                }
+            y = this->find_min(z->right);
+            y_og_color = y->color;
+            x = y->right;
+            if (y->parent == z) {
+                if (x)
+                    x->parent = z;
             } else {
-                if (uncle->color == Color::RED) {
-                    uncle->color = Color::BLACK;
-                    node->parent->color = Color::BLACK;
-                    node->parent->parent->color = Color::RED;
-                    node = node->parent->parent;
-                } else {
-                    if (node == node->parent->right) {
-                        node = node->parent;
-                        this->rotateLeft(node);
-                    }
-                    node->parent->color = Color::BLACK;
-                    node->parent->parent->color = Color::RED;
-                    this->rotateRight(node->parent->parent);
-                }
+                this->transplant(y, y->right);
+                y->right = z->right;
+                y->right->parent = y;
             }
 
-            if (node == this->_root)
-                break;
+            this->transplant(z, y);
+            y->left = z->left;
+            if (y->left)
+                y->left->parent = y;
+            y->color = z->color;
+            break;
         }
 
-        this->_root->color = Color::BLACK;
+        if (z->isLeft())
+            z->parent->left = nullptr;
+        else
+            z->parent->right = nullptr;
+        delete z;
+        z = nullptr;
+        if (y_og_color == Color::RED)
+            this->fixRemove(x);
     }
-    */
 
     Node* search(Node* root, const Comparable& value) const {
         if (!root)
@@ -553,11 +465,7 @@ public:
 
         Node* z = new Node(value);
         this->_root = this->insert(this->_root, z);
-        this->print_tree();
-        cout << "\nFix Insert\n";
         this->fixInsert(z);
-        this->print_tree();
-        cout << "\n----------------------------------------------\n";
     }
 
     void remove(const Comparable& value) {
