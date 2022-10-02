@@ -325,9 +325,13 @@ private:
     void remove(Node*& z) {
         Node* x = nullptr;
         Node* y = z;
-        Color y_og_color = y->color;
+        Color color = y->color;
         switch (z->countChildren()) {
         case 0:
+            if (z->isLeft())
+                z->parent->left = nullptr;
+            else if (z->isRight())
+                z->parent->right = nullptr;
             break;
         case 1:
             if (!z->left) {
@@ -340,7 +344,7 @@ private:
             break;
         case 2:
             y = this->find_min(z->right);
-            y_og_color = y->color;
+            color = y->color;
             x = y->right;
             if (y->parent == z) {
                 if (x)
@@ -359,13 +363,11 @@ private:
             break;
         }
 
-        if (z->isLeft())
-            z->parent->left = nullptr;
-        else
-            z->parent->right = nullptr;
+        if (z == this->_root)
+            this->_root = nullptr;
         delete z;
         z = nullptr;
-        if (y_og_color == Color::RED)
+        if (color == Color::RED)
             this->fixRemove(x);
     }
 
