@@ -1789,6 +1789,118 @@ bool test_remove_root() {
         assert(root->right->right->right->right == nullptr);
     }
 
+    rbt.remove(8);
+    {
+        const RedBlackTree<int>::Node* root = rbt.get_root();
+        assert(root != nullptr);
+        assert(root->value == 9);
+        assert(root->color == RedBlackTree<int>::BLACK);
+        assert(root->left != nullptr);
+        assert(root->left->value == 3);
+        assert(root->left->color == RedBlackTree<int>::RED);
+        assert(root->left->left != nullptr);
+        assert(root->left->left->value == 1);
+        assert(root->left->left->color == RedBlackTree<int>::BLACK);
+        assert(root->left->left->left != nullptr);
+        assert(root->left->left->left->value == 0);
+        assert(root->left->left->left->color == RedBlackTree<int>::RED);
+        assert(root->left->left->left->left == nullptr);
+        assert(root->left->left->left->right == nullptr);
+        assert(root->left->left->right != nullptr);
+        assert(root->left->left->right->value == 2);
+        assert(root->left->left->right->color == RedBlackTree<int>::RED);
+        assert(root->left->left->right->left == nullptr);
+        assert(root->left->left->right->right == nullptr);
+        assert(root->left->right != nullptr);
+        assert(root->left->right->value == 5);
+        assert(root->left->right->color == RedBlackTree<int>::BLACK);
+        assert(root->left->right->left != nullptr);
+        assert(root->left->right->left->value == 4);
+        assert(root->left->right->left->color == RedBlackTree<int>::RED);
+        assert(root->left->right->left->left == nullptr);
+        assert(root->left->right->left->right == nullptr);
+        assert(root->left->right->right != nullptr);
+        assert(root->left->right->right->value == 6);
+        assert(root->left->right->right->color == RedBlackTree<int>::RED);
+        assert(root->left->right->right->left == nullptr);
+        assert(root->left->right->right->right == nullptr);
+        assert(root->right != nullptr);
+        assert(root->right->value == 11);
+        assert(root->right->color == RedBlackTree<int>::RED);
+        assert(root->right->left != nullptr);
+        assert(root->right->left->value == 10);
+        assert(root->right->left->color == RedBlackTree<int>::BLACK);
+        assert(root->right->left->left == nullptr);
+        assert(root->right->left->right == nullptr);
+        assert(root->right->right != nullptr);
+        assert(root->right->right->value == 13);
+        assert(root->right->right->color == RedBlackTree<int>::BLACK);
+        assert(root->right->right->left != nullptr);
+        assert(root->right->right->left->value == 12);
+        assert(root->right->right->left->color == RedBlackTree<int>::RED);
+        assert(root->right->right->left->left == nullptr);
+        assert(root->right->right->left->right == nullptr);
+        assert(root->right->right->right != nullptr);
+        assert(root->right->right->right->value == 14);
+        assert(root->right->right->right->color == RedBlackTree<int>::RED);
+        assert(root->right->right->right->left == nullptr);
+        assert(root->right->right->right->right == nullptr);
+    }
+
+    rbt.remove(9);
+    {
+        const RedBlackTree<int>::Node* root = rbt.get_root();
+        assert(root != nullptr);
+        assert(root->value == 10);
+        assert(root->color == RedBlackTree<int>::BLACK);
+        assert(root->left != nullptr);
+        assert(root->left->value == 3);
+        assert(root->left->color == RedBlackTree<int>::RED);
+        assert(root->left->left != nullptr);
+        assert(root->left->left->value == 1);
+        assert(root->left->left->color == RedBlackTree<int>::BLACK);
+        assert(root->left->left->left != nullptr);
+        assert(root->left->left->left->value == 0);
+        assert(root->left->left->left->color == RedBlackTree<int>::RED);
+        assert(root->left->left->left->left == nullptr);
+        assert(root->left->left->left->right == nullptr);
+        assert(root->left->left->right != nullptr);
+        assert(root->left->left->right->value == 2);
+        assert(root->left->left->right->color == RedBlackTree<int>::RED);
+        assert(root->left->left->right->left == nullptr);
+        assert(root->left->left->right->right == nullptr);
+        assert(root->left->right != nullptr);
+        assert(root->left->right->value == 5);
+        assert(root->left->right->color == RedBlackTree<int>::BLACK);
+        assert(root->left->right->left != nullptr);
+        assert(root->left->right->left->value == 4);
+        assert(root->left->right->left->color == RedBlackTree<int>::RED);
+        assert(root->left->right->left->left == nullptr);
+        assert(root->left->right->left->right == nullptr);
+        assert(root->left->right->right != nullptr);
+        assert(root->left->right->right->value == 6);
+        assert(root->left->right->right->color == RedBlackTree<int>::RED);
+        assert(root->left->right->right->left == nullptr);
+        assert(root->left->right->right->right == nullptr);
+        assert(root->right != nullptr);
+        assert(root->right->value == 11);
+        assert(root->right->color == RedBlackTree<int>::RED);
+        assert(root->right->left == nullptr);
+        assert(root->right->right != nullptr);
+        assert(root->right->right->value == 13);
+        assert(root->right->right->color == RedBlackTree<int>::BLACK);
+        assert(root->right->right->left != nullptr);
+        assert(root->right->right->left->value == 12);
+        assert(root->right->right->left->color == RedBlackTree<int>::RED);
+        assert(root->right->right->left->left == nullptr);
+        assert(root->right->right->left->right == nullptr);
+        assert(root->right->right->right != nullptr);
+        assert(root->right->right->right->value == 14);
+        assert(root->right->right->right->color == RedBlackTree<int>::RED);
+        assert(root->right->right->right->left == nullptr);
+        assert(root->right->right->right->right == nullptr);
+    }
+
     END_TEST;
 }
 
@@ -2866,8 +2978,9 @@ bool test_self_assignment() {
 }
 
 bool test_node() {
-    RedBlackTree<int>::Node node = RedBlackTree<int>::Node(0, static_cast<RedBlackTree<int>::Color>(4));
+    RedBlackTree<int>::Node node = RedBlackTree<int>::Node(INT32_MAX, static_cast<RedBlackTree<int>::Color>(4));
     assert(node.sibling() == nullptr);
+    assert(node.uncle() == nullptr);
     cout << node << "\n";
 
     END_TEST;
@@ -3000,35 +3113,35 @@ bool test_fail() {
 int main() {
     unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
-    // test(create);
-    // test(insert);
-    // test(insert_duplicate);
-    // test(insert_dup_many);
-    // test(insert_right);
-    // test(insert_left);
-    // test(insert_rl);
-    // test(insert_lr);
-    // test(contains);
-    // test(remove_leaf);
-    // test(remove_middle);
+    test(create);
+    test(insert);
+    test(insert_duplicate);
+    test(insert_dup_many);
+    test(insert_right);
+    test(insert_left);
+    test(insert_rl);
+    test(insert_lr);
+    test(contains);
+    test(remove_leaf);
+    test(remove_middle);
     test(remove_root);
-    // test(remove_root_l);
-    // test(remove_root_r);
-    // test(remove_empty);
-    // test(remove_invalid);
-    // test(find_min);
-    // test(find_min_empty);
-    // test(find_max);
-    // test(find_max_empty);
-    // test(copy);
-    // test(copy_empty);
-    // test(copy_oper);
-    // test(copy_oper_empty);
-    // test(self_assignment);
-    // test(node);
-    // test(print);
-    // test(print_empty);
-    // test(fail);
+    test(remove_root_l);
+    test(remove_root_r);
+    test(remove_empty);
+    test(remove_invalid);
+    test(find_min);
+    test(find_min_empty);
+    test(find_max);
+    test(find_max_empty);
+    test(copy);
+    test(copy_empty);
+    test(copy_oper);
+    test(copy_oper_empty);
+    test(self_assignment);
+    test(node);
+    test(print);
+    test(print_empty);
+    test(fail);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";

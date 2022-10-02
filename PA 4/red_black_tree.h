@@ -367,7 +367,7 @@ private:
             this->_root = nullptr;
         delete z;
         z = nullptr;
-        if (color == Color::RED)
+        if (color == Color::BLACK)
             this->fixRemove(x);
     }
 
