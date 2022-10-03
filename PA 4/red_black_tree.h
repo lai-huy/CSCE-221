@@ -12,21 +12,68 @@ using std::invalid_argument;
 using std::string, std::wstring;
 using std::swap;
 
+/**
+ * @brief A self-balancing Binary Search Tree.
+ *
+ * @tparam Comparable a data type that overloads the comparison operators
+ */
 template <typename Comparable>
 class RedBlackTree {
 public:
+    /**
+     * @brief An Extra bit that is used to ensure that the tree remains balanced during insertions and deletions.
+     */
     enum Color { RED = 0, BLACK = 1 };
 
+    /**
+     * @brief Internal Node structure
+     */
     struct Node {
+        /**
+         * @brief value stored in the node
+         */
         Comparable value;
+
+        /**
+         * @brief The Color of the node
+         */
         Color color;
+
+        /**
+         * @brief A pointer to the left child
+         */
         Node* left;
+
+        /**
+         * @brief A pointer to the right child
+         */
         Node* right;
+
+        /**
+         * @brief A pointer to the parent
+         */
         Node* parent;
 
-        Node(const Comparable& value) : value{Comparable(value)}, color{Color::RED}, left{nullptr}, right{nullptr}, parent{nullptr} {}
+        /**
+         * @brief Construct a new Node object
+         *
+         * @param value value to store in the node
+         */
+        Node(const Comparable& value) : Node(value, Color::RED) {}
+
+        /**
+         * @brief Construct a new Node object
+         *
+         * @param value value to store in the node
+         * @param color Color of the node
+         */
         Node(const Comparable& value, const Color& color) : value{Comparable(value)}, color{color}, left{nullptr}, right{nullptr}, parent{nullptr} {}
 
+        /**
+         * @brief Converts the color of the node to a string
+         *
+         * @return string string representation of the color of the node
+         */
         string colorToString() const {
             switch (this->color) {
             case RED:
@@ -38,31 +85,61 @@ public:
             }
         }
 
+        /**
+         * @brief flushed this node to an ostream
+         *
+         * @param os ostream to flush to
+         * @param node node to flush
+         * @return ostream& ostream to flush to
+         */
         friend ostream& operator<<(ostream& os, const Node& node) {
             os << node.colorToString() << ":" << node.value;
             return os;
         }
 
+        /**
+         * @brief Determines if this node is the left child of its parrent
+         *
+         * @return true if this node is the left child of its parrent
+         * @return false otherwise
+         */
         bool isLeft() const { return this->parent ? this == this->parent->left : false; }
 
+        /**
+         * @brief Determines if the node is the right child of its parrent
+         *
+         * @return true if this node it the right child of its parrent
+         * @return false otherwise
+         */
         bool isRight() const { return this->parent ? this == this->parent->right : false; }
 
-        bool hasRedChild() { return (this->left && this->left->color == Color::RED) || (this->right && this->right->color == Color::RED); }
-
-        bool isBlack() const { return this->color == Color::BLACK; }
-
+        /**
+         * @brief Gets the sibling of this node
+         *
+         * @return Node* pointer to the sibling of this node
+         */
         Node* sibling() const {
             if (!this->parent)
                 return nullptr;
             return this->isLeft() ? this->parent->right : this->parent->left;
         }
 
+        /**
+         * @brief Gets the uncle of this node
+         *
+         * @return Node* pointer to the uncle of this node
+         */
         Node* uncle() const {
             if (!this->parent)
                 return nullptr;
             return this->parent->sibling();
         }
 
+        /**
+         * @brief Counts the number of children this node has
+         *
+         * @return size_t the number of children this node has
+         */
         size_t countChildren() {
             size_t count = 0;
             if (this->left)
@@ -74,140 +151,58 @@ public:
     };
 
 private:
+    /**
+     * @brief a pointer to the root of the 🟥⬛ Tree
+     */
     Node* _root;
 
-    /*
-    void rotateLeft(Node*& root, Node*& parent) {
-        Node* right = parent->right;
-        parent->right = right->left;
-
-        if (parent->right)
-            parent->right->parent = parent;
-        right->parent = parent->parent;
-        if (!parent->parent)
-            root = right;
-        else if (parent == parent->parent->left)
-            parent->parent->left = right;
-        else
-            parent->parent->right = right;
-
-        right->left = parent;
-        parent->parent = right;
-    }
-
-    void rotateRight(Node*& root, Node*& parent) {
-        Node* left = parent->left;
-        parent->left = left->right;
-
-        if (parent->left)
-            parent->left->parent = parent;
-        left->parent = parent->parent;
-        if (!parent->parent)
-            root = left;
-        else if (parent == parent->parent->left)
-            parent->parent->left = left;
-        else
-            parent->parent->right = left;
-
-        left->right = parent;
-        parent->parent = left;
-    }
-
-    void fixInsert(Node*& root, Node*& node) {
-        Node* parent_pt = nullptr;
-        Node* grand_parent_pt = nullptr;
-
-        while ((node != this->_root) && (node->color != Color::BLACK) && (node->parent->color == Color::RED)) {
-            parent_pt = node->parent;
-            grand_parent_pt = node->parent->parent;
-            Node* uncle;
-
-            // Case : A Parent of pt is left child of Grand-parent of pt
-            if (parent_pt == grand_parent_pt->left) {
-                uncle = grand_parent_pt->right;
-
-                // Case : 1 The uncle of pt is also red Only Recoloring required
-                if (uncle && uncle->color == Color::RED) {
-                    grand_parent_pt->color = Color::RED;
-                    parent_pt->color = Color::BLACK;
-                    uncle->color = Color::BLACK;
-                    node = grand_parent_pt;
-                } else {
-                    // Case : 2 pt is right child of its parent Left-rotation required
-                    if (node == parent_pt->right) {
-                        this->rotateLeft(root, parent_pt);
-                        node = parent_pt;
-                        parent_pt = node->parent;
-                    }
-
-                    // Case : 3 pt is left child of its parent Right-rotation required
-                    this->rotateRight(root, grand_parent_pt);
-                    std::swap(parent_pt->color, grand_parent_pt->color);
-                    node = parent_pt;
-                }
-            }
-
-            // Case : B Parent of pt is right child of Grand-parent of pt
-            else {
-                uncle = grand_parent_pt->left;
-
-                //  Case : 1 The uncle of pt is also red Only Recoloring required
-                if (uncle && uncle->color == Color::RED) {
-                    grand_parent_pt->color = Color::RED;
-                    parent_pt->color = Color::BLACK;
-                    uncle->color = Color::BLACK;
-                    node = grand_parent_pt;
-                } else {
-                    // Case : 2 pt is left child of its parent Right-rotation required
-                    if (node == parent_pt->left) {
-                        this->rotateRight(root, parent_pt);
-                        node = parent_pt;
-                        parent_pt = node->parent;
-                    }
-
-                    // Case : 3 pt is right child of its parent Left-rotation required
-                    this->rotateLeft(root, grand_parent_pt);
-                    std::swap(parent_pt->color, grand_parent_pt->color);
-                    node = parent_pt;
-                }
-            }
-        }
-
-        this->_root->color = Color::BLACK;
-    }*/
-
-    void rotateLeft(Node* x) {
-        Node* y = x->right;
-        x->right = y->left;
+    /**
+     * @brief Rotate leftwards arround an inputed node
+     *
+     * @param node a pointer to the root to rotate arround
+     */
+    void rotateLeft(Node* node) {
+        Node* y = node->right;
+        node->right = y->left;
         if (y->left)
-            y->left->parent = x;
-        y->parent = x->parent;
-        if (!x->parent)
+            y->left->parent = node;
+        y->parent = node->parent;
+        if (!node->parent)
             this->_root = y;
-        else if (x->isLeft())
-            x->parent->left = y;
+        else if (node->isLeft())
+            node->parent->left = y;
         else
-            x->parent->right = y;
-        y->left = x;
-        x->parent = y;
+            node->parent->right = y;
+        y->left = node;
+        node->parent = y;
     }
 
-    void rotateRight(Node* x) {
-        Node* y = x->left;
-        x->left = y->right;
+    /**
+     * @brief Rotate rightwards arround an inputed node
+     *
+     * @param node a pointer to the root to rotates arround
+     */
+    void rotateRight(Node* node) {
+        Node* y = node->left;
+        node->left = y->right;
         if (y->right)
-            y->right->parent = x;
-        y->parent = x->parent;
-        if (!x->parent)
+            y->right->parent = node;
+        y->parent = node->parent;
+        if (!node->parent)
             this->_root = y;
-        else if (x->isRight())
-            x->parent->right = y;
+        else if (node->isRight())
+            node->parent->right = y;
         else
-            x->parent->left = y;
-        y->right = x;
-        x->parent = y;
+            node->parent->left = y;
+        y->right = node;
+        node->parent = y;
     }
 
+    /**
+     * @brief Fix violations incured by the insert
+     *
+     * @param node a pointer to the inserted node
+     */
     void fixInsert(Node*& node) {
         this->_root->color = Color::BLACK;
         if (node == this->_root) return;
@@ -244,6 +239,11 @@ private:
         this->_root->color = Color::BLACK;
     }
 
+    /**
+     * @brief Fix violation incurred by the remove
+     *
+     * @param x a pointer to the node removed
+     */
     void fixRemove(Node*& x) {
         if (!x)
             return;
@@ -311,6 +311,12 @@ private:
         x->color = Color::BLACK;
     }
 
+    /**
+     * @brief Tranplant into the tree
+     *
+     * @param u a pointer to the node to tranplant into
+     * @param v a pointer to the node being transplanted
+     */
     void transplant(Node*& u, Node*& v) {
         if (!u->parent)
             this->_root = v;
@@ -322,55 +328,67 @@ private:
             v->parent = u->parent;
     }
 
-    void remove(Node*& z) {
+    /**
+     * @brief Remove a node from the Tree
+     *
+     * @param z a pointer to the node being removed
+     */
+    void remove(Node*& node) {
         Node* x = nullptr;
-        Node* y = z;
+        Node* y = node;
         Color color = y->color;
-        switch (z->countChildren()) {
+        switch (node->countChildren()) {
         case 0:
-            if (z->isLeft())
-                z->parent->left = nullptr;
-            else if (z->isRight())
-                z->parent->right = nullptr;
+            if (node->isLeft())
+                node->parent->left = nullptr;
+            else if (node->isRight())
+                node->parent->right = nullptr;
             break;
         case 1:
-            if (!z->left) {
-                x = z->right;
-                this->transplant(z, z->right);
-            } else if (!z->right) {
-                x = z->left;
-                this->transplant(z, z->left);
+            if (!node->left) {
+                x = node->right;
+                this->transplant(node, node->right);
+            } else if (!node->right) {
+                x = node->left;
+                this->transplant(node, node->left);
             }
             break;
         case 2:
-            y = this->find_min(z->right);
+            y = this->find_min(node->right);
             color = y->color;
             x = y->right;
-            if (y->parent == z) {
+            if (y->parent == node) {
                 if (x)
-                    x->parent = z;
+                    x->parent = node;
             } else {
                 this->transplant(y, y->right);
-                y->right = z->right;
+                y->right = node->right;
                 y->right->parent = y;
             }
 
-            this->transplant(z, y);
-            y->left = z->left;
+            this->transplant(node, y);
+            y->left = node->left;
             if (y->left)
                 y->left->parent = y;
-            y->color = z->color;
+            y->color = node->color;
             break;
         }
 
-        if (z == this->_root)
+        if (node == this->_root)
             this->_root = nullptr;
-        delete z;
-        z = nullptr;
+        delete node;
+        node = nullptr;
         if (color == Color::BLACK)
             this->fixRemove(x);
     }
 
+    /**
+     * @brief Search for a node in a subtree
+     *
+     * @param root current subtree being searched
+     * @param value value to search for
+     * @return Node* a pointer to the node with the value found. Or nullptr if value is not found.
+     */
     Node* search(Node* root, const Comparable& value) const {
         if (!root)
             return nullptr;
@@ -379,6 +397,13 @@ private:
         return root->value < value ? this->search(root->right, value) : this->search(root->left, value);
     }
 
+    /**
+     * @brief Insert a node into the tree
+     *
+     * @param root a pointer to the current subtree to insert into
+     * @param value a pointer to the node being inserted
+     * @return Node* a pointer to the current subtree to insert into
+     */
     Node* insert(Node*& root, Node*& value) {
         if (!root)
             return value;
@@ -393,6 +418,12 @@ private:
         return root;
     }
 
+    /**
+     * @brief Prevents memory leaks by deallocated a subtree
+     *
+     * @param root subtree currently being deallocated
+     * @return Node* nullptr
+     */
     Node* clear(Node*& root) {
         if (root) {
             root->left = this->clear(root->left);
@@ -404,6 +435,12 @@ private:
         return nullptr;
     }
 
+    /**
+     * @brief Makes a copy of a subtree
+     *
+     * @param root subtree being coppied from
+     * @return Node* new subtree created.
+     */
     Node* copy(const Node* root) {
         if (!root)
             return nullptr;
@@ -414,24 +451,26 @@ private:
         return node;
     }
 
-    Node* replace(Node*& root) const {
-        switch (root->countChildren()) {
-        case 1:
-            return root->right ? root->right : root->left;
-        case 2:
-            return this->find_min(root->right);
-        default:
-            return nullptr;
-        }
-    }
-
-    Node* find_min(Node*& root) const {
+    /**
+     * @brief Searched for the node with the smallest value in a subtree
+     *
+     * @param root subtree to search through
+     * @return Node* a pointer to the node with the smallest value
+     */
+    Node* find_min(Node* root) const {
         Node* node = root;
         while (node && node->left)
             node = node->left;
         return node;
     }
 
+    /**
+     * @brief Prints a subtree so an ostream
+     *
+     * @param root current subtree being flushed
+     * @param os ostream to flush to
+     * @param trace how much to indent each line
+     */
     void print_tree(const Node* root, ostream& os, size_t trace) const {
         if (!root) {
             os << "<empty>\n";
@@ -446,12 +485,29 @@ private:
     }
 
 public:
+    /**
+     * @brief Construct a new Red Black Tree object
+     */
     RedBlackTree() : _root{nullptr} {}
 
+    /**
+     * @brief Construct a new Red Black Tree object
+     *
+     * @param rhs RedBlackTree to copy from
+     */
     RedBlackTree(const RedBlackTree& rhs) : _root{this->copy(rhs.get_root())} {}
 
+    /**
+     * @brief Destroy the Red Black Tree object
+     */
     ~RedBlackTree() { this->make_empty(); }
 
+    /**
+     * @brief Copy assignment operator
+     *
+     * @param rhs Red Black Tree to copy from
+     * @return RedBlackTree& *this
+     */
     RedBlackTree& operator=(const RedBlackTree& rhs) {
         if (this != &rhs) {
             this->make_empty();
@@ -461,15 +517,25 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Insert a value into the tree
+     *
+     * @param value Comparable to insert
+     */
     void insert(const Comparable& value) {
         if (this->contains(value))
             return;
 
-        Node* z = new Node(value);
-        this->_root = this->insert(this->_root, z);
-        this->fixInsert(z);
+        Node* node = new Node(value);
+        this->_root = this->insert(this->_root, node);
+        this->fixInsert(node);
     }
 
+    /**
+     * @brief Remove a value from the tree
+     *
+     * @param value Comparable to remove
+     */
     void remove(const Comparable& value) {
         if (!this->_root)
             return;
@@ -481,19 +547,32 @@ public:
         this->remove(node);
     }
 
+    /**
+     * @brief Determine if this tree contains a value
+     *
+     * @param value Comparable to search for
+     * @return true if the tree contains the value
+     * @return false otherwise
+     */
     bool contains(const Comparable& value) const { return this->search(this->_root, value); }
 
+    /**
+     * @brief Determines the smallest value in the tree
+     *
+     * @return const Comparable& the smallest value in the tree
+     */
     const Comparable& find_min() const {
         if (!this->_root)
             throw invalid_argument("Red Black Tree is empty");
 
-        Node* node = this->_root;
-        while (node->left)
-            node = node->left;
-
-        return node->value;
+        return this->find_min(this->_root)->value;
     }
 
+    /**
+     * @brief Determines the largest value in the tree
+     *
+     * @return const Comparable& the largest value in the tree
+     */
     const Comparable& find_max() const {
         if (!this->_root)
             throw invalid_argument("Red Black Tree is empty");
@@ -505,8 +584,19 @@ public:
         return node->value;
     }
 
+    /**
+     * @brief Determine the Color of a node
+     *
+     * @param node a pointer to a node to determine the color of
+     * @return int Color of the node
+     */
     int color(const Node* node) const { return node ? node->color : Color::BLACK; }
 
+    /**
+     * @brief Get the root object
+     *
+     * @return const Node* a pointer the the root of the tree
+     */
     const Node* get_root() const { return this->_root; }
 
     // ----------------------- Optional ----------------------- //
@@ -532,10 +622,24 @@ public:
     //     this->fixInsert(this->_root, z);
     // }
 
+    /**
+     * @brief Determine if the tree is empty
+     *
+     * @return true if the tree is empty
+     * @return false otherwise
+     */
     bool is_empty() const { return !this->_root; }
 
+    /**
+     * @brief Prevents memory leaks by deallocating the entire tree
+     */
     void make_empty() { this->_root = this->clear(this->_root); }
 
+    /**
+     * @brief Flushes the entire tree to an ostream
+     *
+     * @param os ostream to flush to, cout by default
+     */
     void print_tree(ostream& os = cout) const {
         size_t i = 0;
         this->print_tree(this->_root, os, i);
