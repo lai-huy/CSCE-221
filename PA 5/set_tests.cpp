@@ -84,23 +84,6 @@ bool test_create() {
 	END_TEST;
 }
 
-bool test_insert_iter() {
-	Set<int> set;
-	assert(set.size() == 0);
-
-	Set_iterator<int> iter = set.insert(set.begin(), 7);
-	assert(set.size() == 1);
-	assert(iter->value() == 7);
-	expect_throw(++iter, runtime_error);
-	expect_throw(--iter, runtime_error);
-
-	iter = set.insert(iter, 3);
-	assert(set.size() == 2);
-	assert(iter->value() == 3);
-
-	END_TEST;
-}
-
 bool test_insert_pair() {
 	Set<int> set;
 	assert(set.size() == 0);
@@ -157,12 +140,29 @@ bool test_insert_pair() {
 	END_TEST;
 }
 
+bool test_insert_iter() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	Set_iterator<int> iter = set.insert(set.begin(), 7);
+	assert(set.size() == 1);
+	assert(iter->value() == 7);
+	expect_throw(++iter, runtime_error);
+	expect_throw(--iter, runtime_error);
+
+	iter = set.insert(iter, 3);
+	assert(set.size() == 2);
+	assert(iter->value() == 3);
+
+	END_TEST;
+}
+
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
 	test(create);
 	test(insert_pair);
-	// test(insert_iter);
+	test(insert_iter);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";
