@@ -9,6 +9,7 @@
 using std::ostream, std::cout;
 using std::invalid_argument;
 using std::string;
+using std::swap;
 
 /**
  * @brief A Binary Search Tree
@@ -108,7 +109,7 @@ private:
      * @param root current subtree being cleared
      * @return Node* nullptr
      */
-    Node* clear(Node* root) {
+    Node* clear(Node*& root) {
         if (root) {
             root->_left = this->clear(root->_left);
             root->_right = this->clear(root->_right);
@@ -311,24 +312,22 @@ public:
 
     // ----------------------- Optional ----------------------- //
 
-    // BinarySearchTree(BinarySearchTree&& rhs) : _root{rhs.root()} {
-    //     rhs._root = nullptr; 
-    // }
+    BinarySearchTree(BinarySearchTree&& rhs) : _root{rhs.root()} { rhs._root = nullptr; }
 
-    // BinarySearchTree& operator=(BinarySearchTree&& rhs) {
-    //     if (this != &rhs) {
-    //         this->make_empty();
-    //         this->_root = rhs.root();
-    //         rhs._root = nullptr;
-    //     }
+    BinarySearchTree& operator=(BinarySearchTree&& rhs) {
+        if (this != &rhs) {
+            this->make_empty();
+            swap(this->_root, rhs._root);
+        }
 
-    //     return *this;
-    // }
+        return *this;
+    }
 
-    // void insert(Comparable&& val) {
-    //     this->_root = this->insert(this->_root, val);
-    //     val = nullptr;
-    // }
+    void insert(Comparable&& val) {
+        Comparable v;
+        swap(v, val);
+        this->_root = this->insert(this->_root, v);
+    }
 
     /**
      * @brief Determine if this tree is empty

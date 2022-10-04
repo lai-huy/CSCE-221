@@ -137,6 +137,62 @@ bool test_insert_pair() {
 		assert(p.second);
 	}
 
+	p = set.insert(0);
+	{
+		assert(set.size() == 8);
+		assert(p.first->value() == 0);
+		assert(p.second);
+	}
+
+	p = set.insert(2);
+	{
+		assert(set.size() == 9);
+		assert(p.first->value() == 2);
+		assert(p.second);
+	}
+
+	p = set.insert(4);
+	{
+		assert(set.size() == 10);
+		assert(p.first->value() == 4);
+		assert(p.second);
+	}
+
+	p = set.insert(6);
+	{
+		assert(set.size() == 11);
+		assert(p.first->value() == 6);
+		assert(p.second);
+	}
+
+	p = set.insert(8);
+	{
+		assert(set.size() == 12);
+		assert(p.first->value() == 8);
+		assert(p.second);
+	}
+
+	p = set.insert(10);
+	{
+		assert(set.size() == 13);
+		assert(p.first->value() == 10);
+		assert(p.second);
+	}
+
+	p = set.insert(12);
+	{
+		assert(set.size() == 14);
+		assert(p.first->value() == 12);
+		assert(p.second);
+	}
+
+	p = set.insert(14);
+	{
+		assert(set.size() == 15);
+		assert(p.first->value() == 14);
+		assert(p.second);
+	}
+
 	END_TEST;
 }
 
@@ -157,12 +213,64 @@ bool test_insert_iter() {
 	END_TEST;
 }
 
+bool test_print_set() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+
+	set.print_set();
+
+	END_TEST;
+}
+
+bool test_print_tree() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+
+	set.print_tree();
+
+	END_TEST;
+}
+
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
 	test(create);
 	test(insert_pair);
-	test(insert_iter);
+	// test(insert_iter);
+	test(print_set);
+	test(print_tree);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";
