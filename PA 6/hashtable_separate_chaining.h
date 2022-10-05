@@ -33,12 +33,13 @@ public:
     void max_load_factor(float) const;
     void rehash(size_t);
 
-    void print_table(ostream& os=cout) const;
+    void print_table(ostream& os = cout) const;
 
-    HashTable(const HashTable& rhs);
-    HashTable(HashTable&& rhs);
-    ~HashTable();
-    HashTable& operator=(const HashTable& rhs);
-    HashTable& operator=(HashTable && rhs);
-    void insert(Key&& key);
+    // ----------------------- Optional ----------------------- //
+    // HashTable(const HashTable& rhs);
+    // HashTable(HashTable&& rhs);
+    // ~HashTable();
+    // HashTable& operator=(const HashTable& rhs);
+    // HashTable& operator=(HashTable&& rhs);
+    // void insert(Key&& key);
 };

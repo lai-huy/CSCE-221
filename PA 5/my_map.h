@@ -30,12 +30,10 @@ class Map_const_iterator {
     friend class Map<Key, Value>;
 
     typedef Map_Node<Key, Value> Node;
-    typedef std::pair<const Key, Value> value_type;
+    typedef pair<const Key, Value> value_t;
 
 public:
     virtual string to_string() const {
-        // make a string that represents the state of the iterator
-        //   e.g. "<Map::const_iterator -> [key, value]>"
         return "Map::const_iterator -> [key, value]";
     }
 };
@@ -50,8 +48,6 @@ class Map_iterator : public Map_const_iterator<Key, Value> {
 
 public:
     string to_string() const override {
-        // make a string that represents the state of the iterator
-        //   e.g. "<Map::iterator -> [key, value]>"
         return "Map::iterator -> [key, value]";
     }
 };

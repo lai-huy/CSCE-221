@@ -33,7 +33,7 @@ class Graph {
     bool remove_vertex(size_t id);
     bool remove_edge(size_t u, size_t v);
 
-    // OPTIONAL
+    // ----------------------- Optional ----------------------- //
     // Graph(Graph&& rhs);
     // Graph& operator=(Graph&& rhs);
 

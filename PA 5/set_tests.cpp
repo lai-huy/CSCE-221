@@ -196,19 +196,303 @@ bool test_insert_pair() {
 	END_TEST;
 }
 
-bool test_insert_iter() {
+bool test_insert_right() {
 	Set<int> set;
 	assert(set.size() == 0);
 
-	Set_iterator<int> iter = set.insert(set.begin(), 7);
-	assert(set.size() == 1);
-	assert(iter->value() == 7);
-	expect_throw(++iter, runtime_error);
-	expect_throw(--iter, runtime_error);
+	set.insert(set.end(), 0);
+	set.insert(set.end(), 1);
+	set.insert(set.end(), 2);
+	set.insert(set.end(), 3);
+	set.insert(set.end(), 4);
+	set.insert(set.end(), 5);
+	set.insert(set.end(), 6);
+	set.insert(set.end(), 7);
+	set.insert(set.end(), 8);
+	set.insert(set.end(), 9);
+	set.insert(set.end(), 10);
+	set.insert(set.end(), 11);
+	set.insert(set.end(), 12);
+	set.insert(set.end(), 13);
+	Set_iterator<int> iter(set.insert(set.end(), 14));
+	assert(set.size() == 15);
+	assert(iter->value() == 14);
 
-	iter = set.insert(iter, 3);
-	assert(set.size() == 2);
-	assert(iter->value() == 3);
+	END_TEST;
+}
+
+bool test_insert_left() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	set.insert(set.end(), 14);
+	set.insert(set.end(), 13);
+	set.insert(set.end(), 12);
+	set.insert(set.end(), 11);
+	set.insert(set.end(), 10);
+	set.insert(set.end(), 9);
+	set.insert(set.end(), 8);
+	set.insert(set.end(), 7);
+	set.insert(set.end(), 6);
+	set.insert(set.end(), 5);
+	set.insert(set.end(), 4);
+	set.insert(set.end(), 3);
+	set.insert(set.end(), 2);
+	set.insert(set.end(), 1);
+	Set_iterator<int> iter(set.insert(set.end(), 0));
+	assert(set.size() == 15);
+	assert(iter->value() == 0);
+	END_TEST;
+}
+
+bool test_insert_rl() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	set.insert(set.end(), 0);
+	set.insert(set.end(), 2);
+	set.insert(set.end(), 1);
+
+	END_TEST;
+}
+
+bool test_insert_lr() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	set.insert(set.end(), 2);
+	set.insert(set.end(), 0);
+	set.insert(set.end(), 1);
+
+	END_TEST;
+}
+
+bool test_insert_dup_pair() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+	assert(set.size() == 15);
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+	assert(set.size() == 15);
+
+	END_TEST;
+}
+
+bool test_insert_dup_iter() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+	assert(set.size() == 15);
+
+	set.insert(set.end(), 7);
+	set.insert(set.end(), 3);
+	set.insert(set.end(), 11);
+	set.insert(set.end(), 1);
+	set.insert(set.end(), 5);
+	set.insert(set.end(), 9);
+	set.insert(set.end(), 13);
+	set.insert(set.end(), 0);
+	set.insert(set.end(), 2);
+	set.insert(set.end(), 4);
+	set.insert(set.end(), 6);
+	set.insert(set.end(), 8);
+	set.insert(set.end(), 10);
+	set.insert(set.end(), 12);
+	set.insert(set.end(), 14);
+	assert(set.size() == 15);
+
+	END_TEST;
+}
+
+bool test_iter() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	{
+		Set_iterator<int> it(set.end());
+		cout << it.to_string() << "\n";
+		expect_throw(++it, runtime_error);
+		expect_throw(it++, runtime_error);
+		expect_throw(--it, runtime_error);
+		expect_throw(it--, runtime_error);
+	}
+
+	set.insert(7);
+	{
+		Set_iterator<int> it(set.begin());
+		assert(it->value() == 7);
+		cout << it.to_string() << "\n";
+		expect_no_throw(--it);
+		expect_throw(--it, runtime_error);
+		it = set.begin();
+		expect_no_throw(it--);
+		expect_throw(it--, runtime_error);
+		it = set.begin();
+		expect_no_throw(++it);
+		expect_throw(++it, runtime_error);
+		it = set.begin();
+		expect_no_throw(it++);
+		expect_throw(it++, runtime_error);
+	}
+
+	set.insert(3);
+	{
+		Set_iterator<int> it(set.begin());
+		assert(it->value() == 3);
+		expect_no_throw(++it);
+		assert(it->value() == 7);
+		expect_no_throw(--it);
+		assert(it->value() == 3);
+		expect_no_throw(it++);
+		expect_no_throw(it--);
+	}
+
+	END_TEST;
+}
+
+bool test_iter_reverse() {
+	Set<int> set;
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+
+	Set_iterator<int> iter(set.begin());
+	for (size_t i = 0; i < set.size() - 1; ++i)
+		expect_no_throw(++iter);
+	for (size_t i = 0; i < set.size() - 1; ++i)
+		expect_no_throw(--iter);
+
+	END_TEST;
+}
+
+bool test_const_iter() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	{
+		Set_const_iterator<int> it(set.end());
+		cout << it.to_string() << "\n";
+		expect_throw(++it, runtime_error);
+		expect_throw(it++, runtime_error);
+		expect_throw(--it, runtime_error);
+		expect_throw(it--, runtime_error);
+	}
+
+	set.insert(7);
+	{
+		Set_const_iterator<int> it(set.begin());
+		assert(it->value() == 7);
+		cout << it.to_string() << "\n";
+		expect_no_throw(--it);
+		expect_throw(--it, runtime_error);
+		it = set.begin();
+		expect_no_throw(it--);
+		expect_throw(it--, runtime_error);
+		it = set.begin();
+		expect_no_throw(++it);
+		expect_throw(++it, runtime_error);
+		it = set.begin();
+		expect_no_throw(it++);
+		expect_throw(it++, runtime_error);
+	}
+
+	set.insert(3);
+	{
+		Set_const_iterator<int> it(set.begin());
+		assert(it->value() == 3);
+		expect_no_throw(++it);
+		assert(it->value() == 7);
+		expect_no_throw(--it);
+		assert(it->value() == 3);
+		expect_no_throw(it++);
+		expect_no_throw(it--);
+	}
+
+	END_TEST;
+}
+
+bool test_const_iter_reverse() {
+	Set<int> set;
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+
+	Set_const_iterator<int> iter(set.begin());
+	for (size_t i = 0; i < set.size() - 1; ++i)
+		expect_no_throw(++iter);
+	for (size_t i = 0; i < set.size() - 1; ++i)
+		expect_no_throw(--iter);
 
 	END_TEST;
 }
@@ -263,14 +547,180 @@ bool test_print_tree() {
 	END_TEST;
 }
 
+bool test_print_empty() {
+	Set<int> set;
+
+	set.print_set();
+	set.print_tree();
+	END_TEST;
+}
+
+bool test_copy() {
+	Set<int> set;
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+	assert(set.size() == 15);
+
+	Set<int> a(set);
+	assert(a.size() == 15);
+
+	END_TEST;
+}
+
+bool test_copy_empty() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	Set<int> a(set);
+	assert(set.size() == 0);
+
+	END_TEST;
+}
+
+bool test_copy_oper() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+	assert(set.size() == 15);
+
+	Set<int> a;
+	assert(a.size() == 0);
+
+	a.insert(6);
+	a.insert(2);
+	a.insert(10);
+	a.insert(0);
+	a.insert(4);
+	a.insert(8);
+	a.insert(12);
+	a.insert(-1);
+	a.insert(1);
+	a.insert(3);
+	a.insert(5);
+	a.insert(7);
+	a.insert(9);
+	a.insert(11);
+	a.insert(13);
+	assert(a.size() == 15);
+	assert(set.begin() != a.begin());
+	assert(set.begin()->value() != a.begin()->value());
+
+	a = set;
+	assert(a.size() == set.size());
+	assert(set.begin() != a.begin());
+	assert(set.begin()->value() == a.begin()->value());
+
+	END_TEST;
+}
+
+bool test_copy_oper_empty() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	Set<int> a;
+	assert(a.size() == 0);
+	a.insert(6);
+	a.insert(2);
+	a.insert(10);
+	a.insert(0);
+	a.insert(4);
+	a.insert(8);
+	a.insert(12);
+	a.insert(-1);
+	a.insert(1);
+	a.insert(3);
+	a.insert(5);
+	a.insert(7);
+	a.insert(9);
+	a.insert(11);
+	a.insert(13);
+	assert(a.size() == 15);
+
+	a = set;
+	assert(a.size() == set.size());
+	assert(set.begin() == a.begin());
+
+	END_TEST;
+}
+
+bool test_self_assignment() {
+	Set<int> set;
+	assert(set.size() == 0);
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+	assert(set.size() == 15);
+
+	set = set;
+	assert(set.size() == 15);
+
+	END_TEST;
+}
+
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
 	test(create);
 	test(insert_pair);
-	// test(insert_iter);
+	test(insert_right);
+	test(insert_left);
+	test(insert_lr);
+	test(insert_rl);
+	test(insert_dup_pair);
+	test(insert_dup_iter);
+	test(iter);
+	test(iter_reverse);
+	test(const_iter);
+	test(const_iter_reverse);
 	test(print_set);
 	test(print_tree);
+	test(print_empty);
+	test(copy);
+	test(copy_empty);
+	test(copy_oper);
+	test(copy_oper_empty);
+	test(self_assignment);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";

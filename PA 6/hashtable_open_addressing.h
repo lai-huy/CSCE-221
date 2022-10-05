@@ -26,12 +26,13 @@ public:
     bool contains(const Key& key) const;
     size_t position(const Key& key) const;
 
-    void print_table(ostream& os=cout) const;
+    void print_table(ostream& os = cout) const;
 
-    HashTable(const HashTable& rhs);
-    HashTable(HashTable&& rhs);
-    ~HashTable();
-    HashTable& operator=(const HashTable& rhs);
-    HashTable& operator=(HashTable && rhs);
-    void insert(Key&& key);
+    // ----------------------- Optional ----------------------- //
+    // HashTable(const HashTable& rhs);
+    // HashTable(HashTable&& rhs);
+    // ~HashTable();
+    // HashTable& operator=(const HashTable& rhs);
+    // HashTable& operator=(HashTable&& rhs);
+    // void insert(Key&& key);
 };

@@ -3082,34 +3082,6 @@ bool test_print_empty() {
     END_TEST;
 }
 
-bool test_fail() {
-    RedBlackTree<int> rbt;
-    rbt.insert(26);
-    rbt.insert(27);
-    rbt.insert(24);
-    rbt.insert(28);
-    rbt.insert(21);
-    rbt.insert(30);
-    rbt.insert(25);
-    rbt.insert(23);
-    rbt.insert(22);
-    rbt.insert(20);
-    rbt.insert(29);
-
-    rbt.remove(21);
-    rbt.remove(22);
-    rbt.remove(23);
-    rbt.remove(24);
-    rbt.remove(25);
-    rbt.remove(26);
-    rbt.remove(27);
-    rbt.remove(28);
-    rbt.remove(29);
-    rbt.remove(30);
-
-    END_TEST;
-}
-
 int main() {
     unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
@@ -3141,7 +3113,6 @@ int main() {
     test(node);
     test(print);
     test(print_empty);
-    test(fail);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";

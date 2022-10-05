@@ -64,18 +64,12 @@ void heap_delete_min(Container* container, Compare compare = less<typename Conta
 }
 
 
-// OPTIONAL
+// ----------------------- Optional ----------------------- //
 template <class Container, class Compare = less<typename Container::value_type>>
-void heapify(Container& container, Compare compare = less<typename Container::value_type>{}) {
-    heapify(&container, compare);
-}
+void heapify(Container& container, Compare compare = less<typename Container::value_type>{}) { heapify(&container, compare); }
 
 template <class Container, class Compare = less<typename Container::value_type>>
-void heap_insert(Container& container, const typename Container::value_type& value, Compare compare = less<typename Container::value_type>{}) {
-    heap_insert(&container, value, compare);
-}
+void heap_insert(Container& container, const typename Container::value_type& value, Compare compare = less<typename Container::value_type>{}) { heap_insert(&container, value, compare); }
 
 template <class Container, class Compare = less<typename Container::value_type>>
-void heap_delete_min(Container& container, Compare compare = less<typename Container::value_type>{}) {
-    heap_delete_min(container, compare);
-}
+void heap_delete_min(Container& container, Compare compare = less<typename Container::value_type>{}) { heap_delete_min(container, compare); }
