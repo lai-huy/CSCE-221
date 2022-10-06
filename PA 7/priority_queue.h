@@ -28,12 +28,13 @@ public:
 
     void print_queue(ostream& os = cout) cosnt;
 
-    PriorityQueue(const PriorityQueue&);
-    ~PriorityQueue();
-    PriorityQueue& operator=(const PriorityQueue& rhs);
+    // ----------------------- Optional ----------------------- //
+    // PriorityQueue(const PriorityQueue&);
+    // ~PriorityQueue();
+    // PriorityQueue& operator=(const PriorityQueue& rhs);
 
-    PriorityQueue(const Compare& compare, Container&& container);
-    PriorityQueue(PriorityQueue&& rhs);
-    PriorityQueue& operator=(PriorityQueue&& rhs);
-    void push(typename Container::value_type&&);
+    // PriorityQueue(const Compare& compare, Container&& container);
+    // PriorityQueue(PriorityQueue&& rhs);
+    // PriorityQueue& operator=(PriorityQueue&& rhs);
+    // void push(typename Container::value_type&&);
 };

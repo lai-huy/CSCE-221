@@ -55,6 +55,7 @@ public:
 // TODO(stduent): implement this
 template <class Key, class Value>
 class Map {
+private:
     typedef Map_Node<Key, Value> Node;
 
 public:

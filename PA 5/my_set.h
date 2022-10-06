@@ -187,7 +187,7 @@ public:
     Set_iterator(const Set_const_iterator<Comparable>& rhs) : Set_const_iterator<Comparable>(rhs) {}
     Set_iterator(const Set_iterator& rhs) : Set_const_iterator<Comparable>(rhs._node) {}
     Set_iterator(Node* node) : Set_const_iterator<Comparable>(node) {}
-    ~Set_iterator() { this->_node = nullptr; }
+    virtual ~Set_iterator() { this->_node = nullptr; }
 
     Set_iterator& operator=(const Set_iterator& rhs) {
         if (this != &rhs)

@@ -8,8 +8,10 @@
 #include <vector>
 
 using std::ostream, std::cout;
+using std::hash;
+using std::vector;
 
-template <class Key, class Hash = std::hash<Key>>
+template <class Key, class Hash = hash<Key>>
 class HashTable {
 public:
     HashTable();
