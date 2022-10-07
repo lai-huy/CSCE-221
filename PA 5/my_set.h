@@ -71,7 +71,8 @@ public:
     bool isRight() const { return this->_parent ? this == this->_parent->_right : false; }
 
     friend ostream operator<<(ostream& os, const Set_Node<Comparable>& node) {
-        return os << node._value;
+        os << node._value;
+        return os;
     }
 };
 
@@ -96,7 +97,11 @@ public:
 
     virtual ~Set_const_iterator() { this->_node = nullptr; }
 
-    const Node& operator*() const { return *this->_node; }
+    const Comparable& operator*() const {
+        if (!this->_node)
+            throw runtime_error("Segmentation Fault");
+        return this->_node->_value;
+    }
 
     const Node* operator->() const { return this->_node; }
 
@@ -196,7 +201,11 @@ public:
         return *this;
     }
 
-    const Node& operator*() const { return *this->_node; }
+    const Comparable& operator*() const {
+        if (!this->_node)
+            throw runtime_error("Segmentation Fault");
+        return this->_node->_value;
+    }
 
     const Node* operator->() const { return this->_node; }
 
@@ -320,7 +329,11 @@ private:
 
         Node* node = new Node(root->_value);
         node->_left = this->copy(root->_left);
+        if (node->_left)
+            node->_left->_parent = node;
         node->_right = this->copy(root->_right);
+        if (node->_right)
+            node->_right->_parent = node;
         return node;
     }
 
@@ -531,17 +544,16 @@ public:
     void print_set(ostream& os = cout) const {
         if (this->_size) {
             os << "{";
-            const_iterator end = this->end();
-            size_t i = 0;
-            for (const_iterator iter = this->begin(); iter != end; ++iter) {
+            const_iterator iter(this->begin());
+            for (size_t i = 0; i < this->_size; ++i) {
                 os << iter->_value;
                 if (i != this->_size - 1)
                     os << ", ";
-                ++i;
+                ++iter;
             }
-            os << "}\n";
+            os << "}";
         } else
-            os << "<empty>\n";
+            os << "<empty>";
     }
 
     // ----------------------- Optional ----------------------- //
