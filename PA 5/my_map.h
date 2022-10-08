@@ -7,7 +7,7 @@
 #include <utility>
 #include <tuple>
 
-using std::cout, std::ostream;
+using std::cout, std::ostream, std::stringstream;
 using std::pair;
 using std::string;
 
@@ -22,6 +22,9 @@ class Map_Node {
     friend class Map<Key, Value>;
     friend class Map_const_iterator<Key, Value>;
     friend class Map_iterator<Key, Value>;
+private:
+    pair<const Key, Value> _pair;
+
 };
 
 // TODO(stduent): implement this
@@ -29,12 +32,21 @@ template <class Key, class Value>
 class Map_const_iterator {
     friend class Map<Key, Value>;
 
+private:
     typedef Map_Node<Key, Value> Node;
     typedef pair<const Key, Value> value_t;
+    const Node* _node;
 
 public:
     virtual string to_string() const {
-        return "Map::const_iterator -> [key, value]";
+        stringstream ss;
+        ss << "Map::const_iterator -> [";
+        if (this->_node)
+            ss << this->_node->_pair.first << ", " << this->_node->_pair.second;
+        else
+            ss << "nullptr";
+        ss << "]";
+        return ss.str();
     }
 };
 

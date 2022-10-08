@@ -2,7 +2,7 @@ all: bst avl
 
 clean: 
 	rm -f *.gcov *.gcda *.gcno *.out
-	
+
 compile_test: clean binary_search_tree.h avl_tree.h compile_test.cpp
 	g++ -std=c++17 -Wall -Wextra -Weffc++ -pedantic-errors -g -o main.out compile_test.cpp
 

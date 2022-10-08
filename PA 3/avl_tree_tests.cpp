@@ -1056,6 +1056,52 @@ bool test_remove_root() {
 	}
 
 	avl.remove(7);
+	{
+		const AVLTree<int>::Node* root = avl.root();
+		assert(root != nullptr);
+		assert(root->_value == 8);
+		assert(root->_left != nullptr);
+		assert(root->_left->_value == 3);
+		assert(root->_left->_left != nullptr);
+		assert(root->_left->_left->_value == 1);
+		assert(root->_left->_left->_left != nullptr);
+		assert(root->_left->_left->_left->_value == 0);
+		assert(root->_left->_left->_left->_left == nullptr);
+		assert(root->_left->_left->_left->_right == nullptr);
+		assert(root->_left->_left->_right != nullptr);
+		assert(root->_left->_left->_right->_value == 2);
+		assert(root->_left->_left->_right->_left == nullptr);
+		assert(root->_left->_left->_right->_right == nullptr);
+		assert(root->_left->_right != nullptr);
+		assert(root->_left->_right->_value == 5);
+		assert(root->_left->_right->_left != nullptr);
+		assert(root->_left->_right->_left->_value == 4);
+		assert(root->_left->_right->_left->_left == nullptr);
+		assert(root->_left->_right->_left->_right == nullptr);
+		assert(root->_left->_right->_right != nullptr);
+		assert(root->_left->_right->_right->_value == 6);
+		assert(root->_left->_right->_right->_left == nullptr);
+		assert(root->_left->_right->_right->_right == nullptr);
+		assert(root->_right != nullptr);
+		assert(root->_right->_value == 11);
+		assert(root->_right->_left != nullptr);
+		assert(root->_right->_left->_value == 9);
+		assert(root->_right->_left->_left == nullptr);
+		assert(root->_right->_left->_right != nullptr);
+		assert(root->_right->_left->_right->_value == 10);
+		assert(root->_right->_left->_right->_left == nullptr);
+		assert(root->_right->_left->_right->_right == nullptr);
+		assert(root->_right->_right != nullptr);
+		assert(root->_right->_right->_value == 13);
+		assert(root->_right->_right->_left != nullptr);
+		assert(root->_right->_right->_left->_value == 12);
+		assert(root->_right->_right->_left->_left == nullptr);
+		assert(root->_right->_right->_left->_right == nullptr);
+		assert(root->_right->_right->_right != nullptr);
+		assert(root->_right->_right->_right->_value == 14);
+		assert(root->_right->_right->_right->_left == nullptr);
+		assert(root->_right->_right->_right->_right == nullptr);
+	}
 
 	END_TEST;
 }
