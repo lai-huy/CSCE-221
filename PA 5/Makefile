@@ -19,7 +19,7 @@ set_memory_errors: clean my_set.h set_tests.cpp
 
 map_memory_errors: clean my_map.h map_tests.cpp
 	g++ -std=c++17 -Wall -Wextra -Weffc++ -pedantic-errors -g -o valgrind.out map_tests.cpp
-	valgrind --leak-check=full ./main.out
+	valgrind --leak-check=full ./valgrind.out
 
 compile_test: compile_test_set compile_test_map
 
