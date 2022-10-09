@@ -715,14 +715,14 @@ bool test_iter_string() {
 
 	Set_iterator<int> iter(set.begin());
 	stringstream ss(iter.to_string());
-	assert(ss.str() == "<Set::iterator → [0]>");
+	assert(ss.str() == "<Set::iterator -> [0]>");
 
 	ss.clear();
 	ss.str("");
 
 	iter = set.end();
 	ss << iter.to_string();
-	assert(ss.str() == "<Set::iterator → [nullptr]>");
+	assert(ss.str() == "<Set::iterator -> [nullptr]>");
 
 	END_TEST;
 }
@@ -837,14 +837,14 @@ bool test_const_iter_string() {
 
 	Set_const_iterator<int> iter(set.begin());
 	stringstream ss(iter.to_string());
-	assert(ss.str() == "<Set::const_iterator → [0]>");
+	assert(ss.str() == "<Set::const_iterator -> [0]>");
 
 	ss.clear();
 	ss.str("");
 
 	iter = set.end();
 	ss << iter.to_string();
-	assert(ss.str() == "<Set::const_iterator → [nullptr]>");
+	assert(ss.str() == "<Set::const_iterator -> [nullptr]>");
 
 	END_TEST;
 }
@@ -1013,7 +1013,7 @@ bool test_copy_oper() {
 	{
 		Set_const_iterator<int> begin(set.begin()), b(a.begin());
 		assert(a.size() == set.size());
-		assert(begin == b);
+		assert(begin != b);
 		assert(*begin == *b);
 	}
 

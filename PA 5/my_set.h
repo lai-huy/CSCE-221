@@ -106,7 +106,7 @@ public:
     const Comparable* operator->() const {
         if (!this->_node)
             throw runtime_error("Segmentation Fault");
-        return *this->_node->_value;
+        return &this->_node->_value;
     }
 
     Set_const_iterator& operator++() {
@@ -156,26 +156,26 @@ public:
     }
 
     Set_const_iterator operator--(int) {
-        Set_const_iterator iter = *this;
+        Set_const_iterator iter(*this);
         --(*this);
         return iter;
     }
 
-    friend bool operator==(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return *lhs == *rhs; }
+    friend bool operator==(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node == rhs._node; }
 
-    friend bool operator!=(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return *lhs != *rhs; }
+    friend bool operator!=(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node != rhs._node; }
 
-    friend bool operator<(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs.operator->() < rhs.operator->(); }
+    friend bool operator<(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node < rhs._node; }
 
-    friend bool operator<=(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs.operator->() <= rhs.operator->(); }
+    friend bool operator<=(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node <= rhs._node; }
 
-    friend bool operator>(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs.operator->() > rhs.operator->(); }
+    friend bool operator>(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node > rhs._node; }
 
-    friend bool operator>=(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs.operator->() >= rhs.operator->(); }
+    friend bool operator>=(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node >= rhs._node; }
 
     virtual string to_string() const {
         stringstream ss;
-        ss << "<Set::const_iterator \u2192 [";
+        ss << "<Set::const_iterator -> [";
         if (this->_node)
             ss << this->_node->_value;
         else
@@ -190,12 +190,10 @@ class Set_iterator : public Set_const_iterator<Comparable> {
     friend class Set<Comparable>;
     typedef Set_Node<Comparable> Node;
     typedef Set_const_iterator<Comparable> const_iterator;
-
 public:
     Set_iterator() : Set_const_iterator<Comparable>() {}
-    Set_iterator(const Set_const_iterator<Comparable>& rhs) : Set_const_iterator<Comparable>(rhs) {}
-    Set_iterator(const Set_iterator& rhs) : Set_const_iterator<Comparable>(rhs._node) {}
-    Set_iterator(Node* node) : Set_const_iterator<Comparable>(node) {}
+    Set_iterator(const Set_iterator<Comparable>& rhs) : Set_const_iterator<Comparable>(rhs._node) {}
+    Set_iterator(const Node* node) : Set_const_iterator<Comparable>(node) {}
     virtual ~Set_iterator() { this->_node = nullptr; }
 
     Set_iterator& operator=(const Set_iterator& rhs) {
@@ -205,13 +203,13 @@ public:
         return *this;
     }
 
-    const Comparable& operator*() const {
+    Comparable operator*() const {
         if (!this->_node)
             throw runtime_error("Segmentation Fault");
         return this->_node->_value;
     }
 
-    const Node* operator->() const { return this->_node; }
+    Node* operator->() const { return const_cast<Node*>(this->_node); }
 
     Set_iterator& operator++() {
         if (!this->_node)
@@ -265,21 +263,21 @@ public:
         return iter;
     }
 
-    friend bool operator==(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs.operator->() == rhs.operator->(); }
+    friend bool operator==(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs._node == rhs._node; }
 
-    friend bool operator!=(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs.operator->() != rhs.operator->(); }
+    friend bool operator!=(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs._node != rhs._node; }
 
-    friend bool operator<(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs.operator->() < rhs.operator->(); }
+    friend bool operator<(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs._node < rhs._node; }
 
-    friend bool operator<=(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs.operator->() <= rhs.operator->(); }
+    friend bool operator<=(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs._node <= rhs._node; }
 
-    friend bool operator>(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs.operator->() > rhs.operator->(); }
+    friend bool operator>(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs._node > rhs._node; }
 
-    friend bool operator>=(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs.operator->() >= rhs.operator->(); }
+    friend bool operator>=(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs._node >= rhs._node; }
 
     string to_string() const override {
         stringstream ss;
-        ss << "<Set::iterator \u2192 [";
+        ss << "<Set::iterator -> [";
         if (this->_node)
             ss << this->_node->_value;
         else
@@ -528,8 +526,8 @@ public:
         const_iterator end(this->end());
         if (iter == end)
             throw invalid_argument("Iterator does not point anywhere");
-        const Comparable& value = iter->_value;
-        iterator it(++iter);
+        const Comparable& value = *iter;
+        iterator it((++iter)._node);
         this->_root = this->remove(this->_root, value);
         --this->_size;
         return it;
