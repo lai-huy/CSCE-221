@@ -429,6 +429,163 @@ bool test_insert_dup_iter() {
 	END_TEST;
 }
 
+bool test_remove_empty() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	assert(map.remove("00") == 0);
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	END_TEST;
+}
+
+bool test_remove_invalid() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	map.insert({"07", 7});
+	map.insert({"03", 3});
+	map.insert({"11", 11});
+	map.insert({"01", 1});
+	map.insert({"05", 5});
+	map.insert({"09", 9});
+	map.insert({"13", 13});
+	map.insert({"00", 0});
+	map.insert({"02", 2});
+	map.insert({"04", 4});
+	map.insert({"06", 6});
+	map.insert({"08", 8});
+	map.insert({"10", 10});
+	map.insert({"12", 12});
+	map.insert({"14", 14});
+	assert(map.size() == 15);
+
+	assert(map.remove("15") == 0);
+	assert(map.size() == 15);
+
+	END_TEST;
+}
+
+bool test_remove_leaf() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	map.insert({"07", 7});
+	map.insert({"03", 3});
+	map.insert({"11", 11});
+	map.insert({"01", 1});
+	map.insert({"05", 5});
+	map.insert({"09", 9});
+	map.insert({"13", 13});
+	map.insert({"00", 0});
+	map.insert({"02", 2});
+	map.insert({"04", 4});
+	map.insert({"06", 6});
+	map.insert({"08", 8});
+	map.insert({"10", 10});
+	map.insert({"12", 12});
+	map.insert({"14", 14});
+	assert(map.size() == 15);
+
+	assert(map.remove("14"));
+	assert(map.remove("12"));
+	assert(map.remove("10"));
+	assert(map.remove("08"));
+	assert(map.remove("06"));
+	assert(map.remove("04"));
+	assert(map.remove("02"));
+	assert(map.remove("00"));
+	assert(map.remove("13"));
+	assert(map.remove("09"));
+	assert(map.remove("05"));
+	assert(map.remove("01"));
+	assert(map.remove("11"));
+	assert(map.remove("03"));
+	assert(map.remove("07"));
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	END_TEST;
+}
+
+bool test_remove_middle() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	map.insert({"07", 7});
+	map.insert({"03", 3});
+	map.insert({"11", 11});
+	map.insert({"01", 1});
+	map.insert({"05", 5});
+	map.insert({"09", 9});
+	map.insert({"13", 13});
+	map.insert({"00", 0});
+	map.insert({"02", 2});
+	map.insert({"04", 4});
+	map.insert({"06", 6});
+	map.insert({"08", 8});
+	map.insert({"10", 10});
+	map.insert({"12", 12});
+	map.insert({"14", 14});
+	assert(map.size() == 15);
+
+	assert(map.remove("13"));
+	assert(map.remove("14"));
+	assert(map.remove("08"));
+	assert(map.remove("09"));
+	assert(map.size() == 11);
+
+	END_TEST;
+}
+
+bool test_remove_root() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	map.insert({"07", 7});
+	map.insert({"03", 3});
+	map.insert({"11", 11});
+	map.insert({"01", 1});
+	map.insert({"05", 5});
+	map.insert({"09", 9});
+	map.insert({"13", 13});
+	map.insert({"00", 0});
+	map.insert({"02", 2});
+	map.insert({"04", 4});
+	map.insert({"06", 6});
+	map.insert({"08", 8});
+	map.insert({"10", 10});
+	map.insert({"12", 12});
+	map.insert({"14", 14});
+	assert(map.size() == 15);
+
+	assert(map.remove("07"));
+	assert(map.remove("08"));
+	assert(map.remove("09"));
+	assert(map.remove("10"));
+	assert(map.remove("11"));
+	assert(map.remove("12"));
+	assert(map.remove("05"));
+	assert(map.remove("06"));
+	assert(map.remove("03"));
+	assert(map.remove("04"));
+	assert(map.remove("13"));
+	assert(map.remove("02"));
+	assert(map.remove("01"));
+	assert(map.remove("14"));
+	assert(map.remove("00"));
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	END_TEST;
+}
+
 bool test_find() {
 	Map<string, int> map;
 	assert(map.size() == 0);
@@ -981,11 +1138,11 @@ int main() {
 	test(insert_iter);
 	test(insert_dup_pair);
 	test(insert_dup_iter);
-	// test(remove_empty);
-	// test(remove_invalid);
-	// test(remove_leaf);
-	// test(remove_middle);
-	// test(remove_root);
+	test(remove_empty);
+	test(remove_invalid);
+	test(remove_leaf);
+	test(remove_middle);
+	test(remove_root);
 	test(find);
 	test(iter_end);
 	test(iter_forward);

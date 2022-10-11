@@ -9,7 +9,7 @@
 
 using std::pair, std::swap;
 using std::cout, std::ostream, std::stringstream;
-using std::runtime_error, std::invalid_argument;
+using std::runtime_error, std::invalid_argument, std::out_of_range;
 using std::string;
 
 // forward declarations
@@ -26,7 +26,7 @@ private:
     /**
      * @brief Value stored in this node
      */
-    pair<const Key, Value> _pair;
+    pair<const Key, Value>* _pair;
 
     /**
      * @brief Largets distance to a leaf node
@@ -53,13 +53,18 @@ public:
      *
      * @param value value to put in this node
      */
-    Map_Node(const pair<const Key, Value> pair) : _pair{pair}, _height{1}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
+    Map_Node(const pair<const Key, Value> pair) : _pair{new std::pair<const Key, Value>{pair}}, _height{1}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
     Map_Node(const Map_Node& rhs) = default;
-    ~Map_Node() = default;
+
+    ~Map_Node() {
+        if (this->_pair)
+            delete this->_pair;
+    }
+
     Map_Node& operator=(const Map_Node& rhs) = default;
 
-    const pair<const Key, Value>& data() const { return this->_pair; }
-    pair<const Key, Value> data() { return this->_pair; }
+    const pair<const Key, Value>& data() const { return *this->_pair; }
+    pair<const Key, Value> data() { return *this->_pair; }
 
     /**
      * @brief Determine if this node is a leaf.
@@ -74,7 +79,7 @@ public:
     bool isRight() const { return this->_parent ? this == this->_parent->_right : false; }
 
     friend ostream& operator<<(ostream& os, const Map_Node& node) {
-        os << node._pair.first << ": " << node._pair.second;
+        os << node._pair->first << ": " << node._pair->second;
         return os;
     }
 };
@@ -104,13 +109,13 @@ public:
     const value_type& operator*() const {
         if (!this->_node)
             throw runtime_error("Segmentation Fault");
-        return this->_node->_pair;
+        return *this->_node->_pair;
     }
 
     const value_type* operator->() const {
         if (!this->_node)
             throw runtime_error("Segmentaion Fault");
-        return &this->_node->_pair;
+        return this->_node->_pair;
     }
 
     Map_const_iterator& operator++() {
@@ -200,17 +205,18 @@ private:
 public:
     Map_iterator() : Map_const_iterator<Key, Value>() {}
     Map_iterator(const Node* node) : Map_const_iterator<Key, Value>(node) {}
+    Map_iterator(const Map_const_iterator<Key, Value>& rhs) : Map_const_iterator<Key, Value>(rhs) {}
 
     value_type operator*() const {
         if (!this->_node)
             throw runtime_error("Segmentation Fault");
-        return this->_node->_pair;
+        return *this->_node->_pair;
     }
 
     const value_type* operator->() const {
         if (!this->_node)
             throw runtime_error("Segmentaion Fault");
-        return &this->_node->_pair;
+        return this->_node->_pair;
     }
 
     Map_iterator& operator++() {
@@ -317,6 +323,7 @@ private:
         if (node) {
             node->_left = this->clear(node->_left);
             node->_right = this->clear(node->_right);
+            node->_parent = nullptr;
             delete node;
         }
 
@@ -328,7 +335,7 @@ private:
         if (!root)
             return nullptr;
 
-        Node* node = new Node(root->_pair);
+        Node* node = new Node(*root->_pair);
         node->_left = this->copy(root->_left);
         if (node->_left)
             node->_left->_parent = node;
@@ -395,10 +402,10 @@ private:
     Node* insert(Node*& root, const pair<const Key, Value>& _pair) {
         if (!root)
             return new Node(_pair);
-        if (_pair.first < root->_pair.first) {
+        if (_pair.first < root->_pair->first) {
             root->_left = this->insert(root->_left, _pair);
             root->_left->_parent = root;
-        } else if (_pair.first > root->_pair.first) {
+        } else if (_pair.first > root->_pair->first) {
             root->_right = this->insert(root->_right, _pair);
             root->_right->_parent = root;
         }
@@ -408,9 +415,9 @@ private:
     }
 
     Node* remove(Node*& root, const Key& _key) {
-        if (_key < root->_value)
+        if (_key < root->_pair->first)
             root->_left = this->remove(root->_left, _key);
-        else if (_key > root->_value)
+        else if (_key > root->_pair->first)
             root->_right = this->remove(root->_right, _key);
         else {
             if (root->isLeaf()) {
@@ -428,8 +435,8 @@ private:
                 root = nullptr;
                 return temp;
             } else {
-                const Node* temp = this->find_min(root->_right);
-                root->_value = temp->_value;
+                Node* temp = this->find_min(root->_right);
+                swap(root->_pair, temp->_pair);
                 root->_right = this->remove(root->_right, temp->_pair->first);
             }
         }
@@ -441,12 +448,12 @@ private:
     const Node* search(const Node* root, const Key& _key) const {
         if (!root)
             return nullptr;
-        if (root->_pair.first == _key)
+        if (root->_pair->first == _key)
             return root;
-        return this->search(_key < root->_pair.first ? root->_left : root->_right, _key);
+        return this->search(_key < root->_pair->first ? root->_left : root->_right, _key);
     }
 
-    const Node* find_min(const Node* root) const {
+    Node* find_min(Node* root) const {
         while (root && root->_left)
             root = root->_left;
         return root;
@@ -476,10 +483,28 @@ public:
         return *this;
     }
 
-    Value& at(const Key& key) { return this->find(key)->second; }
-    const Value& at(const Key& key) const { return this->find(key)->second; }
-    Value& operator[](const Key& key) { return this->find(key)->second; }
-    const Value& operator[](const Key& key) const { return this->find(key)->second; }
+    Value& at(const Key& key) {
+        const Node* node = this->search(this->_root, key);
+        if (node)
+            return node->_pair->second;
+        stringstream ss;
+        ss << key;
+        ss << " is not in the map.";
+        throw out_of_range(ss.str());
+    }
+
+    const Value& at(const Key& key) const {
+        const Node* node = this->_size(this->_root, key);
+        if (node)
+            return node->_pair->second;
+        stringstream ss;
+        ss << key;
+        ss << " is not in the map.";
+        throw out_of_range(ss.str());
+    }
+
+    Value& operator[](const Key& key) { return this->search(this->_root, key)->_pair->second; }
+    const Value& operator[](const Key& key) const { return this->search(this->_root, key)->_pair->second; }
 
     iterator begin() { return iterator(this->find_min(this->_root)); }
     const_iterator begin() const { return const_iterator(this->find_min(this->_root)); }

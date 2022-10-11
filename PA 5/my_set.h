@@ -135,43 +135,9 @@ public:
         return iter;
     }
 
-    Set_const_iterator& operator--() {
-        if (!this->_node)
-            return *this;
-        if (this->_node->_left) {
-            this->_node = this->_node->_left;
-            while (this->_node->_right)
-                this->_node = this->_node->_right;
-        } else {
-            Node* parent = this->_node->_parent;
-            while (parent && this->_node->isLeft()) {
-                this->_node = parent;
-                parent = parent->_parent;
-            }
-
-            this->_node = parent;
-        }
-
-        return *this;
-    }
-
-    Set_const_iterator operator--(int) {
-        Set_const_iterator iter(*this);
-        --(*this);
-        return iter;
-    }
-
     friend bool operator==(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node == rhs._node; }
 
     friend bool operator!=(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node != rhs._node; }
-
-    friend bool operator<(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node < rhs._node; }
-
-    friend bool operator<=(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node <= rhs._node; }
-
-    friend bool operator>(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node > rhs._node; }
-
-    friend bool operator>=(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node >= rhs._node; }
 
     virtual string to_string() const {
         stringstream ss;
@@ -237,43 +203,9 @@ public:
         return iter;
     }
 
-    Set_iterator& operator--() {
-        if (!this->_node)
-            return *this;
-        if (this->_node->_left) {
-            this->_node = this->_node->_left;
-            while (this->_node->_right)
-                this->_node = this->_node->_right;
-        } else {
-            Node* parent = this->_node->_parent;
-            while (parent && this->_node->isLeft()) {
-                this->_node = parent;
-                parent = parent->_parent;
-            }
-
-            this->_node = parent;
-        }
-
-        return *this;
-    }
-
-    Set_iterator operator--(int) {
-        Set_iterator iter = *this;
-        --(*this);
-        return iter;
-    }
-
     friend bool operator==(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs._node == rhs._node; }
 
     friend bool operator!=(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs._node != rhs._node; }
-
-    friend bool operator<(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs._node < rhs._node; }
-
-    friend bool operator<=(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs._node <= rhs._node; }
-
-    friend bool operator>(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs._node > rhs._node; }
-
-    friend bool operator>=(const Set_iterator& lhs, const Set_iterator& rhs) { return lhs._node >= rhs._node; }
 
     string to_string() const override {
         stringstream ss;
@@ -310,14 +242,13 @@ private:
             this->height(root->_left) - this->height(root->_right);
     }
 
-    size_t calcHeight(Node*& root) const {
-        return 1 + this->max<long>(this->height(root->_left), this->height(root->_right));
-    }
+    size_t calcHeight(Node*& root) const { return 1 + this->max<long>(this->height(root->_left), this->height(root->_right)); }
 
     Node*& clear(Node*& node) {
         if (node) {
             node->_left = this->clear(node->_left);
             node->_right = this->clear(node->_right);
+            node->_parent = nullptr;
             delete node;
         }
 
@@ -429,8 +360,8 @@ private:
                 root = nullptr;
                 return temp;
             } else {
-                const Node* temp = this->find_min(root->_right);
-                root->_value = temp->_value;
+                Node* temp = this->find_min(root->_right);
+                swap(root->_value, temp->_value);
                 root->_right = this->remove(root->_right, temp->_value);
             }
         }
@@ -447,7 +378,7 @@ private:
         return this->search(value < root->_value ? root->_left : root->_right, value);
     }
 
-    const Node* find_min(const Node* root) const {
+    Node* find_min(Node* root) const {
         while (root && root->_left)
             root = root->_left;
         return root;
@@ -590,4 +521,4 @@ public:
 };
 
 template <class Comparable>
-std::ostream& operator<<(std::ostream& os, const Set_const_iterator<Comparable>& iter) { return os << iter.to_string(); }
+ostream& operator<<(ostream& os, const Set_const_iterator<Comparable>& iter) { return os << iter.to_string(); }

@@ -626,7 +626,7 @@ bool test_iter_end() {
 	expect_throw(*end, runtime_error);
 	expect_no_throw(++end);
 	expect_throw(*end, runtime_error);
-	expect_no_throw(--end);
+	expect_no_throw(end++);
 	expect_throw(*end, runtime_error);
 
 	END_TEST;
@@ -656,38 +656,6 @@ bool test_iter_forward() {
 	Set_iterator<int> iter(set.find(0));
 	for (size_t i = 0; i < set.size(); ++i)
 		expect_no_throw(++iter);
-
-	END_TEST;
-}
-
-bool test_iter_reverse() {
-	Set<int> set;
-	assert(set.size() == 0);
-	assert(set.is_empty());
-
-	set.insert(7);
-	set.insert(3);
-	set.insert(11);
-	set.insert(1);
-	set.insert(5);
-	set.insert(9);
-	set.insert(13);
-	set.insert(0);
-	set.insert(2);
-	set.insert(4);
-	set.insert(6);
-	set.insert(8);
-	set.insert(10);
-	set.insert(12);
-	set.insert(14);
-
-	Set_iterator<int> iter(set.find(14));
-	for (size_t i = 0; i < set.size(); ++i)
-		expect_no_throw(--iter);
-
-	iter = set.find(14);
-	for (size_t i = 0; i < set.size(); ++i)
-		expect_no_throw(iter--);
 
 	END_TEST;
 }
@@ -755,34 +723,6 @@ bool test_const_iter_forward() {
 	END_TEST;
 }
 
-bool test_const_iter_reverse() {
-	Set<int> set;
-	assert(set.size() == 0);
-	assert(set.is_empty());
-
-	set.insert(7);
-	set.insert(3);
-	set.insert(11);
-	set.insert(1);
-	set.insert(5);
-	set.insert(9);
-	set.insert(13);
-	set.insert(0);
-	set.insert(2);
-	set.insert(4);
-	set.insert(6);
-	set.insert(8);
-	set.insert(10);
-	set.insert(12);
-	set.insert(14);
-
-	Set_const_iterator<int> iter(set.find(14));
-	for (size_t i = 0; i < set.size() - 1; ++i)
-		expect_no_throw(--iter);
-
-	END_TEST;
-}
-
 bool test_const_iter_end() {
 	Set<int> set;
 	assert(set.size() == 0);
@@ -808,7 +748,7 @@ bool test_const_iter_end() {
 	expect_throw(*end, runtime_error);
 	expect_no_throw(++end);
 	expect_throw(*end, runtime_error);
-	expect_no_throw(--end);
+	expect_no_throw(end++);
 	expect_throw(*end, runtime_error);
 
 	END_TEST;
@@ -1110,11 +1050,9 @@ int main() {
 	test(find);
 	test(iter_end);
 	test(iter_forward);
-	test(iter_reverse);
 	test(iter_string);
 	test(const_iter_end);
 	test(const_iter_forward);
-	test(const_iter_reverse);
 	test(const_iter_string);
 	test(print_set);
 	test(print_tree);
