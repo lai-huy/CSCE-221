@@ -621,8 +621,12 @@ bool test_iter_end() {
 	set.insert(10);
 	set.insert(12);
 	set.insert(14);
+	set.insert(15);
 
-	Set_iterator<int> end(set.end());
+	Set_iterator<int> iter(set.find(15)), end(set.end());
+	expect_no_throw(++iter);
+	assert(iter == end);
+
 	expect_throw(*end, runtime_error);
 	expect_no_throw(++end);
 	expect_throw(*end, runtime_error);
@@ -743,8 +747,12 @@ bool test_const_iter_end() {
 	set.insert(10);
 	set.insert(12);
 	set.insert(14);
+	set.insert(15);
 
-	Set_const_iterator<int> end(set.end());
+	Set_const_iterator<int> iter(set.find(15)), end(set.end());
+	expect_no_throw(++iter);
+	assert(iter == end);
+
 	expect_throw(*end, runtime_error);
 	expect_no_throw(++end);
 	expect_throw(*end, runtime_error);

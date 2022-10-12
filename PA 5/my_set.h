@@ -112,6 +112,7 @@ public:
     Set_const_iterator& operator++() {
         if (!this->_node)
             return *this;
+        Comparable value = this->_node->_value;
         if (this->_node->_right) {
             this->_node = this->_node->_right;
             while (this->_node->_left)
@@ -125,6 +126,9 @@ public:
 
             this->_node = parent;
         }
+
+        if (this->_node && value > this->_node->_value)
+            this->_node = nullptr;
 
         return *this;
     }
@@ -234,12 +238,12 @@ private:
     template <typename Type>
     Type max(const Type& a, const Type& b) const { return a > b ? a : b; }
 
-    long height(Node*& root) const { return !root ? 0l : root->_height; }
+    long height(Node*& root) const { return root ? root->_height : 0l; }
 
     long balace_factor(Node*& root) const {
-        return !root ?
-            0l :
-            this->height(root->_left) - this->height(root->_right);
+        return root ?
+            this->height(root->_left) - this->height(root->_right) :
+            0l;
     }
 
     size_t calcHeight(Node*& root) const { return 1 + this->max<long>(this->height(root->_left), this->height(root->_right)); }
@@ -271,7 +275,7 @@ private:
     }
 
     Node* balance(Node*& root) {
-        root->_height = 1 + this->max(this->height(root->_left), this->height(root->_right));
+        root->_height = this->calcHeight(root);
         long bf = this->balace_factor(root);
         if (bf > 1)
             root = this->balace_factor(root->_left) > 0 ? ll_rotate(root) : lr_rotate(root);
@@ -505,7 +509,7 @@ public:
     //     return this->insert(v);
     // }
 
-    // iterator insert(const_iterator iter, Comparable&& value) const {
+    // iterator insert(const_iterator iter, Comparable&& value) {
     //     Comparable v = Comparable();
     //     swap(v, value);
     //     return this->insert(iter, v);
