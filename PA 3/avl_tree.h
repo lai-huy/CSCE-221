@@ -56,7 +56,7 @@ public:
          * @return true if this node is a leaf
          * @return false otherwise
          */
-        bool is_leaf() const { return !this->_left && !this->_right; }
+        bool isLeaf() const { return !this->_left && !this->_right; }
     };
 private:
     /**
@@ -207,7 +207,7 @@ private:
         else if (value > root->_value)
             root->_right = this->remove(root->_right, value);
         else {
-            if (root->is_leaf()) {
+            if (root->isLeaf()) {
                 delete root;
                 return nullptr;
             } else if (!root->_left) {
