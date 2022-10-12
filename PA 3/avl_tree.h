@@ -127,7 +127,7 @@ private:
      * @param root subtree to determine the balance factor of
      * @return long balance factor
      */
-    long balace_factor(Node*& root) const { return !root ? 0l : this->height(root->_left) - this->height(root->_right); }
+    long balace_factor(Node*& root) const { return root ? this->height(root->_left) - this->height(root->_right) : 0l; }
 
     /**
      * @brief Calculates the raw height of a subtree
@@ -237,7 +237,7 @@ private:
      * @param root subtree to rotate
      * @return Node* rotated subtree
      */
-    Node* rr_rotate(Node*& root) {
+    Node* left_rotate(Node*& root) {
         Node* temp = root->_right;
         root->_right = temp->_left;
         temp->_left = root;
@@ -254,7 +254,7 @@ private:
      * @param root subtree to rotate
      * @return Node* rotated subtree
      */
-    Node* ll_rotate(Node*& root) {
+    Node* right_rotate(Node*& root) {
         Node* temp = root->_left;
         root->_left = temp->_right;
         temp->_right = root;
@@ -273,8 +273,8 @@ private:
      */
     Node* lr_rotate(Node*& root) {
         Node* temp = root->_left;
-        root->_left = this->rr_rotate(temp);
-        return this->ll_rotate(root);
+        root->_left = this->left_rotate(temp);
+        return this->right_rotate(root);
     }
 
     /**
@@ -285,8 +285,8 @@ private:
      */
     Node* rl_rotate(Node*& root) {
         Node* temp = root->_right;
-        root->_right = this->ll_rotate(temp);
-        return this->rr_rotate(root);
+        root->_right = this->right_rotate(temp);
+        return this->left_rotate(root);
     }
 
     /**
@@ -296,13 +296,12 @@ private:
      * @return Node* rebalanced subtree
      */
     Node* balance(Node*& root) {
-
-        root->_height = 1 + this->max(this->height(root->_left), this->height(root->_right));
+        root->_height = this->calcHeight(root);
         signed long bf = this->balace_factor(root);
         if (bf > 1)
-            root = this->balace_factor(root->_left) > 0 ? ll_rotate(root) : lr_rotate(root);
+            root = this->balace_factor(root->_left) > 0 ? this->right_rotate(root) : this->lr_rotate(root);
         else if (bf < -1)
-            root = this->balace_factor(root->_right) > 0 ? rl_rotate(root) : rr_rotate(root);
+            root = this->balace_factor(root->_right) > 0 ? this->rl_rotate(root) : this->left_rotate(root);
         return root;
     }
 
@@ -312,10 +311,24 @@ private:
      * @param root current subtree being searched
      * @return Node* pointer to the smallest node
      */
-    Node* find_min(Node*& root) const {
+    Node* find_min(Node* root) const {
         Node* node = root;
         while (node && node->_left)
             node = node->_left;
+
+        return node;
+    }
+
+    /**
+     * @brief Find the largest node in the avl tree
+     *
+     * @param root current subtree being searched
+     * @return Node* pointer to the smallest node
+     */
+    Node* find_max(Node* root) const {
+        Node* node = root;
+        while (node && node->_right)
+            node = node->_right;
 
         return node;
     }
@@ -359,27 +372,21 @@ public:
      * @return true if the value if found within the AVL Tree
      * @return false otherwise
      */
-    bool contains(const Comparable& value) {
-        return this->contains(this->_root, value);
-    }
+    bool contains(const Comparable& value) { return this->contains(this->_root, value); }
 
     /**
      * @brief Insert a value into the AVL Tree
      *
      * @param value value to insert
      */
-    void insert(const Comparable& value) {
-        this->_root = this->insert(this->_root, value);
-    }
+    void insert(const Comparable& value) { this->_root = this->insert(this->_root, value); }
 
     /**
      * @brief Remove a value from the AVL Tree
      *
      * @param value value to remove
      */
-    void remove(const Comparable& value) {
-        this->_root = this->remove(this->_root, value);
-    }
+    void remove(const Comparable& value) { this->_root = this->remove(this->_root, value); }
 
     /**
      * @brief Find the smallest value in the AVL tree
@@ -390,11 +397,7 @@ public:
         if (!this->_root)
             throw invalid_argument("AVL Tree is empty");
 
-        Node* root = this->_root;
-        while (root->_left)
-            root = root->_left;
-
-        return root->_value;
+        return this->find_min(this->_root)->_value;
     }
 
     /**
@@ -406,11 +409,7 @@ public:
         if (!this->_root)
             throw invalid_argument("AVL Tree is empty");
 
-        Node* root = this->_root;
-        while (root->_right)
-            root = root->_right;
-
-        return root->_value;
+        return this->find_max(this->_root)->_value;
     }
 
     /**
@@ -418,10 +417,7 @@ public:
      *
      * @param os ostream to write to. Defaulted to cout
      */
-    void print_tree(ostream& os = cout) const {
-        size_t i = 0;
-        this->print_tree(this->_root, os, i);
-    }
+    void print_tree(ostream& os = cout) const { this->print_tree(this->_root, os, 0); }
 
     /**
      * @brief Return the root of the tree
