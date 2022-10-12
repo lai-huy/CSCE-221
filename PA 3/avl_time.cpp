@@ -1832,7 +1832,6 @@ int main() {
 	test(print_empty);
 	test(print);
 	test(make_empty);
-
 	test(copy);
 	test(copy_oper);
 

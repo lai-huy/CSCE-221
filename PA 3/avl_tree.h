@@ -44,11 +44,16 @@ public:
         Node* _right;
 
         /**
+         * @brief A Pointer to the parent node
+         */
+        Node* _parent;
+
+        /**
          * @brief Construct a new Node object
          *
          * @param value value to put in this node
          */
-        Node(const Comparable& value) : _value{Comparable(value)}, _height{1}, _left{nullptr}, _right{nullptr} {}
+        Node(const Comparable& value) : _value{Comparable(value)}, _height{1}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
 
         /**
          * @brief Determine if this node is a leaf.
@@ -119,7 +124,7 @@ private:
      * @param root subtree to determine the height of
      * @return long height of the subtree
      */
-    long height(const Node* root) const { return root ? root->_height : 0; }
+    long height(const Node* root) const { return root ? root->_height : 0l; }
 
     /**
      * @brief Determine the balance factor of an inputed subtree
@@ -164,10 +169,14 @@ private:
         if (!root)
             return nullptr;
 
-        Node* new_root = new Node(root->_value);
-        new_root->_left = this->copy(root->_left);
-        new_root->_right = this->copy(root->_right);
-        return new_root;
+        Node* node = new Node(root->_value);
+        node->_left = this->copy(root->_left);
+        if (node->_left)
+            node->_left->_parent = node;
+        node->_right = this->copy(root->_right);
+        if (node->_right)
+            node->_right->_parent = node;
+        return node;
     }
 
     /**
@@ -182,10 +191,13 @@ private:
             return new Node(value);
         else if (value == node->_value)
             return node;
-        else if (value < node->_value)
+        else if (value < node->_value) {
             node->_left = this->insert(node->_left, value);
-        else if (value > node->_value)
+            node->_left->_parent = node;
+        } else if (value > node->_value) {
             node->_right = this->insert(node->_right, value);
+            node->_right->_parent = node;
+        }
 
         node = this->balance(node);
         return node;
@@ -221,8 +233,8 @@ private:
                 root = nullptr;
                 return temp;
             } else {
-                const Node* temp = this->find_min(root->_right);
-                root->_value = temp->_value;
+                Node* temp = this->find_min(root->_right);
+                swap(root->_value, temp->_value);
                 root->_right = this->remove(root->_right, temp->_value);
             }
         }
@@ -240,7 +252,11 @@ private:
     Node* left_rotate(Node*& root) {
         Node* temp = root->_right;
         root->_right = temp->_left;
+        if (root->_right)
+            root->_right->_parent = root;
         temp->_left = root;
+        if (temp->_left)
+            temp->_left->_parent = temp;
 
         root->_height = this->calcHeight(root);
         temp->_height = this->calcHeight(temp);
@@ -257,7 +273,11 @@ private:
     Node* right_rotate(Node*& root) {
         Node* temp = root->_left;
         root->_left = temp->_right;
+        if (root->_left)
+            root->_left->_parent = root;
         temp->_right = root;
+        if (temp->_right)
+            temp->_right->_parent = temp;
 
         root->_height = this->calcHeight(root);
         temp->_height = this->calcHeight(temp);
@@ -272,8 +292,8 @@ private:
      * @return Node* rotated subtree
      */
     Node* lr_rotate(Node*& root) {
-        Node* temp = root->_left;
-        root->_left = this->left_rotate(temp);
+        root->_left = this->left_rotate(root->_left);
+        root->_left->_parent = root;
         return this->right_rotate(root);
     }
 
@@ -284,8 +304,8 @@ private:
      * @return Node* rotated subtree
      */
     Node* rl_rotate(Node*& root) {
-        Node* temp = root->_right;
-        root->_right = this->right_rotate(temp);
+        root->_right = this->right_rotate(root->_right);
+        root->_right->_parent = root;
         return this->left_rotate(root);
     }
 
