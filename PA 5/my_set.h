@@ -238,15 +238,11 @@ private:
     template <typename Type>
     Type max(const Type& a, const Type& b) const { return a > b ? a : b; }
 
-    long height(Node*& root) const { return root ? root->_height : 0l; }
+    long height(const Node* root) const { return root ? root->_height : 0l; }
 
-    long balace_factor(Node*& root) const {
-        return root ?
-            this->height(root->_left) - this->height(root->_right) :
-            0l;
-    }
+    long balace_factor(Node*& root) const { return root ? this->height(root->_left) - this->height(root->_right) : 0l; }
 
-    size_t calcHeight(Node*& root) const { return 1 + this->max<long>(this->height(root->_left), this->height(root->_right)); }
+    size_t calcHeight(Node*& root) const { return 1 + this->max(this->height(root->_left), this->height(root->_right)); }
 
     Node*& clear(Node*& node) {
         if (node) {
@@ -278,13 +274,13 @@ private:
         root->_height = this->calcHeight(root);
         long bf = this->balace_factor(root);
         if (bf > 1)
-            root = this->balace_factor(root->_left) > 0 ? ll_rotate(root) : lr_rotate(root);
+            root = this->balace_factor(root->_left) > 0 ? this->right_rotate(root) : this->lr_rotate(root);
         else if (bf < -1)
-            root = this->balace_factor(root->_right) > 0 ? rl_rotate(root) : rr_rotate(root);
+            root = this->balace_factor(root->_right) > 0 ? this->rl_rotate(root) : this->left_rotate(root);
         return root;
     }
 
-    Node* rr_rotate(Node*& root) {
+    Node* left_rotate(Node*& root) {
         Node* temp = root->_right;
         root->_right = temp->_left;
         if (root->_right)
@@ -299,7 +295,7 @@ private:
         return temp;
     }
 
-    Node* ll_rotate(Node*& root) {
+    Node* right_rotate(Node*& root) {
         Node* temp = root->_left;
         root->_left = temp->_right;
         if (root->_left)
@@ -315,17 +311,15 @@ private:
     }
 
     Node* lr_rotate(Node*& root) {
-        Node* temp = root->_left;
-        root->_left = this->rr_rotate(temp);
+        root->_left = this->left_rotate(root->_left);
         root->_left->_parent = root;
-        return this->ll_rotate(root);
+        return this->right_rotate(root);
     }
 
     Node* rl_rotate(Node*& root) {
-        Node* temp = root->_right;
-        root->_right = this->ll_rotate(temp);
+        root->_right = this->right_rotate(root->_right);
         root->_right->_parent = root;
-        return this->rr_rotate(root);
+        return this->left_rotate(root);
     }
 
     Node* insert(Node*& root, const Comparable& value) {
@@ -382,10 +376,18 @@ private:
         return this->search(value < root->_value ? root->_left : root->_right, value);
     }
 
+    /**
+     * @brief Find the smallest node in the avl tree
+     *
+     * @param root current subtree being searched
+     * @return Node* pointer to the smallest node
+     */
     Node* find_min(Node* root) const {
-        while (root && root->_left)
-            root = root->_left;
-        return root;
+        Node* node = root;
+        while (node && node->_left)
+            node = node->_left;
+
+        return node;
     }
 
     void print_tree(const Node* root, ostream& os, size_t trace) const {

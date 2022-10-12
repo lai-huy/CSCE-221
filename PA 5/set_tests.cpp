@@ -732,24 +732,10 @@ bool test_const_iter_end() {
 	assert(set.size() == 0);
 	assert(set.is_empty());
 
-	set.insert(7);
-	set.insert(3);
-	set.insert(11);
-	set.insert(1);
-	set.insert(5);
-	set.insert(9);
-	set.insert(13);
-	set.insert(0);
-	set.insert(2);
-	set.insert(4);
-	set.insert(6);
-	set.insert(8);
-	set.insert(10);
-	set.insert(12);
-	set.insert(14);
-	set.insert(15);
+	for (int i = 0; i < 21; ++i)
+		set.insert(i);
 
-	Set_const_iterator<int> iter(set.find(15)), end(set.end());
+	Set_const_iterator<int> iter(set.find(20)), end(set.end());
 	expect_no_throw(++iter);
 	assert(iter == end);
 
