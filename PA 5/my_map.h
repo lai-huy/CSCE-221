@@ -144,43 +144,9 @@ public:
         return iter;
     }
 
-    Map_const_iterator& operator--() {
-        if (!this->_node)
-            return *this;
-        if (this->_node->_left) {
-            this->_node = this->_node->_left;
-            while (this->_node->_right)
-                this->_node = this->_node->_right;
-        } else {
-            Node* parent = this->_node->_parent;
-            while (parent && this->_node->isLeft()) {
-                this->_node = parent;
-                parent = parent->_parent;
-            }
-
-            this->_node = parent;
-        }
-
-        return *this;
-    }
-
-    Map_const_iterator operator--(int) {
-        Map_const_iterator iter(*this);
-        --(*this);
-        return iter;
-    }
-
     friend bool operator==(const Map_const_iterator& lhs, const Map_const_iterator& rhs) { return lhs._node == rhs._node; }
 
     friend bool operator!=(const Map_const_iterator& lhs, const Map_const_iterator& rhs) { return lhs._node != rhs._node; }
-
-    friend bool operator<(const Map_const_iterator& lhs, const Map_const_iterator& rhs) { return lhs._node < rhs._node; }
-
-    friend bool operator<=(const Map_const_iterator& lhs, const Map_const_iterator& rhs) { return lhs._node <= rhs._node; }
-
-    friend bool operator>(const Map_const_iterator& lhs, const Map_const_iterator& rhs) { return lhs._node > rhs._node; }
-
-    friend bool operator>=(const Map_const_iterator& lhs, const Map_const_iterator& rhs) { return lhs._node >= rhs._node; }
 
     virtual string to_string() const {
         stringstream ss;
@@ -245,43 +211,9 @@ public:
         return iter;
     }
 
-    Map_iterator& operator--() {
-        if (!this->_node)
-            return *this;
-        if (this->_node->_left) {
-            this->_node = this->_node->_left;
-            while (this->_node->_right)
-                this->_node = this->_node->_right;
-        } else {
-            Node* parent = this->_node->_parent;
-            while (parent && this->_node->isLeft()) {
-                this->_node = parent;
-                parent = parent->_parent;
-            }
-
-            this->_node = parent;
-        }
-
-        return *this;
-    }
-
-    Map_iterator operator--(int) {
-        Map_iterator iter(*this);
-        --(*this);
-        return iter;
-    }
-
     friend bool operator==(const Map_iterator& lhs, const Map_iterator& rhs) { return lhs._node == rhs._node; }
 
     friend bool operator!=(const Map_iterator& lhs, const Map_iterator& rhs) { return lhs._node != rhs._node; }
-
-    friend bool operator<(const Map_iterator& lhs, const Map_iterator& rhs) { return lhs._node < rhs._node; }
-
-    friend bool operator<=(const Map_iterator& lhs, const Map_iterator& rhs) { return lhs._node <= rhs._node; }
-
-    friend bool operator>(const Map_iterator& lhs, const Map_iterator& rhs) { return lhs._node > rhs._node; }
-
-    friend bool operator>=(const Map_iterator& lhs, const Map_iterator& rhs) { return lhs._node >= rhs._node; }
 
     string to_string() const override {
         stringstream ss;

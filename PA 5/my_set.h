@@ -69,11 +69,6 @@ public:
 
     bool isLeft() const { return this->_parent ? this == this->_parent->_left : false; }
     bool isRight() const { return this->_parent ? this == this->_parent->_right : false; }
-
-    friend ostream operator<<(ostream& os, const Set_Node<Comparable>& node) {
-        os << node._value;
-        return os;
-    }
 };
 
 template <class Comparable>
@@ -86,7 +81,6 @@ protected:
 public:
     Set_const_iterator() : _node{nullptr} {}
     Set_const_iterator(const Node* node) : _node{node} {}
-
     Set_const_iterator(const Set_const_iterator& rhs) : _node{rhs._node} {}
 
     Set_const_iterator& operator=(const Set_const_iterator& rhs) {
@@ -179,7 +173,11 @@ public:
         return this->_node->_value;
     }
 
-    Node* operator->() const { return const_cast<Node*>(this->_node); }
+    Comparable* operator->() const {
+        if (!this->_node)
+            throw runtime_error("Segmentation Fault");
+        return &this->_node->_value;
+    }
 
     Set_iterator& operator++() {
         if (!this->_node)
@@ -459,7 +457,7 @@ public:
 
     iterator remove(const_iterator iter) {
         if (!this->_root)
-            throw invalid_argument("Set is empty");
+            return iterator(nullptr);
         const_iterator end(this->end());
         if (iter == end)
             throw invalid_argument("Iterator does not point anywhere");

@@ -655,9 +655,6 @@ bool test_iter_end() {
 	expect_no_throw(++end);
 	expect_throw(*end, runtime_error);
 	expect_throw(end->first, runtime_error);
-	expect_no_throw(--end);
-	expect_throw(*end, runtime_error);
-	expect_throw(end->first, runtime_error);
 
 	END_TEST;
 }
@@ -695,41 +692,6 @@ bool test_iter_forward() {
 		expect_no_throw(iter++);
 		expect_no_throw(*iter);
 	}
-
-	END_TEST;
-}
-
-bool test_iter_reverse() {
-	Map<string, int> map;
-	assert(map.size() == 0);
-	assert(map.is_empty());
-
-	map.insert({"07", 7});
-	map.insert({"03", 3});
-	map.insert({"11", 11});
-	map.insert({"01", 1});
-	map.insert({"05", 5});
-	map.insert({"09", 9});
-	map.insert({"13", 13});
-	map.insert({"00", 0});
-	map.insert({"02", 2});
-	map.insert({"04", 4});
-	map.insert({"06", 6});
-	map.insert({"08", 8});
-	map.insert({"10", 10});
-	map.insert({"12", 12});
-	map.insert({"14", 14});
-	assert(map.size() == 15);
-
-	Map_iterator<string, int> iter(map.find("14"));
-	for (size_t i = 0; i < map.size() - 1; ++i) {
-		expect_no_throw(--iter);
-		expect_no_throw(*iter);
-	}
-
-	iter = map.find("14");
-	for (size_t i = 0; i < map.size() - 1; ++i)
-		expect_no_throw(iter--);
 
 	END_TEST;
 }
@@ -807,43 +769,6 @@ bool test_const_iter_forward() {
 	END_TEST;
 }
 
-bool test_const_iter_reverse() {
-	Map<string, int> map;
-	assert(map.size() == 0);
-	assert(map.is_empty());
-
-	map.insert({"07", 7});
-	map.insert({"03", 3});
-	map.insert({"11", 11});
-	map.insert({"01", 1});
-	map.insert({"05", 5});
-	map.insert({"09", 9});
-	map.insert({"13", 13});
-	map.insert({"00", 0});
-	map.insert({"02", 2});
-	map.insert({"04", 4});
-	map.insert({"06", 6});
-	map.insert({"08", 8});
-	map.insert({"10", 10});
-	map.insert({"12", 12});
-	map.insert({"14", 14});
-	assert(map.size() == 15);
-
-	Map_const_iterator<string, int> iter(map.find("14"));
-	for (size_t i = 0; i < map.size() - 1; ++i) {
-		expect_no_throw(--iter);
-		expect_no_throw(*iter);
-	}
-
-	iter = map.find("14");
-	for (size_t i = 0; i < map.size() - 1; ++i) {
-		expect_no_throw(iter--);
-		expect_no_throw(*iter);
-	}
-
-	END_TEST;
-}
-
 bool test_const_iter_end() {
 	Map<string, int> map;
 	assert(map.size() == 0);
@@ -870,9 +795,6 @@ bool test_const_iter_end() {
 	expect_throw(*end, runtime_error);
 	expect_throw(end->first, runtime_error);
 	expect_no_throw(++end);
-	expect_throw(*end, runtime_error);
-	expect_throw(end->first, runtime_error);
-	expect_no_throw(--end);
 	expect_throw(*end, runtime_error);
 	expect_throw(end->first, runtime_error);
 
@@ -911,6 +833,128 @@ bool test_const_iter_string() {
 	iter = map.end();
 	ss << iter.to_string();
 	assert(ss.str() == "<Map::const_iterator -> [nullptr]>");
+
+	END_TEST;
+}
+
+bool test_at() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	map.insert({"07", 7});
+	map.insert({"03", 3});
+	map.insert({"11", 11});
+	map.insert({"01", 1});
+	map.insert({"05", 5});
+	map.insert({"09", 9});
+	map.insert({"13", 13});
+	map.insert({"00", 0});
+	map.insert({"02", 2});
+	map.insert({"04", 4});
+	map.insert({"06", 6});
+	map.insert({"08", 8});
+	map.insert({"10", 10});
+	map.insert({"12", 12});
+	map.insert({"14", 14});
+
+	assert(map.at("00") == 0);
+	assert(map.at("01") == 1);
+	assert(map.at("02") == 2);
+	assert(map.at("03") == 3);
+	assert(map.at("04") == 4);
+	assert(map.at("05") == 5);
+	assert(map.at("06") == 6);
+	assert(map.at("07") == 7);
+	assert(map.at("08") == 8);
+	assert(map.at("09") == 9);
+	assert(map.at("10") == 10);
+	assert(map.at("11") == 11);
+	assert(map.at("12") == 12);
+	assert(map.at("13") == 13);
+	assert(map.at("14") == 14);
+
+	END_TEST;
+}
+
+bool test_at_invalid() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	map.insert({"07", 7});
+	map.insert({"03", 3});
+	map.insert({"11", 11});
+	map.insert({"01", 1});
+	map.insert({"05", 5});
+	map.insert({"09", 9});
+	map.insert({"13", 13});
+	map.insert({"00", 0});
+	map.insert({"02", 2});
+	map.insert({"04", 4});
+	map.insert({"06", 6});
+	map.insert({"08", 8});
+	map.insert({"10", 10});
+	map.insert({"12", 12});
+	map.insert({"14", 14});
+
+	expect_throw(map.at("15"), out_of_range);
+
+	END_TEST;
+}
+
+bool test_at_set() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	map.insert({"07", 0});
+	map.insert({"03", 0});
+	map.insert({"11", 0});
+	map.insert({"01", 0});
+	map.insert({"05", 0});
+	map.insert({"09", 0});
+	map.insert({"13", 0});
+	map.insert({"00", 0});
+	map.insert({"02", 0});
+	map.insert({"04", 0});
+	map.insert({"06", 0});
+	map.insert({"08", 0});
+	map.insert({"10", 0});
+	map.insert({"12", 0});
+	map.insert({"14", 0});
+
+	expect_no_throw(map.at("00") = 0);
+	expect_no_throw(map.at("01") = 1);
+	expect_no_throw(map.at("02") = 2);
+	expect_no_throw(map.at("03") = 3);
+	expect_no_throw(map.at("04") = 4);
+	expect_no_throw(map.at("05") = 5);
+	expect_no_throw(map.at("06") = 6);
+	expect_no_throw(map.at("07") = 7);
+	expect_no_throw(map.at("08") = 8);
+	expect_no_throw(map.at("09") = 9);
+	expect_no_throw(map.at("10") = 10);
+	expect_no_throw(map.at("11") = 11);
+	expect_no_throw(map.at("12") = 12);
+	expect_no_throw(map.at("13") = 13);
+	expect_no_throw(map.at("14") = 14);
+
+	assert(map.at("00") == 0);
+	assert(map.at("01") == 1);
+	assert(map.at("02") == 2);
+	assert(map.at("03") == 3);
+	assert(map.at("04") == 4);
+	assert(map.at("05") == 5);
+	assert(map.at("06") == 6);
+	assert(map.at("07") == 7);
+	assert(map.at("08") == 8);
+	assert(map.at("09") == 9);
+	assert(map.at("10") == 10);
+	assert(map.at("11") == 11);
+	assert(map.at("12") == 12);
+	assert(map.at("13") == 13);
+	assert(map.at("14") == 14);
 
 	END_TEST;
 }
@@ -1146,12 +1190,13 @@ int main() {
 	test(find);
 	test(iter_end);
 	test(iter_forward);
-	test(iter_reverse);
 	test(iter_string);
 	test(const_iter_end);
 	test(const_iter_forward);
-	test(const_iter_reverse);
 	test(const_iter_string);
+	test(at);
+	test(at_invalid);
+	test(at_set);
 	test(print_map);
 	test(print_tree);
 	test(print_empty);

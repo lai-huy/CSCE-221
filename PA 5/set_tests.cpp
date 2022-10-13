@@ -93,7 +93,6 @@ bool test_insert_pair() {
 	pair<Set_iterator<int>, bool> p(set.insert(7));
 	{
 		assert(set.size() == 1);
-		assert(p.first->value() == 7);
 		assert(*p.first == 7);
 		assert(p.second);
 	}
@@ -101,7 +100,6 @@ bool test_insert_pair() {
 	p = set.insert(3);
 	{
 		assert(set.size() == 2);
-		assert(p.first->value() == 3);
 		assert(*p.first == 3);
 		assert(p.second);
 	}
@@ -109,7 +107,6 @@ bool test_insert_pair() {
 	p = set.insert(11);
 	{
 		assert(set.size() == 3);
-		assert(p.first->value() == 11);
 		assert(*p.first == 11);
 		assert(p.second);
 	}
@@ -117,7 +114,6 @@ bool test_insert_pair() {
 	p = set.insert(1);
 	{
 		assert(set.size() == 4);
-		assert(p.first->value() == 1);
 		assert(*p.first == 1);
 		assert(p.second);
 	}
@@ -125,7 +121,6 @@ bool test_insert_pair() {
 	p = set.insert(5);
 	{
 		assert(set.size() == 5);
-		assert(p.first->value() == 5);
 		assert(*p.first == 5);
 		assert(p.second);
 	}
@@ -133,7 +128,6 @@ bool test_insert_pair() {
 	p = set.insert(9);
 	{
 		assert(set.size() == 6);
-		assert(p.first->value() == 9);
 		assert(*p.first == 9);
 		assert(p.second);
 	}
@@ -141,7 +135,6 @@ bool test_insert_pair() {
 	p = set.insert(13);
 	{
 		assert(set.size() == 7);
-		assert(p.first->value() == 13);
 		assert(*p.first == 13);
 		assert(p.second);
 	}
@@ -149,7 +142,6 @@ bool test_insert_pair() {
 	p = set.insert(0);
 	{
 		assert(set.size() == 8);
-		assert(p.first->value() == 0);
 		assert(*p.first == 0);
 		assert(p.second);
 	}
@@ -157,7 +149,6 @@ bool test_insert_pair() {
 	p = set.insert(2);
 	{
 		assert(set.size() == 9);
-		assert(p.first->value() == 2);
 		assert(*p.first == 2);
 		assert(p.second);
 	}
@@ -165,7 +156,6 @@ bool test_insert_pair() {
 	p = set.insert(4);
 	{
 		assert(set.size() == 10);
-		assert(p.first->value() == 4);
 		assert(*p.first == 4);
 		assert(p.second);
 	}
@@ -173,7 +163,6 @@ bool test_insert_pair() {
 	p = set.insert(6);
 	{
 		assert(set.size() == 11);
-		assert(p.first->value() == 6);
 		assert(*p.first == 6);
 		assert(p.second);
 	}
@@ -181,7 +170,6 @@ bool test_insert_pair() {
 	p = set.insert(8);
 	{
 		assert(set.size() == 12);
-		assert(p.first->value() == 8);
 		assert(*p.first == 8);
 		assert(p.second);
 	}
@@ -189,7 +177,6 @@ bool test_insert_pair() {
 	p = set.insert(10);
 	{
 		assert(set.size() == 13);
-		assert(p.first->value() == 10);
 		assert(*p.first == 10);
 		assert(p.second);
 	}
@@ -197,7 +184,6 @@ bool test_insert_pair() {
 	p = set.insert(12);
 	{
 		assert(set.size() == 14);
-		assert(p.first->value() == 12);
 		assert(*p.first == 12);
 		assert(p.second);
 	}
@@ -205,7 +191,6 @@ bool test_insert_pair() {
 	p = set.insert(14);
 	{
 		assert(set.size() == 15);
-		assert(p.first->value() == 14);
 		assert(*p.first == 14);
 		assert(p.second);
 	}
@@ -218,23 +203,24 @@ bool test_insert_right() {
 	assert(set.size() == 0);
 	assert(set.is_empty());
 
-	set.insert(set.end(), 0);
-	set.insert(set.end(), 1);
-	set.insert(set.end(), 2);
-	set.insert(set.end(), 3);
-	set.insert(set.end(), 4);
-	set.insert(set.end(), 5);
-	set.insert(set.end(), 6);
-	set.insert(set.end(), 7);
-	set.insert(set.end(), 8);
-	set.insert(set.end(), 9);
-	set.insert(set.end(), 10);
-	set.insert(set.end(), 11);
-	set.insert(set.end(), 12);
-	set.insert(set.end(), 13);
-	Set_iterator<int> iter(set.insert(set.end(), 14));
+	set.insert(0);
+	set.insert(1);
+	set.insert(2);
+	set.insert(3);
+	set.insert(4);
+	set.insert(5);
+	set.insert(6);
+	set.insert(7);
+	set.insert(8);
+	set.insert(9);
+	set.insert(10);
+	set.insert(11);
+	set.insert(12);
+	set.insert(13);
+	set.insert(14);
+	Set_iterator<int> iter(set.find(14));
 	assert(set.size() == 15);
-	assert(iter->value() == 14);
+
 	assert(*iter == 14);
 
 	END_TEST;
@@ -245,23 +231,23 @@ bool test_insert_left() {
 	assert(set.size() == 0);
 	assert(set.is_empty());
 
-	set.insert(set.end(), 14);
-	set.insert(set.end(), 13);
-	set.insert(set.end(), 12);
-	set.insert(set.end(), 11);
-	set.insert(set.end(), 10);
-	set.insert(set.end(), 9);
-	set.insert(set.end(), 8);
-	set.insert(set.end(), 7);
-	set.insert(set.end(), 6);
-	set.insert(set.end(), 5);
-	set.insert(set.end(), 4);
-	set.insert(set.end(), 3);
-	set.insert(set.end(), 2);
-	set.insert(set.end(), 1);
-	Set_iterator<int> iter(set.insert(set.end(), 0));
+	set.insert(14);
+	set.insert(13);
+	set.insert(12);
+	set.insert(11);
+	set.insert(10);
+	set.insert(9);
+	set.insert(8);
+	set.insert(7);
+	set.insert(6);
+	set.insert(5);
+	set.insert(4);
+	set.insert(3);
+	set.insert(2);
+	set.insert(1);
+	set.insert(0);
+	Set_iterator<int> iter(set.find(0));
 	assert(set.size() == 15);
-	assert(iter->value() == 0);
 	assert(*iter == 0);
 	END_TEST;
 }
@@ -271,9 +257,9 @@ bool test_insert_rl() {
 	assert(set.size() == 0);
 	assert(set.is_empty());
 
-	expect_no_throw(set.insert(set.end(), 0));
-	expect_no_throw(set.insert(set.end(), 2));
-	expect_no_throw(set.insert(set.end(), 1));
+	expect_no_throw(set.insert(0));
+	expect_no_throw(set.insert(2));
+	expect_no_throw(set.insert(1));
 	assert(set.size() == 3);
 
 	END_TEST;
@@ -284,9 +270,9 @@ bool test_insert_lr() {
 	assert(set.size() == 0);
 	assert(set.is_empty());
 
-	expect_no_throw(set.insert(set.end(), 2));
-	expect_no_throw(set.insert(set.end(), 0));
-	expect_no_throw(set.insert(set.end(), 1));
+	expect_no_throw(set.insert(2));
+	expect_no_throw(set.insert(0));
+	expect_no_throw(set.insert(1));
 	assert(set.size() == 3);
 
 	END_TEST;
@@ -309,11 +295,15 @@ bool test_insert_iter() {
 	set.insert(8);
 	set.insert(10);
 	set.insert(12);
-	set.insert(14);
-	assert(set.size() == 14);
+	assert(set.size() == 13);
 
-	expect_no_throw(set.insert(set.begin(), 0));
+	Set_iterator<int> iter(set.insert(set.begin(), 0));
+	assert(set.size() == 14);
+	assert(*iter == 0);
+
+	iter = set.insert(set.find(13), 14);
 	assert(set.size() == 15);
+	assert(*iter == 14);
 
 	END_TEST;
 }
@@ -437,7 +427,6 @@ bool test_remove_invalid() {
 	set.insert(12);
 	set.insert(14);
 	assert(set.size() == 15);
-
 	assert(set.remove(15) == 0);
 	assert(set.size() == 15);
 
@@ -561,6 +550,65 @@ bool test_remove_root() {
 	END_TEST;
 }
 
+bool test_remove_iter() {
+	Set<int> set;
+	assert(set.size() == 0);
+	assert(set.is_empty());
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+	assert(set.size() == 15);
+
+	Set_iterator<int> iter(set.remove(set.find(14))), end(set.end());
+	assert(iter == end);
+	iter = set.remove(set.find(13));
+	assert(iter == end);
+
+	END_TEST;
+}
+
+bool test_remove_iter_invalid() {
+	Set<int> set;
+	assert(set.size() == 0);
+	assert(set.is_empty());
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+	assert(set.size() == 15);
+
+	expect_throw(set.remove(set.end()), invalid_argument);
+	set.make_empty();
+	assert(set.remove(set.end()) == set.end());
+
+	END_TEST;
+}
+
 bool test_find() {
 	Set<int> set;
 	assert(set.size() == 0);
@@ -582,21 +630,64 @@ bool test_find() {
 	set.insert(12);
 	set.insert(14);
 
-	assert(set.find(0) != set.end());
-	assert(set.find(1) != set.end());
-	assert(set.find(2) != set.end());
-	assert(set.find(3) != set.end());
-	assert(set.find(4) != set.end());
-	assert(set.find(5) != set.end());
-	assert(set.find(6) != set.end());
-	assert(set.find(7) != set.end());
-	assert(set.find(8) != set.end());
-	assert(set.find(9) != set.end());
-	assert(set.find(10) != set.end());
-	assert(set.find(11) != set.end());
-	assert(set.find(12) != set.end());
-	assert(set.find(13) != set.end());
-	assert(set.find(14) != set.end());
+	Set_iterator end(set.end());
+	assert(set.find(0) != end);
+	assert(set.find(1) != end);
+	assert(set.find(2) != end);
+	assert(set.find(3) != end);
+	assert(set.find(4) != end);
+	assert(set.find(5) != end);
+	assert(set.find(6) != end);
+	assert(set.find(7) != end);
+	assert(set.find(8) != end);
+	assert(set.find(9) != end);
+	assert(set.find(10) != end);
+	assert(set.find(11) != end);
+	assert(set.find(12) != end);
+	assert(set.find(13) != end);
+	assert(set.find(14) != end);
+
+	END_TEST;
+}
+
+bool test_find_const() {
+	Set<int> a;
+	assert(a.size() == 0);
+	assert(a.is_empty());
+
+	a.insert(7);
+	a.insert(3);
+	a.insert(11);
+	a.insert(1);
+	a.insert(5);
+	a.insert(9);
+	a.insert(13);
+	a.insert(0);
+	a.insert(2);
+	a.insert(4);
+	a.insert(6);
+	a.insert(8);
+	a.insert(10);
+	a.insert(12);
+	a.insert(14);
+
+	const Set<int> set(a);
+	const Set_const_iterator<int> end(set.end());
+	assert(set.find(0) != end);
+	assert(set.find(1) != end);
+	assert(set.find(2) != end);
+	assert(set.find(3) != end);
+	assert(set.find(4) != end);
+	assert(set.find(5) != end);
+	assert(set.find(6) != end);
+	assert(set.find(7) != end);
+	assert(set.find(8) != end);
+	assert(set.find(9) != end);
+	assert(set.find(10) != end);
+	assert(set.find(11) != end);
+	assert(set.find(12) != end);
+	assert(set.find(13) != end);
+	assert(set.find(14) != end);
 
 	END_TEST;
 }
@@ -695,6 +786,36 @@ bool test_iter_string() {
 	iter = set.end();
 	ss << iter.to_string();
 	assert(ss.str() == "<Set::iterator -> [nullptr]>");
+
+	END_TEST;
+}
+
+bool test_iter_empty() {
+	Set<int> set;
+	assert(set.size() == 0);
+	assert(set.is_empty());
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+
+	Set_iterator<int> iter(set.begin());
+	set.make_empty();
+	expect_no_throw(*iter);
+	assert(iter++ != set.end());
+	assert(iter == set.end());
 
 	END_TEST;
 }
@@ -1041,10 +1162,14 @@ int main() {
 	test(remove_leaf);
 	test(remove_middle);
 	test(remove_root);
+	test(remove_iter);
+	test(remove_iter_invalid);
 	test(find);
+	test(find_const);
 	test(iter_end);
 	test(iter_forward);
 	test(iter_string);
+	test(iter_empty);
 	test(const_iter_end);
 	test(const_iter_forward);
 	test(const_iter_string);
