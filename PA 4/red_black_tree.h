@@ -76,10 +76,10 @@ public:
          */
         string colorToString() const {
             switch (this->color) {
-            case RED:
-                return "\u2B1C";
-            case BLACK:
-                return "\u2B1B";
+            case Color::RED:
+                return "⬜";
+            case Color::BLACK:
+                return "⬛";
             default:
                 return "?";
             }
@@ -472,11 +472,6 @@ private:
      * @param trace how much to indent each line
      */
     void print_tree(const Node* root, ostream& os, size_t trace) const {
-        if (!root) {
-            os << "<empty>\n";
-            return;
-        }
-
         if (root->right)
             this->print_tree(root->right, os, trace + 1);
         os << string(trace * 2, ' ') << *root << "\n";
@@ -600,27 +595,22 @@ public:
     const Node* get_root() const { return this->_root; }
 
     // ----------------------- Optional ----------------------- //
-    // RedBlackTree(RedBlackTree&& rhs) : root{nullptr} { swap(this->_root, rhs.root); }
+    RedBlackTree(RedBlackTree&& rhs) : _root{nullptr} { swap(this->_root, rhs.root); }
 
-    // RedBlackTree& operator=(RedBlackTree&& rhs) {
-    //     if (this != &rhs) {
-    //         this->_root = this->clear(this->_root);
-    //         swap(this->_root, rhs.root);
-    //     }
+    RedBlackTree& operator=(RedBlackTree&& rhs) {
+        if (this != &rhs) {
+            this->make_empty();
+            swap(this->_root, rhs.root);
+        }
 
-    //     return *this;
-    // }
+        return *this;
+    }
 
-    // void insert(Comparable&& value) {
-    //     if (this->contains(value))
-    //         return;
-
-    //     Comparable v = Comparable();
-    //     swap(v, value);
-    //     Node* z = new Node(v);
-    //     this->_root = this->insert(this->_root, z);
-    //     this->fixInsert(this->_root, z);
-    // }
+    void insert(Comparable&& value) {
+        Comparable v;
+        swap(v, value);
+        this->insert(v);
+    }
 
     /**
      * @brief Determine if the tree is empty
@@ -641,7 +631,9 @@ public:
      * @param os ostream to flush to, cout by default
      */
     void print_tree(ostream& os = cout) const {
-        size_t i = 0;
-        this->print_tree(this->_root, os, i);
+        if (this->_root)
+            this->print_tree(this->_root, os, 0);
+        else
+            os << "<empty>";
     }
 };
