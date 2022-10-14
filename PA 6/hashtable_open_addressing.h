@@ -8,12 +8,13 @@
 #include <vector>
 
 using std::ostream, std::cout;
+using std::hash;
 
-template <class Key, class Hash = std::hash<Key>>
+template <class Key, class Hash = hash<Key>>
 class HashTable {
 public:
     HashTable();
-    explicit HashTable(size_t);
+    explicit HashTable(size_t buckets);
 
     bool is_empty() const;
     size_t size() const;
