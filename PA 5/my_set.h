@@ -247,6 +247,7 @@ private:
             node->_left = this->clear(node->_left);
             node->_right = this->clear(node->_right);
             node->_parent = nullptr;
+            node->_height = 0;
             delete node;
         }
 
@@ -342,16 +343,22 @@ private:
             root->_right = this->remove(root->_right, value);
         else {
             if (root->isLeaf()) {
+                root->_height = 0;
+                root->_parent = nullptr;
                 delete root;
                 root = nullptr;
                 return root;
             } else if (!root->_left) {
                 Node* temp = root->_right;
+                root->_height = 0;
+                root->_parent = nullptr;
                 delete root;
                 root = nullptr;
                 return temp;
             } else if (!root->_right) {
                 Node* temp = root->_left;
+                root->_height = 0;
+                root->_parent = nullptr;
                 delete root;
                 root = nullptr;
                 return temp;
@@ -384,7 +391,6 @@ private:
         Node* node = root;
         while (node && node->_left)
             node = node->_left;
-
         return node;
     }
 
