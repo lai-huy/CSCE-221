@@ -140,7 +140,7 @@ public:
          *
          * @return size_t the number of children this node has
          */
-        size_t countChildren() {
+        size_t countChildren() const {
             size_t count = 0;
             if (this->left)
                 ++count;
@@ -204,11 +204,8 @@ private:
      * @param node a pointer to the inserted node
      */
     void fixInsert(Node*& node) {
-        this->_root->color = Color::BLACK;
-        if (node == this->_root) return;
-
         Node* uncle;
-        while (node->parent->color == Color::RED) {
+        while (node != this->_root && node->parent->color == Color::RED) {
             uncle = node->uncle();
             if (uncle && uncle->color == Color::RED) {
                 uncle->color = Color::BLACK;
@@ -328,11 +325,7 @@ private:
             v->parent = u->parent;
     }
 
-    /**
-     * @brief Remove a node from the Tree
-     *
-     * @param z a pointer to the node being removed
-     */
+    /*
     void remove(Node*& node) {
         Node* x = nullptr;
         Node* y = node;
@@ -380,6 +373,27 @@ private:
         node = nullptr;
         if (color == Color::BLACK)
             this->fixRemove(x);
+    }*/
+
+    void remove(Node*& node) {
+        Node* replace = this->find_min(node->right);
+        Color color = node->color;
+        if (replace) {
+            swap(node->value, replace->value);
+            this->remove(replace);
+        } else {
+            if (node->isLeft())
+                node->parent->left = nullptr;
+            else if (node->isRight())
+                node->parent->right = nullptr;
+            if (node == this->_root)
+                this->_root = nullptr;
+            delete node;
+            node = nullptr;
+        }
+
+        if (color == Color::BLACK)
+            this->fixRemove(replace);
     }
 
     /**
@@ -428,6 +442,7 @@ private:
         if (root) {
             root->left = this->clear(root->left);
             root->right = this->clear(root->right);
+            root->parent = nullptr;
             delete root;
         }
 
@@ -447,7 +462,11 @@ private:
 
         Node* node = new Node(root->value, root->color);
         node->left = this->copy(root->left);
+        if (node->left)
+            node->left->parent = node;
         node->right = this->copy(root->right);
+        if (node->right)
+            node->right->parent = node;
         return node;
     }
 

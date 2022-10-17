@@ -1907,22 +1907,22 @@ bool test_remove_root() {
         assert(root->left->right->right->left == nullptr);
         assert(root->left->right->right->right == nullptr);
         assert(root->right != nullptr);
-        assert(root->right->value == 11);
+        assert(root->right->value == 13);
         assert(root->right->color == RedBlackTree<int>::RED);
-        assert(root->right->left == nullptr);
+        assert(root->right->left != nullptr);
+        assert(root->right->left->value == 11);
+        assert(root->right->left->color == RedBlackTree<int>::BLACK);
+        assert(root->right->left->left == nullptr);
+        assert(root->right->left->right != nullptr);
+        assert(root->right->left->right->value == 12);
+        assert(root->right->left->right->color == RedBlackTree<int>::RED);
+        assert(root->right->left->right->left == nullptr);
+        assert(root->right->left->right->right == nullptr);
         assert(root->right->right != nullptr);
-        assert(root->right->right->value == 13);
+        assert(root->right->right->value == 14);
         assert(root->right->right->color == RedBlackTree<int>::BLACK);
-        assert(root->right->right->left != nullptr);
-        assert(root->right->right->left->value == 12);
-        assert(root->right->right->left->color == RedBlackTree<int>::RED);
-        assert(root->right->right->left->left == nullptr);
-        assert(root->right->right->left->right == nullptr);
-        assert(root->right->right->right != nullptr);
-        assert(root->right->right->right->value == 14);
-        assert(root->right->right->right->color == RedBlackTree<int>::RED);
-        assert(root->right->right->right->left == nullptr);
-        assert(root->right->right->right->right == nullptr);
+        assert(root->right->right->left == nullptr);
+        assert(root->right->right->right == nullptr);
     }
 
     END_TEST;
