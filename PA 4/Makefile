@@ -14,3 +14,7 @@ memory_errors: clean red_black_tree.h red_black_tree_tests.cpp
 
 compile_test: clean red_black_tree.h compile_test.cpp
 	g++ -std=c++17 -Wall -Wextra -Weffc++ -pedantic-errors -g -o main.out compile_test.cpp
+
+synch: clean
+	git add .
+	git commit -m "synch vs code"
