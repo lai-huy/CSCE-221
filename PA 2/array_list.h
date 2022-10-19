@@ -279,36 +279,28 @@ public:
      *
      * @return Object* a pointer to the beginning of the list
      */
-    Object* begin() {
-        return this->_size ? &this->_data[0] : nullptr;
-    }
+    Object* begin() { return this->_size ? &this->_data[0] : nullptr; }
 
     /**
      * @brief returns a pointer to the beginning of the list
      *
      * @return const Object* returns a pointer to the beginning of the list
      */
-    const Object* begin() const {
-        return this->_size ? &this->_data[0] : nullptr;
-    }
+    const Object* begin() const { return this->_size ? &this->_data[0] : nullptr; }
 
     /**
      * @brief returns a pointer to the end of the list
      *
      * @return Object* a pointer to the end of the list
      */
-    Object* end() {
-        return this->_size ? &this->_data[this->_size - 1] : nullptr;
-    }
+    Object* end() { return this->_data + this->_size; }
 
     /**
      * @brief returns a pointer to the end of the list
      *
      * @return const Object* a pointer to the end of the list
      */
-    const Object* end() const {
-        return this->_size ? &this->_data[this->_size - 1] : nullptr;
-    }
+    const Object* end() const { return this->_data + this->_size; }
 };
 
 #endif  // ARRAY_LIST_H

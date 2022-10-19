@@ -238,16 +238,12 @@ public:
     class iterator {
         Node* _node;
     public:
-        iterator() : _node{DoublyLinkedList::_head} {}
+        iterator() : iterator(nullptr) {}
         iterator(Node* node) : _node{node} {}
 
-        Node& operator*() {
-            return *(this->_node);
-        }
+        Node& operator*() { return *(this->_node); }
 
-        Node* operator->() {
-            return this->_node;
-        }
+        Node* operator->() { return this->_node; }
 
         iterator& operator=(const Node*& node) {
             this->_node = node;
@@ -266,40 +262,12 @@ public:
             return it;
         }
 
-        iterator& operator--() {
-            if (this->_node)
-                this->_node = this->_node->_prev;
-            return *this;
-        }
-
-        iterator operator--(int) {
-            iterator it = *this;
-            --(*this);
-            return it;
-        }
-
         friend bool operator==(const iterator& lhs, const iterator& rhs) {
             return lhs._node == rhs._node;
         }
 
         friend bool operator!=(const iterator& lhs, const iterator& rhs) {
             return lhs._node != rhs._node;
-        }
-
-        friend bool operator<(const iterator& lhs, const iterator& rhs) {
-            return lhs._node < rhs._node;
-        }
-
-        friend bool operator<=(const iterator& lhs, const iterator& rhs) {
-            return lhs._node <= rhs._node;
-        }
-
-        friend bool operator>(const iterator& lhs, const iterator& rhs) {
-            return lhs._node > rhs._node;
-        }
-
-        friend bool operator>=(const iterator& lhs, const iterator& rhs) {
-            return lhs._node >= rhs._node;
         }
     };
 
@@ -326,19 +294,11 @@ public:
         this->insert(index, o);
     }
 
-    iterator begin() {
-        return iterator(this->_head);
-    }
+    iterator begin() { return iterator(this->_head); }
 
-    const iterator begin() const {
-        return iterator(this->_head);
-    }
+    const iterator begin() const { return iterator(this->_head); }
 
-    iterator end() {
-        return iterator(this->_tail);
-    }
+    iterator end() { return iterator(nullptr); }
 
-    const iterator end() const {
-        return iterator(this->_tail);
-    }
+    const iterator end() const { return iterator(nullptr); }
 };

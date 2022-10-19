@@ -97,6 +97,8 @@ public:
             return os;
         }
 
+        bool isLeaf() const { return !this->left && !this->right; }
+
         /**
          * @brief Determines if this node is the left child of its parrent
          *
@@ -162,19 +164,19 @@ private:
      * @param node a pointer to the root to rotate arround
      */
     void rotateLeft(Node* node) {
-        Node* y = node->right;
-        node->right = y->left;
-        if (y->left)
-            y->left->parent = node;
-        y->parent = node->parent;
+        Node* temp = node->right;
+        node->right = temp->left;
+        if (temp->left)
+            temp->left->parent = node;
+        temp->parent = node->parent;
         if (!node->parent)
-            this->_root = y;
+            this->_root = temp;
         else if (node->isLeft())
-            node->parent->left = y;
+            node->parent->left = temp;
         else
-            node->parent->right = y;
-        y->left = node;
-        node->parent = y;
+            node->parent->right = temp;
+        temp->left = node;
+        node->parent = temp;
     }
 
     /**
@@ -183,19 +185,19 @@ private:
      * @param node a pointer to the root to rotates arround
      */
     void rotateRight(Node* node) {
-        Node* y = node->left;
-        node->left = y->right;
-        if (y->right)
-            y->right->parent = node;
-        y->parent = node->parent;
+        Node* temp = node->left;
+        node->left = temp->right;
+        if (temp->right)
+            temp->right->parent = node;
+        temp->parent = node->parent;
         if (!node->parent)
-            this->_root = y;
+            this->_root = temp;
         else if (node->isRight())
-            node->parent->right = y;
+            node->parent->right = temp;
         else
-            node->parent->left = y;
-        y->right = node;
-        node->parent = y;
+            node->parent->left = temp;
+        temp->right = node;
+        node->parent = temp;
     }
 
     /**
@@ -246,11 +248,6 @@ private:
             return;
 
         Node* sibling = x->sibling();
-        if (!sibling) {
-            x->color = Color::BLACK;
-            return;
-        }
-
         while (x != this->_root && x->color == Color::BLACK) {
             if (x->isLeft()) {
                 if (sibling->color == Color::RED) {
@@ -376,24 +373,21 @@ private:
     }*/
 
     void remove(Node*& node) {
-        Node* replace = this->find_min(node->right);
-        Color color = node->color;
-        if (replace) {
-            swap(node->value, replace->value);
-            this->remove(replace);
-        } else {
+        if (node->isLeaf()) {
             if (node->isLeft())
                 node->parent->left = nullptr;
             else if (node->isRight())
                 node->parent->right = nullptr;
-            if (node == this->_root)
+            else if (node == this->_root)
                 this->_root = nullptr;
             delete node;
             node = nullptr;
+            return;
         }
 
-        if (color == Color::BLACK)
-            this->fixRemove(replace);
+        Node* replace = node->right ? this->find_min(node->right) : node->left;
+        swap(node->value, replace->value);
+        this->remove(replace);
     }
 
     /**
@@ -559,6 +553,7 @@ public:
             return;
 
         this->remove(node);
+        this->fixRemove(node);
     }
 
     /**
