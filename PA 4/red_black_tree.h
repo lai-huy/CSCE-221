@@ -70,22 +70,6 @@ public:
         Node(const Comparable& value, const Color& color) : value{Comparable(value)}, color{color}, left{nullptr}, right{nullptr}, parent{nullptr} {}
 
         /**
-         * @brief Converts the color of the node to a string
-         *
-         * @return string string representation of the color of the node
-         */
-        string colorToString() const {
-            switch (this->color) {
-            case Color::RED:
-                return "🟥";
-            case Color::BLACK:
-                return "⬛";
-            default:
-                return "?";
-            }
-        }
-
-        /**
          * @brief flushed this node to an ostream
          *
          * @param os ostream to flush to
@@ -94,16 +78,17 @@ public:
          */
         friend ostream& operator<<(ostream& os, const Node& node) {
             switch (node.color) {
-            case RED:
+            case Color::RED:
                 os << "🟥";
                 break;
-            case BLACK:
+            case Color::BLACK:
                 os << "⬛";
                 break;
             default:
                 os << "🟦";
+                break;
             }
-            return os << ":" << node.value;
+            return os << ": " << node.value;
         }
 
         bool isLeaf() const { return !this->left && !this->right; }
@@ -125,6 +110,8 @@ public:
         bool isRight() const { return this->parent ? this == this->parent->right : false; }
 
         bool hasRedChildren() const { return (this->left && this->left->color == Color::RED) && (this->right && this->right->color == Color::RED); }
+
+        bool hasRedChild() const { return (this->left && this->left->color == Color::RED) || (this->right && this->right->color == Color::RED); }
 
         /**
          * @brief Gets the sibling of this node
@@ -371,6 +358,10 @@ private:
                         node = this->rotateRight(node->parent);
                         node->color = Color::RED;
                         node->parent->color = Color::BLACK;
+                    } else if (node->parent->isLeft()) {
+                        node = this->rotateLeft(node->parent);
+                        node->color = Color::RED;
+                        node->parent->color = Color::BLACK;
                     }
 
                     node = this->rotateRight(node->parent->parent);
@@ -496,22 +487,24 @@ private:
         bool rules = true;
         if (!root)
             return rules;
-        rules &= this->countBlack(root->left) == this->countBlack(root->right);
-        rules &= !(root->color == Color::RED && root->hasRedChildren());
+        rules &= !this->doubleRed(root);
+        rules &= this->blackHeight(root->left) == this->blackHeight(root->right);
         return rules;
     }
 
-    size_t countBlack(const Node* root) const {
-        size_t count = 0;
+    bool doubleRed(Node* root) const {
         if (!root)
-            ++count;
-        else if (root && root->color == Color::BLACK)
-            ++count;
-        else if (root->left)
-            count += countBlack(root->left);
-        else if (root->right)
-            count += countBlack(root->right);
-        return count;
+            return false;
+        if (root->color == Color::RED && root->hasRedChild())
+            return true;
+        return this->doubleRed(root->left) || this->doubleRed(root->right);
+    }
+
+    size_t blackHeight(const Node* root) const {
+        if (!root)
+            return 1;
+        size_t height = this->blackHeight(root->left);
+        return height + (root->color == Color::BLACK ? 1 : 0);
     }
 public:
     /**

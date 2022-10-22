@@ -220,6 +220,21 @@ bool test_insert_lr() {
     END_TEST;
 }
 
+bool test_insert_in2out() {
+    RedBlackTree<int> rbt;
+    assert(rbt.get_root() == nullptr);
+
+    for (int i = 0; i < INT8_MAX; ++i) {
+        rbt.insert(i % 2 ? -i : i);
+        if (!rbt.followsRules()) {
+            cout << "Failed when inserting " << i << "\n";
+            assert(false);
+        }
+    }
+
+    END_TEST;
+}
+
 bool test_insert_out2in() {
     RedBlackTree<int> rbt;
     assert(rbt.get_root() == nullptr);
@@ -227,8 +242,25 @@ bool test_insert_out2in() {
     for (int i = 18; i > -1; --i) {
         rbt.insert(i % 2 ? -i : i);
         rbt.print_tree();
+        if (!rbt.followsRules()) {
+            cout << "Failed when inserting " << i << "\n";
+            assert(false);
+        }
         cout << "\n--------------------------------------\n";
     }
+
+    END_TEST;
+}
+
+bool test_insert_text() {
+    RedBlackTree<int> rbt;
+
+    int nums[14] = {10, 85, 15, 70, 20, 60, 30, 50, 65, 80, 90, 40, 5, 55};
+    for (int num : nums) {
+        rbt.insert(num);
+    }
+    rbt.print_tree();
+    assert(rbt.followsRules());
 
     END_TEST;
 }
@@ -1885,7 +1917,9 @@ int main() {
     // test(insert_left);
     // test(insert_rl);
     // test(insert_lr);
-    test(insert_out2in);
+    // test(insert_in2out);
+    // test(insert_out2in);
+    test(insert_text);
     // test(contains);
     // test(remove_leaf);
     // test(remove_middle);
