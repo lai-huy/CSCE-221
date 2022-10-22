@@ -439,12 +439,12 @@ public:
         return pair(iterator(this->search(this->_root, value)), true);
     }
 
-    iterator insert(const_iterator iter, const Comparable& value) {
+    iterator insert(const_iterator hint, const Comparable& value) {
         const Node* node = this->search(this->_root, value);
         if (node)
             return iterator(node);
 
-        const Node* location = iter._node;
+        const Node* location = hint._node;
         if (!this->_root || !location)
             this->_root = this->insert(this->_root, value);
         else

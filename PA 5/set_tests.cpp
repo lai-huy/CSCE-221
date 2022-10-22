@@ -814,7 +814,7 @@ bool test_iter_empty() {
 	Set_iterator<int> iter(set.begin());
 	set.make_empty();
 	expect_no_throw(*iter);	// This SHOULD throw but doesn't because I'm bad
-	assert(iter++ != set.end());
+	assert(++iter != set.end());
 	assert(iter == set.end());
 
 	END_TEST;

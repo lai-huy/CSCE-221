@@ -435,8 +435,24 @@ public:
         throw out_of_range(ss.str());
     }
 
-    Value& operator[](const Key& key) { return this->search(this->_root, key)->_pair->second; }
-    const Value& operator[](const Key& key) const { return this->search(this->_root, key)->_pair->second; }
+    Value& operator[](const Key& key) {
+        Node* node = this->search(this->_root, key);
+        if (node)
+            return node->_pair->second;
+        else {
+            pair<iterator, bool> p(this->insert({key, Value()}));
+            p.first->second;
+        }
+    }
+    const Value& operator[](const Key& key) const {
+        Node* node = this->search(this->_root, key);
+        if (node)
+            return node->_pair->second;
+        else {
+            pair<iterator, bool> p(this->insert({key, Value()}));
+            p.first->second;
+        }
+    }
 
     iterator begin() { return iterator(this->find_min(this->_root)); }
     const_iterator begin() const { return const_iterator(this->find_min(this->_root)); }

@@ -10,7 +10,7 @@
 using std::cout, std::ostream;
 using std::invalid_argument;
 using std::string, std::wstring;
-using std::swap;
+using std::swap, std::move;
 
 /**
  * @brief A self-balancing Binary Search Tree.
@@ -77,7 +77,7 @@ public:
         string colorToString() const {
             switch (this->color) {
             case Color::RED:
-                return "⬜";
+                return "🟥";
             case Color::BLACK:
                 return "⬛";
             default:
@@ -93,8 +93,17 @@ public:
          * @return ostream& ostream to flush to
          */
         friend ostream& operator<<(ostream& os, const Node& node) {
-            os << node.colorToString() << ":" << node.value;
-            return os;
+            switch (node.color) {
+            case RED:
+                os << "🟥";
+                break;
+            case BLACK:
+                os << "⬛";
+                break;
+            default:
+                os << "🟦";
+            }
+            return os << ":" << node.value;
         }
 
         bool isLeaf() const { return !this->left && !this->right; }
@@ -114,6 +123,8 @@ public:
          * @return false otherwise
          */
         bool isRight() const { return this->parent ? this == this->parent->right : false; }
+
+        bool hasRedChildren() const { return (this->left && this->left->color == Color::RED) && (this->right && this->right->color == Color::RED); }
 
         /**
          * @brief Gets the sibling of this node
@@ -163,7 +174,7 @@ private:
      *
      * @param node a pointer to the root to rotate arround
      */
-    void rotateLeft(Node* node) {
+    Node* rotateLeft(Node* node) {
         Node* temp = node->right;
         node->right = temp->left;
         if (temp->left)
@@ -173,10 +184,11 @@ private:
             this->_root = temp;
         else if (node->isLeft())
             node->parent->left = temp;
-        else
+        else if (node->isRight())
             node->parent->right = temp;
         temp->left = node;
         node->parent = temp;
+        return temp;
     }
 
     /**
@@ -184,7 +196,7 @@ private:
      *
      * @param node a pointer to the root to rotates arround
      */
-    void rotateRight(Node* node) {
+    Node* rotateRight(Node* node) {
         Node* temp = node->left;
         node->left = temp->right;
         if (temp->right)
@@ -194,48 +206,11 @@ private:
             this->_root = temp;
         else if (node->isRight())
             node->parent->right = temp;
-        else
+        else if (node->isLeft())
             node->parent->left = temp;
         temp->right = node;
         node->parent = temp;
-    }
-
-    /**
-     * @brief Fix violations incured by the insert
-     *
-     * @param node a pointer to the inserted node
-     */
-    void fixInsert(Node*& node) {
-        Node* uncle;
-        while (node != this->_root && node->parent->color == Color::RED) {
-            uncle = node->uncle();
-            if (uncle && uncle->color == Color::RED) {
-                uncle->color = Color::BLACK;
-                node->parent->color = Color::BLACK;
-                node->parent->parent->color = Color::RED;
-                node = node->parent->parent;
-            } else if (node->parent->isRight()) {
-                if (node->isLeft()) {
-                    node = node->parent;
-                    this->rotateRight(node);
-                }
-                node->parent->color = Color::BLACK;
-                node->parent->parent->color = Color::RED;
-                this->rotateLeft(node->parent->parent);
-            } else {
-                if (node->isRight()) {
-                    node = node->parent;
-                    this->rotateLeft(node);
-                }
-                node->parent->color = Color::BLACK;
-                node->parent->parent->color = Color::RED;
-                this->rotateRight(node->parent->parent);
-            }
-
-            if (node == this->_root) break;
-        }
-
-        this->_root->color = Color::BLACK;
+        return temp;
     }
 
     /**
@@ -322,56 +297,6 @@ private:
             v->parent = u->parent;
     }
 
-    /*
-    void remove(Node*& node) {
-        Node* x = nullptr;
-        Node* y = node;
-        Color color = y->color;
-        switch (node->countChildren()) {
-        case 0:
-            if (node->isLeft())
-                node->parent->left = nullptr;
-            else if (node->isRight())
-                node->parent->right = nullptr;
-            break;
-        case 1:
-            if (!node->left) {
-                x = node->right;
-                this->transplant(node, node->right);
-            } else if (!node->right) {
-                x = node->left;
-                this->transplant(node, node->left);
-            }
-            break;
-        case 2:
-            y = this->find_min(node->right);
-            color = y->color;
-            x = y->right;
-            if (y->parent == node) {
-                if (x)
-                    x->parent = node;
-            } else {
-                this->transplant(y, y->right);
-                y->right = node->right;
-                y->right->parent = y;
-            }
-
-            this->transplant(node, y);
-            y->left = node->left;
-            if (y->left)
-                y->left->parent = y;
-            y->color = node->color;
-            break;
-        }
-
-        if (node == this->_root)
-            this->_root = nullptr;
-        delete node;
-        node = nullptr;
-        if (color == Color::BLACK)
-            this->fixRemove(x);
-    }*/
-
     void remove(Node*& node) {
         if (node->isLeaf()) {
             if (node->isLeft())
@@ -405,25 +330,100 @@ private:
         return root->value < value ? this->search(root->right, value) : this->search(root->left, value);
     }
 
-    /**
-     * @brief Insert a node into the tree
-     *
-     * @param root a pointer to the current subtree to insert into
-     * @param value a pointer to the node being inserted
-     * @return Node* a pointer to the current subtree to insert into
-     */
-    Node* insert(Node*& root, Node*& value) {
-        if (!root)
-            return value;
-        if (value->value < root->value) {
-            root->left = this->insert(root->left, value);
-            root->left->parent = root;
-        } else if (value->value > root->value) {
-            root->right = this->insert(root->right, value);
-            root->right->parent = root;
-        }
+    void insert(Node* node, const Comparable& value) {
+        if (!node) {
+            node = new Node(value);
+            if (!this->_root) this->_root = node;
+            return;
+        } else if (node->value == value) {
+            return;
+        } else if (node->value > value) {
+            if (!node->left) {
+                node->left = new Node(value);
+                node->left->parent = node;
 
-        return root;
+                if (node->color == Color::BLACK)
+                    return;
+
+                Node* sibling = node->sibling();
+                if (!sibling) {
+                    if (node->isLeft()) {
+                        node = this->rotateRight(node->parent);
+                        node->color = Color::BLACK;
+                        node->left->color = Color::RED;
+                        node->right->color = Color::RED;
+                    } else {
+                        node = this->rotateRight(node);
+                        node = this->rotateLeft(node->parent);
+                        node->color = Color::BLACK;
+                        node->left->color = node->right->color = Color::RED;
+                    }
+                } else if (sibling->color == Color::RED) {
+                    sibling->color = node->color = Color::BLACK;
+                    if (node->parent->parent) node->parent->parent->color = Color::RED;
+                }
+                return;
+            } else if (node->color == Color::BLACK && node->hasRedChildren()) {
+                node->color = Color::RED;
+                node->left->color = node->right->color = Color::BLACK;
+                if (node->parent && node->parent->color == Color::RED) {
+                    if (node->parent->isRight()) {
+                        node = this->rotateRight(node->parent);
+                        node->color = Color::RED;
+                        node->parent->color = Color::BLACK;
+                    }
+
+                    node = this->rotateRight(node->parent->parent);
+                    node->left->color = node->right->color = Color::RED;
+                    node->color = Color::BLACK;
+                }
+            }
+
+            this->insert(node->left, value);
+        } else if (node->value < value) {
+            if (!node->right) {
+                node->right = new Node(value);
+                node->right->parent = node;
+
+                if (node->color == Color::BLACK)
+                    return;
+
+                Node* sibling = node->sibling();
+                if (!sibling) {
+                    if (node->isRight()) {
+                        node = this->rotateLeft(node->parent);
+                        node->color = Color::BLACK;
+                        node->left->color = Color::RED;
+                        node->right->color = Color::RED;
+                    } else {
+                        node = this->rotateLeft(node);
+                        node = this->rotateRight(node->parent);
+                        node->color = Color::BLACK;
+                        node->left->color = node->right->color = Color::RED;
+                    }
+                } else if (sibling->color == Color::RED) {
+                    sibling->color = node->color = Color::BLACK;
+                    if (node->parent->parent) node->parent->parent->color = Color::RED;
+                }
+                return;
+            } else if (node->color == Color::BLACK && node->hasRedChildren()) {
+                node->color = Color::RED;
+                node->left->color = node->right->color = Color::BLACK;
+                if (node->parent && node->parent->color == Color::RED) {
+                    if (node->parent->isLeft()) {
+                        node = this->rotateLeft(node->parent);
+                        node->color = Color::RED;
+                        node->parent->color = Color::BLACK;
+                    }
+
+                    node = this->rotateLeft(node->parent->parent);
+                    node->left->color = node->right->color = Color::RED;
+                    node->color = Color::BLACK;
+                }
+            }
+
+            this->insert(node->right, value);
+        }
     }
 
     /**
@@ -492,6 +492,27 @@ private:
             this->print_tree(root->left, os, trace + 1);
     }
 
+    bool followsRules(Node* root) const {
+        bool rules = true;
+        if (!root)
+            return rules;
+        rules &= this->countBlack(root->left) == this->countBlack(root->right);
+        rules &= !(root->color == Color::RED && root->hasRedChildren());
+        return rules;
+    }
+
+    size_t countBlack(const Node* root) const {
+        size_t count = 0;
+        if (!root)
+            ++count;
+        else if (root && root->color == Color::BLACK)
+            ++count;
+        else if (root->left)
+            count += countBlack(root->left);
+        else if (root->right)
+            count += countBlack(root->right);
+        return count;
+    }
 public:
     /**
      * @brief Construct a new Red Black Tree object
@@ -531,12 +552,8 @@ public:
      * @param value Comparable to insert
      */
     void insert(const Comparable& value) {
-        if (this->contains(value))
-            return;
-
-        Node* node = new Node(value);
-        this->_root = this->insert(this->_root, node);
-        this->fixInsert(node);
+        this->insert(this->_root, value);
+        this->_root->color = Color::BLACK;
     }
 
     /**
@@ -608,6 +625,12 @@ public:
      */
     const Node* get_root() const { return this->_root; }
 
+    bool followsRules() const {
+        if (!this->_root)
+            return true;
+        return this->followsRules(this->_root);
+    }
+
     // ----------------------- Optional ----------------------- //
     RedBlackTree(RedBlackTree&& rhs) : _root{nullptr} { swap(this->_root, rhs.root); }
 
@@ -621,7 +644,7 @@ public:
     }
 
     void insert(Comparable&& value) {
-        Comparable v;
+        Comparable v{Comparable()};
         swap(v, value);
         this->insert(v);
     }
