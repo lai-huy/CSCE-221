@@ -53,7 +53,7 @@ public:
      *
      * @param value value to put in this node
      */
-    Map_Node(const pair<const Key, Value> pair) : _pair{new std::pair<const Key, Value>{pair}}, _height{1}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
+    Map_Node(const pair<const Key, Value> pair) : _pair{new pair<const Key, Value>{pair}}, _height{1}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
     Map_Node(const Map_Node& rhs) = default;
 
     ~Map_Node() {
@@ -84,7 +84,6 @@ public:
     }
 };
 
-// TODO(stduent): implement this
 template <class Key, class Value>
 class Map_const_iterator {
 private:

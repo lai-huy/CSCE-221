@@ -135,6 +135,8 @@ public:
 
     friend bool operator==(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node == rhs._node; }
 
+    friend bool operator==(const Set_const_iterator& lhs, Node* const& rhs) { return lhs._node == rhs; }
+
     friend bool operator!=(const Set_const_iterator& lhs, const Set_const_iterator& rhs) { return lhs._node != rhs._node; }
 
     virtual string to_string() const {
@@ -337,11 +339,13 @@ private:
     }
 
     Node* remove(Node*& root, const Comparable& value) {
-        if (value < root->_value)
+        if (value < root->_value) {
             root->_left = this->remove(root->_left, value);
-        else if (value > root->_value)
+            if (root->_left) root->_left->_parent = root;
+        } else if (value > root->_value) {
             root->_right = this->remove(root->_right, value);
-        else {
+            if (root->_right) root->_left->_parent = root;
+        } else {
             Node* temp;
             if (root->isLeaf()) {
                 root->_height = 0;
@@ -367,6 +371,7 @@ private:
                 temp = this->find_min(root->_right);
                 swap(root->_value, temp->_value);
                 root->_right = this->remove(root->_right, temp->_value);
+                if (root->_right) root->_right->_parent = root;
             }
         }
 
@@ -392,6 +397,13 @@ private:
         Node* node = root;
         while (node && node->_left)
             node = node->_left;
+        return node;
+    }
+
+    Node* find_max(Node* const& root) const {
+        Node* node = root;
+        while (node && node->_right)
+            node = node->_right;
         return node;
     }
 
@@ -467,9 +479,17 @@ public:
             return iterator(nullptr);
         if (!iter._node)
             throw invalid_argument("Iterator does not point anywhere");
-        const Comparable& value = *iter;
-        iterator it((++iter)._node);
-        this->_root = this->remove(this->_root, value);
+
+        const_iterator temp = iter;
+        iterator it;
+        ++temp;
+        if (!temp._node)
+            it = nullptr;
+        else if (temp == this->find_max(this->_root))
+            it = iter._node;
+        else
+            it = temp._node;
+        this->_root = this->remove(this->_root, *iter);
         --this->_size;
         return it;
     }
