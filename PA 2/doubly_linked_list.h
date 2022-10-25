@@ -234,19 +234,66 @@ public:
     const Node* tail() const { return this->_tail; }
 
     // ----------------------- Optional ----------------------- //
+    class const_iterator {
+        const Node* _node;
+    public:
+        const_iterator() : const_iterator(nullptr) {}
+        const_iterator(const Node* node) : _node{node} {}
+        const_iterator(const const_iterator& rhs) : const_iterator(rhs._node) {}
+        ~const_iterator() { this->_node = nullptr; }
+
+        const Object& operator*() { return this->_node->_value; }
+
+        const Object* operator->() { return &this->_node->_value; }
+
+        const_iterator& operator=(Node* const& node) {
+            this->_node = node;
+            return *this;
+        }
+
+        const_iterator& operator=(const const_iterator& rhs) {
+            if (this != &rhs)
+                this->_node = rhs._node;
+            return *this;
+        }
+
+        const_iterator& operator++() {
+            if (this->_node)
+                this->_node = this->_node->_next;
+            return *this;
+        }
+
+        const_iterator operator++(int) {
+            const_iterator it = *this;
+            ++(*this);
+            return it;
+        }
+
+        friend bool operator==(const const_iterator& rhs, const const_iterator& lhs) { return rhs._node == lhs._node; }
+        friend bool operator!=(const const_iterator& rhs, const const_iterator& lhs) { return rhs._node != lhs._node; }
+    };
+
 
     class iterator {
         Node* _node;
     public:
         iterator() : iterator(nullptr) {}
         iterator(Node* node) : _node{node} {}
+        iterator(const iterator& rhs) : iterator(rhs._node) {}
+        ~iterator() { this->_node = nullptr; }
 
-        Node& operator*() { return *(this->_node); }
+        Object& operator*() { return this->_node->_value; }
 
-        Node* operator->() { return this->_node; }
+        Object* operator->() { return &this->_node->_value; }
 
-        iterator& operator=(const Node*& node) {
+        iterator& operator=(Node* const& node) {
             this->_node = node;
+            return *this;
+        }
+
+        iterator& operator=(const iterator& rhs) {
+            if (this != &rhs)
+                this->_node = rhs._node;
             return *this;
         }
 
@@ -262,13 +309,9 @@ public:
             return it;
         }
 
-        friend bool operator==(const iterator& lhs, const iterator& rhs) {
-            return lhs._node == rhs._node;
-        }
+        friend bool operator==(const iterator& lhs, const iterator& rhs) { return lhs._node == rhs._node; }
 
-        friend bool operator!=(const iterator& lhs, const iterator& rhs) {
-            return lhs._node != rhs._node;
-        }
+        friend bool operator!=(const iterator& lhs, const iterator& rhs) { return lhs._node != rhs._node; }
     };
 
     DoublyLinkedList(DoublyLinkedList&& rhs) : _size{rhs._size}, _head{rhs._head}, _tail{rhs._tail} {
@@ -296,9 +339,9 @@ public:
 
     iterator begin() { return iterator(this->_head); }
 
-    const iterator begin() const { return iterator(this->_head); }
+    const_iterator begin() const { return iterator(this->_head); }
 
     iterator end() { return iterator(nullptr); }
 
-    const iterator end() const { return iterator(nullptr); }
+    const_iterator end() const { return iterator(nullptr); }
 };

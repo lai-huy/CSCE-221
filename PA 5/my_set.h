@@ -342,6 +342,7 @@ private:
         else if (value > root->_value)
             root->_right = this->remove(root->_right, value);
         else {
+            Node* temp;
             if (root->isLeaf()) {
                 root->_height = 0;
                 root->_parent = nullptr;
@@ -349,21 +350,21 @@ private:
                 root = nullptr;
                 return root;
             } else if (!root->_left) {
-                Node* temp = root->_right;
+                temp = root->_right;
                 root->_height = 0;
                 root->_parent = nullptr;
                 delete root;
                 root = nullptr;
                 return temp;
             } else if (!root->_right) {
-                Node* temp = root->_left;
+                temp = root->_left;
                 root->_height = 0;
                 root->_parent = nullptr;
                 delete root;
                 root = nullptr;
                 return temp;
             } else {
-                Node* temp = this->find_min(root->_right);
+                temp = this->find_min(root->_right);
                 swap(root->_value, temp->_value);
                 root->_right = this->remove(root->_right, temp->_value);
             }
@@ -387,14 +388,14 @@ private:
      * @param root current subtree being searched
      * @return Node* pointer to the smallest node
      */
-    Node* find_min(Node* root) const {
+    Node* find_min(Node* const& root) const {
         Node* node = root;
         while (node && node->_left)
             node = node->_left;
         return node;
     }
 
-    void print_tree(const Node* root, ostream& os, size_t trace) const {
+    void print_tree(Node* const& root, ostream& os, size_t trace) const {
         if (root->_right)
             this->print_tree(root->_right, os, trace + 1);
         os << string(trace * 2, ' ') << root->_value << "\n";
@@ -464,8 +465,7 @@ public:
     iterator remove(const_iterator iter) {
         if (!this->_root)
             return iterator(nullptr);
-        const_iterator end(this->end());
-        if (iter == end)
+        if (!iter._node)
             throw invalid_argument("Iterator does not point anywhere");
         const Comparable& value = *iter;
         iterator it((++iter)._node);
@@ -496,30 +496,30 @@ public:
     }
 
     // ----------------------- Optional ----------------------- //
-    // Set(Set&& rhs) : _root{nullptr}, _size{0} {
-    //     swap(this->_root, rhs._root);
-    //     swap(this->_size, rhs._size);
-    // }
+    Set(Set&& rhs) : _root{nullptr}, _size{0} {
+        swap(this->_root, rhs._root);
+        swap(this->_size, rhs._size);
+    }
 
-    // Set& operator=(Set&& rhs) {
-    //     if (this != &rhs) {
-    //         this->make_empty();
-    //         swap(this->_root, rhs._root);
-    //         swap(this->_size, rhs._size);
-    //     }
-    // }
+    Set& operator=(Set&& rhs) {
+        if (this != &rhs) {
+            this->make_empty();
+            swap(this->_root, rhs._root);
+            swap(this->_size, rhs._size);
+        }
+    }
 
-    // pair<iterator, bool> insert(Comparable&& value) {
-    //     Comparable v = Comparable();
-    //     swap(v, value);
-    //     return this->insert(v);
-    // }
+    pair<iterator, bool> insert(Comparable&& value) {
+        Comparable v = Comparable();
+        swap(v, value);
+        return this->insert(v);
+    }
 
-    // iterator insert(const_iterator iter, Comparable&& value) {
-    //     Comparable v = Comparable();
-    //     swap(v, value);
-    //     return this->insert(iter, v);
-    // }
+    iterator insert(const_iterator iter, Comparable&& value) {
+        Comparable v = Comparable();
+        swap(v, value);
+        return this->insert(iter, v);
+    }
 
     void print_tree(ostream& os = cout) const {
         if (this->_size)

@@ -359,14 +359,9 @@ bool test_iter() {
 	list.insert(5, 5);
 
 	size_t i = 0;
-	for (DoublyLinkedList<int>::iterator it = list.begin(); it < list.end(); ++it) {
-		assert(it->_value == list[i]);
+	for (DoublyLinkedList<int>::iterator it = list.begin(); it != list.end(); ++it) {
+		assert(*it == list[i]);
 		++i;
-	}
-
-	for (DoublyLinkedList<int>::iterator it = list.end(); it > list.begin(); --it) {
-		assert(it->_value = list[i]);
-		--i;
 	}
 
 	END_TEST;

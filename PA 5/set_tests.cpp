@@ -811,16 +811,15 @@ bool test_iter_empty() {
 	set.insert(12);
 	set.insert(14);
 
-	Set_iterator<int> iter(set.begin());
+	Set_iterator<int> iter(set.find(7));
 	set.make_empty();
-	expect_no_throw(*iter);	// This SHOULD throw but doesn't because I'm bad
-	assert(++iter != set.end());
-	assert(iter == set.end());
+	iter = set.begin();
+	expect_throw(*iter, runtime_error);
 
 	END_TEST;
 }
 
-bool test_iter_remove() {
+bool test_iter_remove_leaf() {
 	Set<int> set;
 	assert(set.size() == 0);
 	assert(set.is_empty());
@@ -841,9 +840,134 @@ bool test_iter_remove() {
 	set.insert(12);
 	set.insert(14);
 
-	Set_iterator<int> iter(set.begin());
-	set.remove(0);
-	expect_no_throw(*iter);
+	Set_const_iterator<int> index = set.find(14);
+	Set_iterator<int> iter = set.remove(index);
+	expect_throw(*iter, runtime_error);
+
+	index = set.find(12);
+	iter = set.remove(index);
+	assert(*iter == 13);
+
+	index = set.find(10);
+	iter = set.remove(index);
+	assert(*iter == 11);
+
+	index = set.find(8);
+	iter = set.remove(index);
+	assert(*iter == 9);
+
+	index = set.find(6);
+	iter = set.remove(index);
+	assert(*iter == 7);
+
+	index = set.find(4);
+	iter = set.remove(index);
+	assert(*iter == 5);
+
+	index = set.find(2);
+	iter = set.remove(index);
+	assert(*iter == 3);
+
+	index = set.find(0);
+	iter = set.remove(index);
+	assert(*iter == 1);
+
+	index = set.find(13);
+	iter = set.remove(index);
+	expect_throw(*iter, runtime_error);
+
+	index = set.find(11);
+	iter = set.remove(index);
+	expect_throw(*iter, runtime_error);
+
+	index = set.find(1);
+	iter = set.remove(index);
+	assert(*iter == 3);
+
+	index = set.find(5);
+	iter = set.remove(index);
+	assert(*iter == 7);
+
+	index = set.find(3);
+	iter = set.remove(index);
+	assert(*iter == 7);
+
+	index = set.find(9);
+	iter = set.remove(index);
+	expect_throw(*iter, runtime_error);
+
+	index = set.find(7);
+	iter = set.remove(index);
+	expect_throw(*iter, runtime_error);
+
+	END_TEST;
+}
+
+bool test_iter_remove_middle() {
+	Set<int> set;
+	assert(set.size() == 0);
+	assert(set.is_empty());
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+	assert(set.size() == 15);
+
+	Set_const_iterator<int> index = set.find(13);
+	Set_iterator<int> iter = set.remove(index);
+	assert(*iter == 14);
+
+	index = set.find(14);
+	iter = set.remove(index);
+
+	assert(set.remove(8));
+	index = set.find(9);
+	iter = set.remove(index);
+	assert(*iter == 10);
+
+	assert(set.size() == 11);
+
+	END_TEST;
+}
+
+bool test_iter_remove_root() {
+	Set<int> set;
+	assert(set.size() == 0);
+	assert(set.is_empty());
+
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+	set.insert(1);
+	set.insert(5);
+	set.insert(9);
+	set.insert(13);
+	set.insert(0);
+	set.insert(2);
+	set.insert(4);
+	set.insert(6);
+	set.insert(8);
+	set.insert(10);
+	set.insert(12);
+	set.insert(14);
+
+	Set_const_iterator<int> iter(set.find(7));
+	int nums[] = {7, 8, 9, 10, 11, 12, 5, 6, 3, 4, 13, 2, 1, 14, 0};
+	for (const int& num : nums)
+		set.remove(set.find(num));
+	assert(set.is_empty());
 
 	END_TEST;
 }
@@ -1197,8 +1321,10 @@ int main() {
 	// test(iter_end);
 	// test(iter_forward);
 	// test(iter_string);
-	test(iter_empty);
-	// test(iter_remove);
+	// test(iter_empty);
+	test(iter_remove_leaf);
+	test(iter_remove_middle);
+	test(iter_remove_root);
 	// test(const_iter_end);
 	// test(const_iter_forward);
 	// test(const_iter_string);

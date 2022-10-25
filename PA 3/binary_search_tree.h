@@ -197,11 +197,18 @@ private:
      * @param root subtree to search through
      * @return const Node* a pointer to the smallest node
      */
-    const Node* find_min(const Node* root) const {
-        const Node* curr = root;
+    const Node* find_min(Node* const& root) const {
+        Node* curr = root;
         while (curr && curr->_left)
             curr = curr->_left;
 
+        return curr;
+    }
+
+    const Node* find_max(Node* const& root) const {
+        Node* curr = root;
+        while (curr && curr->_right)
+            curr = curr->_right;
         return curr;
     }
 
@@ -269,12 +276,7 @@ public:
     const Comparable& find_min() const {
         if (!this->_root)
             throw invalid_argument("Binary Search Tree is empty");
-
-        Node* curr = this->_root;
-        while (curr->_left)
-            curr = curr->_left;
-
-        return curr->_value;
+        return this->find_min(this->_root)->_value;
     }
 
     /**
@@ -285,12 +287,7 @@ public:
     const Comparable& find_max() const {
         if (!this->_root)
             throw invalid_argument("Binary Search Tree is empty");
-
-        Node* curr = this->_root;
-        while (curr->_right)
-            curr = curr->_right;
-
-        return curr->_value;
+        return this->find_max(this->_root)->_value;
     }
 
     /**
@@ -312,7 +309,7 @@ public:
 
     // ----------------------- Optional ----------------------- //
 
-    BinarySearchTree(BinarySearchTree&& rhs) : _root{rhs.root()} { rhs._root = nullptr; }
+    BinarySearchTree(BinarySearchTree&& rhs) : _root{nullptr} { swap(this->_root, rhs._root); }
 
     BinarySearchTree& operator=(BinarySearchTree&& rhs) {
         if (this != &rhs) {

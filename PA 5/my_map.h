@@ -534,8 +534,16 @@ public:
     }
 
     // ----------------------- Optional ----------------------- //
-    // Map(Map&& rhs);
-    // Map& operator=(Map&& rhs);
+    Map(Map&& rhs) : Map() { swap(this->_root, rhs._root); swap(this->_size, rhs._size); }
+
+    Map& operator=(Map&& rhs) {
+        if (this != &rhs) {
+            this->make_empty();
+            swap(this->_root, rhs._root);
+            swap(this->_root, rhs._size);
+        }
+    }
+
     // pair<iterator, bool> insert(pair<const Key, Value>&& pair);
     // iterator insert(const_iterator hint, pair<const Key, Value>&& pair);
     void print_tree(ostream& os = cout) const {

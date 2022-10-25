@@ -76,7 +76,7 @@ private:
      * @param os ostream to write to
      * @param trace how much to indent each line
      */
-    void print_tree(Node* root, ostream& os, size_t trace) const {
+    void print_tree(Node* const& root, ostream& os, size_t trace) const {
         if (!root) {
             os << "<empty>\n";
             return;
@@ -108,7 +108,7 @@ private:
      * @return true if this tree contains specified value
      * @return false otherwise
      */
-    bool contains(Node*& root, const Comparable& value) const {
+    bool contains(Node* const& root, const Comparable& value) const {
         if (!root)
             return false;
         if (root->_value == value)
@@ -132,7 +132,7 @@ private:
      * @param root subtree to determine the balance factor of
      * @return long balance factor
      */
-    long balace_factor(Node*& root) const { return root ? this->height(root->_left) - this->height(root->_right) : 0l; }
+    long balace_factor(Node* const& root) const { return root ? this->height(root->_left) - this->height(root->_right) : 0l; }
 
     /**
      * @brief Calculates the raw height of a subtree
@@ -140,7 +140,7 @@ private:
      * @param root subtree to calculate the height of
      * @return size_t height calculated
      */
-    size_t calcHeight(Node*& root) const { return 1 + this->max(this->height(root->_left), this->height(root->_right)); }
+    size_t calcHeight(Node* const& root) const { return 1 + this->max(this->height(root->_left), this->height(root->_right)); }
 
     /**
      * @brief Prevents memory leaks by deallocating the entire tree
@@ -186,7 +186,7 @@ private:
      * @param value value to insert
      * @return Node* new node created or node inputed if the value is already in the tree
      */
-    Node* insert(Node* node, const Comparable& value) {
+    Node* insert(Node*& node, const Comparable& value) {
         if (!node)
             return new Node(value);
         else if (value == node->_value)
@@ -210,7 +210,7 @@ private:
      * @param value value to remove
      * @return Node*
      */
-    Node* remove(Node* root, const Comparable& value) {
+    Node* remove(Node*& root, const Comparable& value) {
         if (!root)
             return nullptr;
 
@@ -331,7 +331,7 @@ private:
      * @param root current subtree being searched
      * @return Node* pointer to the smallest node
      */
-    Node* find_min(Node* root) const {
+    Node* find_min(Node* const& root) const {
         Node* node = root;
         while (node && node->_left)
             node = node->_left;
@@ -345,7 +345,7 @@ private:
      * @param root current subtree being searched
      * @return Node* pointer to the smallest node
      */
-    Node* find_max(Node* root) const {
+    Node* find_max(Node* const& root) const {
         Node* node = root;
         while (node && node->_right)
             node = node->_right;
@@ -448,7 +448,7 @@ public:
 
     // ----------------------- Optional ----------------------- //
 
-    AVLTree(AVLTree&& rhs) : _root{rhs.root()} { rhs._root = nullptr; }
+    AVLTree(AVLTree&& rhs) : _root{nullptr} { swap(this->_root, rhs._root); }
 
     AVLTree& operator=(AVLTree&& rhs) {
         if (this != &rhs) {
