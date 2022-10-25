@@ -732,8 +732,9 @@ bool test_random() {
         rbt.insert(num);
     assert(rbt.followsRules());
 
-    for (size_t i = 0; i < 256; ++i) {
-        rbt.remove(i);
+    for (const int& num : nums) {
+        // cout << "Remove " << num << "\n";
+        rbt.remove(num);
         assert(rbt.followsRules());
     }
 

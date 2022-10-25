@@ -23,6 +23,7 @@ public:
         Node* parent;
 
         Node(const Comparable& rhs) : Node(rhs, Color::RED) {}
+
         Node(const Comparable& rhs, const Color& color) : value{rhs}, color{color}, left{nullptr}, right{nullptr}, parent{nullptr} {}
 
         Node* uncle() const {
@@ -40,18 +41,18 @@ public:
         }
 
         bool hasColorChildren(const Color& color) const {
-            return (!this->countChildren() && color == Color::BLACK) ||
+            return (!this->left && !this->right && color == Color::BLACK) ||
                 ((this->left && this->left->color == color) && (this->right && this->right->color == color));
         }
 
-        bool sibLeftKidRed() const {
+        bool leftNiblingRed() const {
             Node* sibling = this->sibling();
             return sibling && sibling->left && sibling->left->color == Color::RED;
         }
 
-        bool sibRightKidRed() const {
+        bool rightNiblingRed() const {
             Node* sibling = this->sibling();
-            return sibling && sibling->left && sibling->left->color == Color::RED;
+            return sibling && sibling->right && sibling->right->color == Color::RED;
         }
 
         bool isLeft() const { return this->parent ? this == this->parent->left : false; }
@@ -81,9 +82,7 @@ public:
             return ss.str();
         }
 
-        friend ostream& operator<<(ostream& os, const Node& node) {
-            return os << node.to_string();
-        }
+        friend ostream& operator<<(ostream& os, const Node& node) { return os << node.to_string(); }
     };
 private:
     Node* _root;
@@ -123,12 +122,15 @@ private:
     }
 
     Node* copy(const Node* root) {
-        if (!root) { return nullptr; }
+        if (!root)
+            return nullptr;
         Node* node = new Node(root->value, root->color);
-        node->left = copy(root->left);
-        node->right = copy(root->right);
-        if (node->left) node->left->parent = node;
-        if (node->right) node->right->parent = node;
+        node->left = this->copy(root->left);
+        if (node->left)
+            node->left->parent = node;
+        node->right = this->copy(root->right);
+        if (node->right)
+            node->right->parent = node;
         return node;
     }
 
@@ -136,7 +138,6 @@ private:
         if (root) {
             root->left = this->clear(root->left);
             root->right = this->clear(root->right);
-            root->parent = nullptr;
             delete root;
         }
 
@@ -166,70 +167,84 @@ private:
 
         if (node->value == value)
             return;
-
         if (node->value > value) {
             if (!node->left) {
                 node->left = new Node(value);
                 node->left->parent = node;
-                if (node->color == Color::BLACK)
+                if (node->color == BLACK)
                     return;
-
                 if (!node->sibling()) {
-                    if (node->isLeft())
+                    if (node->isLeft()) {
                         node = this->rotateRight(node->parent);
-                    else {
+                        node->color = BLACK;
+                        node->right->color = node->left->color = RED;
+                        return;
+                    } else {
                         node = this->rotateRight(node);
                         node = this->rotateLeft(node->parent);
+                        node->color = BLACK;
+                        node->left->color = node->right->color = RED;
+                        return;
                     }
-                    node->color = Color::BLACK;
-                    node->left->color = node->right->color = Color::RED;
-                    return;
                 }
             }
         } else if (node->value < value) {
             if (!node->right) {
                 node->right = new Node(value);
                 node->right->parent = node;
-                if (node->color == Color::BLACK)
+                if (node->color == BLACK)
                     return;
-
                 if (!node->sibling()) {
-                    if (node->isRight())
+                    if (node->isRight()) {
                         node = this->rotateLeft(node->parent);
-                    else {
+                        node->color = BLACK;
+                        node->right->color = node->left->color = RED;
+                        return;
+                    } else {
                         node = this->rotateLeft(node);
                         node = this->rotateRight(node->parent);
+                        node->color = BLACK;
+                        node->right->color = node->left->color = RED;
+                        return;
                     }
-                    node->color = Color::BLACK;
-                    node->right->color = node->left->color = Color::RED;
-                    return;
                 }
             }
         }
 
         if (node->hasColorChildren(Color::RED)) {
-            node->color = Color::RED;
-            node->right->color = node->left->color = Color::BLACK;
-
+            node->color = RED;
+            node->right->color = node->left->color = BLACK;
             if (node->parent && node->parent->color == RED) {
-                if (node->isLeft()) {
-                    if (node->parent->isLeft())
-                        node = this->rotateRight(node->parent->parent);
-                    else if (node->parent->isRight()) {
-                        node = this->rotateRight(node->parent);
-                        node = this->rotateLeft(node->parent);
-                    }
-                } else if (node->isRight()) {
-                    if (node->parent->isLeft()) {
-                        node = this->rotateLeft(node->parent);
-                        node = this->rotateRight(node->parent);
-                    } else if (node->parent->isRight())
-                        node = this->rotateLeft(node->parent->parent);
+                if (node->isLeft() && node->parent->isLeft()) {
+                    node = this->rotateRight(node->parent->parent);
+                    node->color = BLACK;
+                    node->left->color = node->right->color = RED;
+                    this->insert(node, value);
+                    return;
                 }
-                node->color = Color::BLACK;
-                node->left->color = node->right->color = Color::RED;
-                this->insert(node, value);
-                return;
+                if (node->isRight() && node->parent->isRight()) {
+                    node = this->rotateLeft(node->parent->parent);
+                    node->color = BLACK;
+                    node->left->color = node->right->color = RED;
+                    this->insert(node, value);
+                    return;
+                }
+                if (node->isRight() && node->parent->isLeft()) {
+                    node = this->rotateLeft(node->parent);
+                    node = this->rotateRight(node->parent);
+                    node->color = BLACK;
+                    node->left->color = node->right->color = RED;
+                    this->insert(node, value);
+                    return;
+                }
+                if (node->isLeft() && node->parent->isRight()) {
+                    node = this->rotateRight(node->parent);
+                    node = this->rotateLeft(node->parent);
+                    node->color = BLACK;
+                    node->left->color = node->right->color = RED;
+                    this->insert(node, value);
+                    return;
+                }
             }
         }
         this->insert(node->value > value ? node->left : node->right, value);
@@ -239,11 +254,13 @@ private:
         if (node == this->_root && node->value == value && !node->countChildren()) {
             delete node;
             node = this->_root = nullptr;
-        } else if (node == this->_root && node && node->hasColorChildren(Color::BLACK)) {
+        } else if (node && node->hasColorChildren(BLACK) && node == this->_root) {
             this->_root->color = Color::RED;
             this->decideDelete(this->_root, value);
         } else
-            this->nodeHasRed(node, value);
+            this->step2B(node, value);
+        if (this->_root)
+            this->_root->color = Color::BLACK;
     }
 
     void decideDelete(Node* node, const Comparable& value) {
@@ -254,84 +271,95 @@ private:
         if (node->value < value && !node->right)
             return;
         if (node->value == value)
-            this->removeNode(node);
-        else
-            this->setUpRedNode(node->value > value ? node->left : node->right, value);
+            this->step3(node);
+        else step2(node->value > value ? node->left : node->right, value);
     }
 
-    void setUpRedNode(Node* node, const Comparable& value) {
-        if (!node)
-            return;
-        if (node->hasColorChildren(Color::BLACK))
-            this->rotateRecolor(node, value);
+    void step2(Node* node, const Comparable& value) {
+        if (!node) return;
+        if (node->hasColorChildren(BLACK))
+            this->step2A(node, value);
         else
-            this->nodeHasRed(node, value);
+            this->step2B(node, value);
     }
 
-    void rotateRecolor(Node* node, const Comparable& value) {
-        Node* sibling = node->sibling();
-        if (sibling && sibling->hasColorChildren(Color::BLACK)) {
-            node->color = sibling->color = Color::RED;
-            if (node->parent)
-                node->parent->color = Color::BLACK;
-        } else if ((node->isLeft() && node->sibLeftKidRed()) || (node->isRight() && node->sibRightKidRed())) {
-            if (node->isLeft()) {
-                node = this->rotateRight(node->sibling());
-                node = this->rotateLeft(node->parent);
-                node->left->color = Color::BLACK;
-                node->left->left->color = Color::RED;
-                node = node->left->left;
-            } else {
-                node = this->rotateLeft(node->sibling());
-                node = this->rotateRight(node->parent);
-                node->right->color = Color::BLACK;
-                node->right->right->color = Color::RED;
-                node = node->right->right;
-            }
+    void step2A(Node* node, const Comparable& value) {
+        if (node->sibling() && node->sibling()->hasColorChildren(BLACK)) {
+            step2A1(node, value);
+        } else if ((node->isLeft() && node->leftNiblingRed()) || (node->isRight() && node->rightNiblingRed())) {
+            step2A2(node, value);
+        } else step2A3(node, value);
+    }
+
+    void step2A1(Node* node, const Comparable& value) {
+        node->color = node->sibling()->color = Color::RED;
+        if (node->parent) node->parent->color = Color::BLACK;
+        decideDelete(node, value);
+    }
+
+    void step2A2(Node* node, const Comparable& value) {
+        if (node->isLeft()) {
+            node = this->rotateRight(node->sibling());
+            node = this->rotateLeft(node->parent);
+            node->left->color = Color::BLACK;
+            node->left->left->color = Color::RED;
+            node = node->left->left;
         } else {
-            if (node->isLeft()) {
-                node = rotateLeft(node->parent);
-                node->color = RED;
-                node->right->color = node->left->color = BLACK;
-                node = node->left->left;
-            } else {
-                node = rotateRight(node->parent);
-                node->color = RED;
-                node->right->color = node->left->color = BLACK;
-                node = node->right->right;
-            }
-            node->color = RED;
+            node = this->rotateLeft(node->sibling());
+            node = this->rotateRight(node->parent);
+            node->right->color = Color::BLACK;
+            node->right->right->color = Color::RED;
+            node = node->right->right;
         }
         this->decideDelete(node, value);
     }
 
-    void nodeHasRed(Node* node, const Comparable& value) {
+    void step2A3(Node* node, const Comparable& value) {
+
+        if (node->isLeft()) {
+            node = rotateLeft(node->parent);
+            node->color = Color::RED;
+            node->right->color = node->left->color = Color::BLACK;
+            node = node->left->left;
+        } else {
+            node = rotateRight(node->parent);
+            node->color = Color::RED;
+            node->right->color = node->left->color = Color::BLACK;
+            node = node->right->right;
+        }
+        node->color = Color::RED;
+        this->decideDelete(node, value);
+    }
+
+    void step2B(Node* node, const Comparable& value) {
         if (value == node->value)
-            this->removeNode(node);
+            step3(node);
         else {
             node = node->value > value ? node->left : node->right;
-            if (!node)
-                return;
+            if (!node) return;
             else if (node->color == Color::RED)
                 this->decideDelete(node, value);
-            else {
-                if (node->isLeft()) {
-                    node = this->rotateLeft(node->parent);
-                    node->left->color = Color::RED;
-                    node->color = Color::BLACK;
-                    node = node->left->left;
-                } else {
-                    node = this->rotateRight(node->parent);
-                    node->right->color = Color::RED;
-                    node->color = Color::BLACK;
-                    node = node->right->right;
-                }
-                this->setUpRedNode(node, value);
-            }
+            else
+                step2B2(node, value);
         }
     }
 
-    void removeNode(Node* node) {
+    void step2B2(Node* node, const Comparable& value) {
+        if (node->isLeft()) {
+            node = this->rotateLeft(node->parent);
+            node->left->color = Color::RED;
+            node->color = Color::BLACK;
+            node = node->left->left;
+        } else {
+            node = this->rotateRight(node->parent);
+            node->right->color = Color::RED;
+            node->color = Color::BLACK;
+            node = node->right->right;
+        }
+        step2(node, value);
+    }
+
+    void step3(Node* node) {
         if (!node)
             return;
         switch (node->countChildren()) {
@@ -374,14 +402,14 @@ private:
             delete node;
             node = nullptr;
             return;
-        default:
-            Node* temp = find_min(node->right);
+        case 2:
+            Node * temp = this->find_min(node->right);
             Comparable value = temp->value;
-            if (node->color == RED) {
+            if (node->color == Color::RED) {
                 node->value = temp->value;
-                this->setUpRedNode(node->right, node->value);
+                this->step2(node->right, node->value);
             } else {
-                this->nodeHasRed(node, temp->value);
+                this->step2B(node, temp->value);
                 node->value = value;
             }
             return;
@@ -398,26 +426,26 @@ private:
     }
 
     bool followsRules(Node* const& root) const {
-        bool rules = true;
-        rules &= !this->doubleRed(root);
-        if (!rules) {
+        if (this->doubleRed(root)) {
             cout << "Double Red\n";
             return false;
         }
-        rules &= this->blackHeight(root->left) == this->blackHeight(root->right);
-        if (!rules)
+
+        if (this->blackHeight(root->left) != this->blackHeight(root->right)) {
             cout << "Invalid Black Height\n";
-        return rules;
+            return false;
+        }
+
+        return true;
     }
 
     bool doubleRed(Node* const& root) const {
         if (!root)
             return false;
-        if (root->color == Color::RED && !root->hasColorChildren(BLACK))
+        if (root->color == Color::RED && !root->hasColorChildren(Color::BLACK))
             return true;
         return this->doubleRed(root->left) || this->doubleRed(root->right);
     }
-
 
     bool contains(Node* const& root, const Comparable& value) {
         if (!root)
@@ -458,8 +486,6 @@ public:
         if (!this->_root)
             return;
         this->remove(this->_root, value);
-        if (this->_root)
-            this->_root->color = Color::BLACK;
     }
 
     bool contains(const Comparable& value) { return this->contains(this->_root, value); }

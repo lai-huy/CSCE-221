@@ -1,0 +1,483 @@
+#pragma once
+#include <iostream>
+#include <cstddef>
+#include <sstream>
+#include <stdexcept>
+#include <utility>
+#include <tuple>
+
+using std::ostream, std::cout, std::stringstream, std::string, std::swap;
+
+template <typename Comparable>
+class RedBlackTree {
+public:
+    enum Color { RED, BLACK };
+
+    struct Node {
+        Comparable value;
+        Color color;
+        Node* left, * right, * parent;
+        Node(const Comparable& rhs) : value{rhs}, color{RED}, left{nullptr}, right{nullptr}, parent{nullptr} {}
+        Node(const Comparable& rhs, const Color& color) : value{rhs}, color{color}, left{nullptr}, right{nullptr}, parent{nullptr} {}
+        Node(Node* const& rhs) : value{rhs}, color{rhs->color}, left{nullptr}, right{nullptr}, parent{nullptr} {}
+        Node* uncle() {
+            if (!parent) { return nullptr; }
+            return parent->sibling();
+        }
+        bool hasColorChildren(const Color& color) const {
+            return (!this->left && !this->right && color == BLACK) ||
+                ((this->left && this->left->color == color) && (this->right && this->right->color == color));
+        }
+        Node* sibling() const {
+            if (this->isRight()) return this->parent->left;
+            if (this->isLeft()) return this->parent->right;
+            return nullptr;
+        }
+        bool sibLeftKidRed() const {
+            return this->sibling() && this->sibling()->left && this->sibling()->left->color == RED;
+        }
+        bool sibRightKidRed() const {
+            return this->sibling() && this->sibling()->right && this->sibling()->right->color == RED;
+        }
+        bool isLeft() const { return this->parent ? this == this->parent->left : false; }
+        bool isRight() const { return this->parent ? this == this->parent->right : false; }
+        size_t countChildren() const {
+            if (!this->left && !this->right) return 0;
+            else if (!this->left || !this->right) return 1;
+            return 2;
+        }
+
+        string to_string() const {
+            stringstream ss;
+            switch (this->color) {
+            case RED:
+                ss << "🟥 ";
+                break;
+            default:
+                ss << "⬛ ";
+                break;
+            }
+            ss << this->value;
+            return ss.str();
+        }
+    };
+private:
+    Node* root;
+    Node* rotateLeft(Node* root) {
+        Node* temp = root->right;
+        root->right = temp->left;
+        if (temp->left) temp->left->parent = root;
+        temp->parent = root->parent;
+        if (!root->parent) this->root = temp;
+        else if (root->isRight()) root->parent->right = temp;
+        else if (root->isLeft()) root->parent->left = temp;
+        temp->left = root;
+        root->parent = temp;
+        return temp;
+    }
+    Node* rotateRight(Node* root) {
+        Node* temp = root->left;
+        root->left = temp->right;
+        if (temp->right) temp->right->parent = root;
+        temp->parent = root->parent;
+        if (!root->parent) this->root = temp;
+        else if (root->isLeft()) root->parent->left = temp;
+        else if (root->isRight()) root->parent->right = temp;
+        temp->right = root;
+        root->parent = temp;
+        return temp;
+    }
+
+    void TDInsert(Node* node, const Comparable& value) {
+        //empty tree case
+        if (!node) {
+            node = new Node(value);
+            if (!this->root) this->root = node;
+        }
+        //value already exists case
+        if (node->value == value) return;
+        //value is left of node value
+        if (node->value > value) {
+            //insertion case
+            if (!node->left) {
+                node->left = new Node(value);
+                node->left->parent = node;
+                //black parent case
+                if (node->color == BLACK) { return; }
+                //red parent case
+                //black uncle case not needed
+                //no uncle case
+                if (!node->sibling()) {
+                    if (node->isLeft()) {
+                        node = this->rotateRight(node->parent);
+                        node->color = BLACK;
+                        node->left->color = RED;
+                        node->right->color = RED;
+                        return;
+                    } else {
+                        node = this->rotateRight(node);
+                        node = this->rotateLeft(node->parent);
+                        node->color = BLACK;
+                        node->left->color = node->right->color = RED;
+                        return;
+                    }
+                }
+                //red uncle case
+                // if (node->sibling()->color == RED) {
+                //     node->sibling()->color = node->color = BLACK;
+                //     node->parent->parent->color = RED;
+                //     return;
+                // }
+            }
+        }
+        //to the right!
+        else if (node->value < value) {
+            //insertion case
+            if (!node->right) {
+                node->right = new Node(value);
+                node->right->parent = node;
+                //black parent case
+                if (node->color == BLACK) { return; }
+                //red parent case
+                //black uncle case not needed
+                //no uncle case
+                if (!node->sibling()) {
+                    if (node->isRight()) {
+                        node = this->rotateLeft(node->parent);
+                        node->color = BLACK;
+                        node->right->color = RED;
+                        node->left->color = RED;
+                        return;
+                    } else {
+                        node = this->rotateLeft(node);
+                        node = this->rotateRight(node->parent);
+                        node->color = BLACK;
+                        node->right->color = node->left->color = RED;
+                        return;
+                    }
+                }
+                //red uncle case
+                // if (node->sibling()->color == RED) {
+                //     node->sibling()->color = node->color = BLACK;
+                //     node->parent->color = RED;
+                //     return;
+                // }
+            }
+        }
+        //rotation case and keep it moving
+        if (node->left && node->right && node->left->color == RED && node->right->color == RED) {
+            node->color = RED;
+            node->right->color = node->left->color = BLACK;
+            //if violation
+            if (node->parent && node->parent->color == RED) {
+                if (node->isLeft() && node->parent->isLeft()) {
+                    node = this->rotateRight(node->parent->parent);
+                    node->color = BLACK;
+                    node->left->color = node->right->color = RED;
+                    this->TDInsert(node, value);
+                    return;
+                }
+                if (node->isRight() && node->parent->isRight()) {
+                    node = this->rotateLeft(node->parent->parent);
+                    node->color = BLACK;
+                    node->left->color = node->right->color = RED;
+                    this->TDInsert(node, value);
+                    return;
+                }
+                if (node->isRight() && node->parent->isLeft()) {
+                    node = this->rotateLeft(node->parent);
+                    node = this->rotateRight(node->parent);
+                    node->color = BLACK;
+                    node->left->color = node->right->color = RED;
+                    this->TDInsert(node, value);
+                    return;
+                }
+                if (node->isLeft() && node->parent->isRight()) {
+                    node = this->rotateRight(node->parent);
+                    node = this->rotateLeft(node->parent);
+                    node->color = BLACK;
+                    node->left->color = node->right->color = RED;
+                    this->TDInsert(node, value);
+                    return;
+                }
+            }
+        }
+        this->TDInsert(node->value > value ? node->left : node->right, value);
+    }
+    bool followsRules(Node* root) const {
+        bool rules = true;
+        rules &= !this->doubleRed(root);
+        if (!rules)
+            cout << "Double Red\n";
+        rules &= this->blackHeight(root->left) == this->blackHeight(root->right);
+        if (!rules)
+            cout << "Invalid Black Height\n";
+        return rules;
+    }
+
+    bool doubleRed(Node* root) const {
+        if (!root)
+            return false;
+        if (root->color == Color::RED && !root->hasColorChildren(BLACK))
+            return true;
+        return this->doubleRed(root->left) || this->doubleRed(root->right);
+    }
+
+    size_t blackHeight(const Node* root) const {
+        if (!root)
+            return 1;
+        size_t height = this->blackHeight(root->left);
+        return height + (root->color == Color::BLACK ? 1 : 0);
+    }
+    bool contains(const Comparable& data, Node*& root) {
+        if (!root) return false;
+        if (root->value == data) return true;
+        return contains(data, root->value > data ? root->left : root->right);
+    }
+
+    Node* copy(const Node* root) {
+        if (!root) { return nullptr; }
+        Node* node = new Node(root->value, root->color);
+        node->left = copy(root->left);
+        node->right = copy(root->right);
+        if (node->left) node->left->parent = node;
+        if (node->right) node->right->parent = node;
+        return node;
+    }
+    void TDRemove(Node* node, const Comparable& value) {
+        if (node == this->root && node->value == value && !node->countChildren()) {delete node; node = this->root = nullptr;}
+        else if (node && node->hasColorChildren(BLACK) && node == this->root) {
+            this->root->color = RED;
+            decideDelete(this->root, value);
+        } else step2B(node, value);
+        if (this->root) this->root->color = BLACK;
+    }
+    void decideDelete(Node* node, const Comparable& value) {
+        if (!node) return;
+        if (node->value > value && !node->left) return;
+        if (node->value < value && !node->right) return;
+        if (node->value == value) step3(node);
+        else step2(node->value > value ? node->left : node->right, value);
+    }
+    void step2(Node* node, const Comparable& value) {
+        if (!node) return;
+        if (node->hasColorChildren(BLACK))
+            this->step2A(node, value);
+        else
+            this->step2B(node, value);
+    }
+    void step2A(Node* node, const Comparable& value) {
+        if (node->sibling() && node->sibling()->hasColorChildren(BLACK)) {
+            step2A1(node, value);
+        } else if ((node->isLeft() && node->sibLeftKidRed()) || (node->isRight() && node->sibRightKidRed())) {
+            step2A2(node, value);
+        } else step2A3(node, value);
+    }
+    void step2A1(Node* node, const Comparable& value) {
+        node->color = node->sibling()->color = RED;
+        if (node->parent) node->parent->color = BLACK;
+        decideDelete(node, value);
+    }
+    void step2A2(Node* node, const Comparable& value) {
+        if (node->isLeft()) {
+            node = this->rotateRight(node->sibling());
+            node = this->rotateLeft(node->parent);
+            node->left->color = BLACK;
+            node->left->left->color = RED;
+            node = node->left->left;
+        } else {
+            node = this->rotateLeft(node->sibling());
+            node = this->rotateRight(node->parent);
+            node->right->color = BLACK;
+            node->right->right->color = RED;
+            node = node->right->right;
+        }
+        this->decideDelete(node, value);
+    }
+    void step2A3(Node* node, const Comparable& value) {
+        
+        if (node->isLeft()) {
+            node = rotateLeft(node->parent);
+            node->color = RED;
+            node->right->color = node->left->color = BLACK;
+            node = node->left->left;
+        } else {
+            node = rotateRight(node->parent);
+            node->color = RED;
+            node->right->color = node->left->color = BLACK;
+            node = node->right->right;
+        }
+        node->color = RED;
+        this->decideDelete(node, value);
+    }
+    void step2B(Node* node, const Comparable& value) {
+        if (value == node->value)
+            step3(node);
+        else {
+            node = node->value > value ? node->left : node->right;
+            if (!node) return;
+            else if (node->color == RED)
+                step2B1(node, value);
+            else
+                step2B2(node, value);
+        }
+    }
+    void step2B1(Node* node, const Comparable& value) {
+        this->decideDelete(node, value);
+    }
+    void step2B2(Node* node, const Comparable& value) {
+        if (node->isLeft()) {
+            node = this->rotateLeft(node->parent);
+            node->left->color = RED;
+            node->color = BLACK;
+            node = node->left->left;
+        } else {
+            node = this->rotateRight(node->parent);
+            node->right->color = RED;
+            node->color = BLACK;
+            node = node->right->right;
+        }
+        step2(node, value);
+    }
+    void step3(Node* node) {
+        if (!node) return;
+        if (node->countChildren() == 2) {
+            Node* temp = findMin(node->right);
+            Comparable value = temp->value;
+            if (node->color == RED) {
+                node->value = temp->value;
+                this->step2(node->right, node->value);
+            } else {
+                this->step2B(node, temp->value);
+                node->value = value;
+            }
+        } else if (!node->countChildren()) {
+            if (node->isLeft()) { node->parent->left = nullptr; }
+            if (node->isRight()) { node->parent->right = nullptr; }
+            if (node == this->root) {
+                delete this->root;
+                node = this->root = nullptr;
+            } else {
+                delete node;
+                node = nullptr;
+            }
+            return;
+        } else {
+            if (node->isLeft()) {
+                if (node->left) {
+                    node->parent->left = node->left;
+                    node->left->parent = node->parent;
+                    node->left->color = BLACK;
+                } else if (node->right) {
+                    node->parent->left = node->right;
+                    node->right->parent = node->parent;
+                    node->right->color = BLACK;
+                }
+                delete node;
+                node = nullptr;
+                return;
+            } else if (node->isRight()) {
+                if (node->right) {
+                    node->parent->right = node->right;
+                    node->right->parent = node->parent;
+                    node->right->color = BLACK;
+                } else if (node->left) {
+                    node->parent->right = node->left;
+                    node->left->parent = node->parent;
+                    node->left->color = BLACK;
+                }
+                delete node;
+                node = nullptr;
+                return;
+            } else if (node == this->root) {
+                if (node->left) {
+                    this->root = node->left;
+                } else {
+                    this->root = node->right;
+                }
+                delete node;
+                node = nullptr;
+                return;
+            }
+        }
+    }
+    Node* clear(Node*& root) {
+        if (!root) return root;
+        root->left = clear(root->left);
+        root->right = clear(root->right);
+        delete root;
+        return root = nullptr;
+    }
+    Node* findMin(Node* const& node) const {
+        Node* temp = node;
+        while (temp && temp->left)
+            temp = temp->left;
+        return temp;
+    }
+    Node* findMax(Node* const& node) const {
+        Node* temp = node;
+        while (temp && temp->right)
+            temp = temp->right;
+        return temp;
+    }
+    void print_tree(const Node* root, ostream& os, size_t lvl) const {
+        if (!root) {
+            os << "<empty>\n";
+            return;
+        }
+        if (root->right)
+            this->print_tree(root->right, os, lvl + 1);
+        os << std::string(lvl * 5, ' ') << root->to_string() << "\n";
+        if (root->left)
+            this->print_tree(root->left, os, lvl + 1);
+
+    }
+public:
+    RedBlackTree() : root{nullptr} {};
+    RedBlackTree(const RedBlackTree& rbt) : root{this->copy(rbt.root)} {};
+    const RedBlackTree& operator=(const RedBlackTree& rbt) {
+        if (&rbt != this) {
+            this->clear(this->root);
+            this->root = this->copy(rbt.root);
+        }
+        return *this;
+    }
+    ~RedBlackTree() {
+        this->make_empty();
+    }
+    void make_empty() {
+        this->root = this->clear(root);
+    }
+    const Comparable& find_min() {
+        if (!root) throw std::invalid_argument("empty tree");
+        return this->findMin(root)->value;
+    }
+    const Comparable& find_max() {
+        if (!root) throw std::invalid_argument("empty tree");
+        return this->findMax(root)->value;
+    }
+    void insert(const Comparable& data) {
+        this->TDInsert(this->root, data);
+        root->color = BLACK;
+        return;
+    }
+    void remove(const Comparable& data) {
+        if(!this->root) return;
+        TDRemove(this->root, data);
+    }
+    bool contains(const Comparable& data) {
+        return contains(data, root);
+    }
+    int color(const Node* node) const {
+        return node ? node->color : BLACK;
+    }
+    const Node* get_root() const { return this->root; }
+    void print_tree(std::ostream& os = std::cout) const {
+        size_t i = 0;
+        this->print_tree(this->root, os, i);
+    }
+    bool followsRules() const {
+        if (!root) return true;
+        return followsRules(this->root);
+    }
+};
