@@ -258,7 +258,7 @@ private:
             this->_root->color = Color::RED;
             this->decideDelete(this->_root, value);
         } else
-            this->step2B(node, value);
+            this->setUpRemoval(node, value);
         if (this->_root)
             this->_root->color = Color::BLACK;
     }
@@ -271,33 +271,35 @@ private:
         if (node->value < value && !node->right)
             return;
         if (node->value == value)
-            this->step3(node);
-        else step2(node->value > value ? node->left : node->right, value);
+            this->deleteNode(node);
+        else setUpRedLeaf(node->value > value ? node->left : node->right, value);
     }
 
-    void step2(Node* node, const Comparable& value) {
+    void setUpRedLeaf(Node* node, const Comparable& value) {
         if (!node) return;
         if (node->hasColorChildren(BLACK))
-            this->step2A(node, value);
+            this->setUpRotations(node, value);
         else
-            this->step2B(node, value);
+            this->setUpRemoval(node, value);
     }
 
-    void step2A(Node* node, const Comparable& value) {
-        if (node->sibling() && node->sibling()->hasColorChildren(BLACK)) {
-            step2A1(node, value);
+    void setUpRotations(Node* node, const Comparable& value) {
+        Node* sibling = node->sibling();
+        if (sibling && sibling->hasColorChildren(BLACK)) {
+            this->recolorChildren(node, value);
         } else if ((node->isLeft() && node->leftNiblingRed()) || (node->isRight() && node->rightNiblingRed())) {
-            step2A2(node, value);
-        } else step2A3(node, value);
+            this->rotationNiblingRed(node, value);
+        } else
+            this->rotationNiblingBlack(node, value);
     }
 
-    void step2A1(Node* node, const Comparable& value) {
+    void recolorChildren(Node* node, const Comparable& value) {
         node->color = node->sibling()->color = Color::RED;
         if (node->parent) node->parent->color = Color::BLACK;
-        decideDelete(node, value);
+        this->decideDelete(node, value);
     }
 
-    void step2A2(Node* node, const Comparable& value) {
+    void rotationNiblingRed(Node* node, const Comparable& value) {
         if (node->isLeft()) {
             node = this->rotateRight(node->sibling());
             node = this->rotateLeft(node->parent);
@@ -314,8 +316,7 @@ private:
         this->decideDelete(node, value);
     }
 
-    void step2A3(Node* node, const Comparable& value) {
-
+    void rotationNiblingBlack(Node* node, const Comparable& value) {
         if (node->isLeft()) {
             node = rotateLeft(node->parent);
             node->color = Color::RED;
@@ -331,20 +332,20 @@ private:
         this->decideDelete(node, value);
     }
 
-    void step2B(Node* node, const Comparable& value) {
+    void setUpRemoval(Node* node, const Comparable& value) {
         if (value == node->value)
-            step3(node);
+            this->deleteNode(node);
         else {
             node = node->value > value ? node->left : node->right;
             if (!node) return;
             else if (node->color == Color::RED)
                 this->decideDelete(node, value);
             else
-                step2B2(node, value);
+                this->rotateRemoval(node, value);
         }
     }
 
-    void step2B2(Node* node, const Comparable& value) {
+    void rotateRemoval(Node* node, const Comparable& value) {
         if (node->isLeft()) {
             node = this->rotateLeft(node->parent);
             node->left->color = Color::RED;
@@ -356,10 +357,10 @@ private:
             node->color = Color::BLACK;
             node = node->right->right;
         }
-        step2(node, value);
+        this->setUpRedLeaf(node, value);
     }
 
-    void step3(Node* node) {
+    void deleteNode(Node* node) {
         if (!node)
             return;
         switch (node->countChildren()) {
@@ -407,9 +408,9 @@ private:
             Comparable value = temp->value;
             if (node->color == Color::RED) {
                 node->value = temp->value;
-                this->step2(node->right, node->value);
+                this->setUpRedLeaf(node->right, node->value);
             } else {
-                this->step2B(node, temp->value);
+                this->setUpRemoval(node, temp->value);
                 node->value = value;
             }
             return;
