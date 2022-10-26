@@ -1,7 +1,6 @@
 #pragma once
 
 #include <functional>
-#include <functional>
 #include <deque>
 #include <initializer_list>
 #include <iostream>

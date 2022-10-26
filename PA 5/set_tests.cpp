@@ -280,28 +280,80 @@ bool test_insert_iter() {
 	assert(set.size() == 0);
 	assert(set.is_empty());
 
-	set.insert(7);
-	set.insert(3);
-	set.insert(11);
-	set.insert(1);
-	set.insert(5);
-	set.insert(9);
-	set.insert(13);
-	set.insert(2);
-	set.insert(4);
-	set.insert(6);
-	set.insert(8);
-	set.insert(10);
-	set.insert(12);
+	Set<int>::const_iterator hint = set.end();
+	Set<int>::iterator iter = set.insert(hint, 7);
+	assert(*iter == 7);
+	assert(set.size() == 1);
+
+	hint = set.find(7);
+	iter = set.insert(hint, 3);
+	assert(*iter == 3);
+	assert(set.size() == 2);
+
+	hint = set.find(7);
+	iter = set.insert(hint, 11);
+	assert(*iter == 11);
+	assert(set.size() == 3);
+
+	hint = set.find(3);
+	iter = set.insert(hint, 1);
+	assert(*iter == 1);
+	assert(set.size() == 4);
+
+	hint = set.find(3);
+	iter = set.insert(hint, 5);
+	assert(*iter == 5);
+	assert(set.size() == 5);
+
+	hint = set.find(11);
+	iter = set.insert(hint, 9);
+	assert(*iter == 9);
+	assert(set.size() == 6);
+
+	hint = set.find(11);
+	iter = set.insert(hint, 13);
+	assert(*iter == 13);
+	assert(set.size() == 7);
+
+	hint = set.find(3);
+	iter = set.insert(hint, 0);
+	assert(*iter == 0);
+	assert(set.size() == 8);
+
+	hint = set.find(3);
+	iter = set.insert(hint, 2);
+	assert(*iter == 2);
+	assert(set.size() == 9);
+
+	hint = set.find(3);
+	iter = set.insert(hint, 4);
+	assert(*iter == 4);
+	assert(set.size() == 10);
+
+	hint = set.find(3);
+	iter = set.insert(hint, 6);
+	assert(*iter == 6);
+	assert(set.size() == 11);
+
+	hint = set.find(11);
+	iter = set.insert(hint, 8);
+	assert(*iter == 8);
+	assert(set.size() == 12);
+
+	hint = set.find(11);
+	iter = set.insert(hint, 10);
+	assert(*iter == 10);
 	assert(set.size() == 13);
 
-	Set_iterator<int> iter(set.insert(set.begin(), 0));
+	hint = set.find(11);
+	iter = set.insert(hint, 12);
+	assert(*iter == 12);
 	assert(set.size() == 14);
-	assert(*iter == 0);
 
-	iter = set.insert(set.find(13), 14);
-	assert(set.size() == 15);
+	hint = set.find(11);
+	iter = set.insert(hint, 14);
 	assert(*iter == 14);
+	assert(set.size() == 15);
 
 	END_TEST;
 }
@@ -1367,9 +1419,9 @@ int main() {
 	test(insert_left);
 	test(insert_lr);
 	test(insert_rl);
-	test(insert_iter);
 	test(insert_dup_pair);
 	test(insert_dup_iter);
+	test(insert_iter);
 	test(insert_iter_end);
 	test(remove_empty);
 	test(remove_invalid);

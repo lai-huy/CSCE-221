@@ -345,7 +345,7 @@ private:
             if (root->_left) root->_left->_parent = root;
         } else if (value > root->_value) {
             root->_right = this->remove(root->_right, value);
-            if (root->_right) root->_left->_parent = root;
+            if (root->_right) root->_right->_parent = root;
         } else {
             Node* temp;
             if (root->isLeaf()) {
