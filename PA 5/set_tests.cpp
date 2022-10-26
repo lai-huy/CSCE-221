@@ -218,10 +218,7 @@ bool test_insert_right() {
 	set.insert(12);
 	set.insert(13);
 	set.insert(14);
-	Set_iterator<int> iter(set.find(14));
 	assert(set.size() == 15);
-
-	assert(*iter == 14);
 
 	END_TEST;
 }
@@ -281,6 +278,7 @@ bool test_insert_lr() {
 bool test_insert_iter() {
 	Set<int> set;
 	assert(set.size() == 0);
+	assert(set.is_empty());
 
 	set.insert(7);
 	set.insert(3);
@@ -304,6 +302,32 @@ bool test_insert_iter() {
 	iter = set.insert(set.find(13), 14);
 	assert(set.size() == 15);
 	assert(*iter == 14);
+
+	END_TEST;
+}
+
+bool test_insert_iter_end() {
+	Set<int> set;
+	assert(set.size() == 0);
+	assert(set.is_empty());
+
+	Set_const_iterator<int> end = set.end();
+	set.insert(end, 0);
+	set.insert(end, 1);
+	set.insert(end, 2);
+	set.insert(end, 3);
+	set.insert(end, 4);
+	set.insert(end, 5);
+	set.insert(end, 6);
+	set.insert(end, 7);
+	set.insert(end, 8);
+	set.insert(end, 9);
+	set.insert(end, 10);
+	set.insert(end, 11);
+	set.insert(end, 12);
+	set.insert(end, 13);
+	set.insert(end, 14);
+	assert(set.size() == 15);
 
 	END_TEST;
 }
@@ -546,35 +570,6 @@ bool test_remove_root() {
 	assert(set.remove(0));
 	assert(set.size() == 0);
 	assert(set.is_empty());
-
-	END_TEST;
-}
-
-bool test_remove_iter_invalid() {
-	Set<int> set;
-	assert(set.size() == 0);
-	assert(set.is_empty());
-
-	set.insert(7);
-	set.insert(3);
-	set.insert(11);
-	set.insert(1);
-	set.insert(5);
-	set.insert(9);
-	set.insert(13);
-	set.insert(0);
-	set.insert(2);
-	set.insert(4);
-	set.insert(6);
-	set.insert(8);
-	set.insert(10);
-	set.insert(12);
-	set.insert(14);
-	assert(set.size() == 15);
-
-	expect_throw(set.remove(set.end()), invalid_argument);
-	set.make_empty();
-	assert(set.remove(set.end()) == set.end());
 
 	END_TEST;
 }
@@ -899,8 +894,9 @@ bool test_iter_remove_middle() {
 	Set_iterator<int> iter = set.remove(index);
 	assert(*iter == 14);
 
-	index = set.find(14);
+	index = set.find(12);
 	iter = set.remove(index);
+	assert(*iter == 14);
 
 	assert(set.remove(8));
 	index = set.find(9);
@@ -933,10 +929,65 @@ bool test_iter_remove_root() {
 	set.insert(12);
 	set.insert(14);
 
-	Set_const_iterator<int> iter(set.find(7));
-	int nums[] = {7, 8, 9, 10, 11, 12, 5, 6, 3, 4, 13, 2, 1, 14, 0};
-	for (const int& num : nums)
-		set.remove(set.find(num));
+	Set_const_iterator<int> index = set.find(7);
+	Set_iterator<int> iter = set.remove(index);
+	assert(*iter == 8);
+
+	index = set.find(8);
+	iter = set.remove(index);
+	assert(*iter == 9);
+
+	index = set.find(9);
+	iter = set.remove(index);
+	assert(*iter == 10);
+
+	index = set.find(10);
+	iter = set.remove(index);
+	assert(*iter == 11);
+
+	index = set.find(11);
+	iter = set.remove(index);
+	assert(*iter == 12);
+
+	index = set.find(12);
+	iter = set.remove(index);
+	assert(*iter == 13);
+
+	index = set.find(5);
+	iter = set.remove(index);
+	assert(*iter == 6);
+
+	index = set.find(6);
+	iter = set.remove(index);
+	assert(*iter == 13);
+
+	index = set.find(3);
+	iter = set.remove(index);
+	assert(*iter == 4);
+
+	index = set.find(4);
+	iter = set.remove(index);
+	assert(*iter == 13);
+
+	index = set.find(13);
+	iter = set.remove(index);
+	assert(*iter == 14);
+
+	index = set.find(2);
+	iter = set.remove(index);
+	assert(*iter == 14);
+
+	index = set.find(1);
+	iter = set.remove(index);
+	assert(*iter == 14);
+
+	index = set.find(14);
+	iter = set.remove(index);
+	expect_throw(*iter, runtime_error);
+
+	index = set.find(0);
+	iter = set.remove(index);
+	expect_throw(*iter, runtime_error);
 	assert(set.is_empty());
 
 	END_TEST;
@@ -962,8 +1013,12 @@ bool test_iter_remove_invalid() {
 	set.insert(10);
 	set.insert(12);
 	set.insert(14);
+	assert(set.size() == 15);
 
-	expect_throw(set.remove(set.end()), invalid_argument);
+	Set_const_iterator<int> end = set.end();
+	expect_throw(set.remove(end), invalid_argument);
+	set.make_empty();
+	assert(set.remove(end) == end);
 
 	END_TEST;
 }
@@ -1306,42 +1361,43 @@ bool test_self_assignment() {
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
-	// test(create);
-	// test(insert_pair);
-	// test(insert_right);
-	// test(insert_left);
-	// test(insert_lr);
-	// test(insert_rl);
-	// test(insert_iter);
-	// test(insert_dup_pair);
-	// test(insert_dup_iter);
-	// test(remove_empty);
-	// test(remove_invalid);
-	// test(remove_leaf);
-	// test(remove_middle);
-	// test(remove_root);
-	// test(find);
-	// test(find_const);
-	// test(iter_end);
-	// test(iter_forward);
-	// test(iter_string);
-	// test(iter_empty);
+	test(create);
+	test(insert_pair);
+	test(insert_right);
+	test(insert_left);
+	test(insert_lr);
+	test(insert_rl);
+	test(insert_iter);
+	test(insert_dup_pair);
+	test(insert_dup_iter);
+	test(insert_iter_end);
+	test(remove_empty);
+	test(remove_invalid);
+	test(remove_leaf);
+	test(remove_middle);
+	test(remove_root);
+	test(find);
+	test(find_const);
+	test(iter_end);
+	test(iter_forward);
+	test(iter_string);
+	test(iter_empty);
 	test(iter_remove_leaf);
 	test(iter_remove_middle);
 	test(iter_remove_root);
 	test(iter_remove_empty);
 	test(iter_remove_invalid);
-	// test(const_iter_end);
-	// test(const_iter_forward);
-	// test(const_iter_string);
-	// test(print_set);
-	// test(print_tree);
-	// test(print_empty);
-	// test(copy);
-	// test(copy_empty);
-	// test(copy_oper);
-	// test(copy_oper_empty);
-	// test(self_assignment);
+	test(const_iter_end);
+	test(const_iter_forward);
+	test(const_iter_string);
+	test(print_set);
+	test(print_tree);
+	test(print_empty);
+	test(copy);
+	test(copy_empty);
+	test(copy_oper);
+	test(copy_oper_empty);
+	test(self_assignment);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";

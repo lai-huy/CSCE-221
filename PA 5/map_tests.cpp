@@ -8,6 +8,7 @@
 
 using std::cout;
 using std::string, std::pair;
+using std::runtime_error;
 
 #define black   "\033[30m"
 #define red     "\033[31m"
@@ -429,6 +430,32 @@ bool test_insert_dup_iter() {
 	END_TEST;
 }
 
+bool test_insert_iter_end() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	Map_const_iterator<string, int> end = map.end();
+	map.insert(end, {"00", 0});
+	map.insert(end, {"01", 1});
+	map.insert(end, {"02", 2});
+	map.insert(end, {"03", 3});
+	map.insert(end, {"04", 4});
+	map.insert(end, {"05", 5});
+	map.insert(end, {"06", 6});
+	map.insert(end, {"07", 7});
+	map.insert(end, {"08", 8});
+	map.insert(end, {"09", 9});
+	map.insert(end, {"10", 10});
+	map.insert(end, {"11", 11});
+	map.insert(end, {"12", 12});
+	map.insert(end, {"13", 13});
+	map.insert(end, {"14", 14});
+	assert(map.size() == 15);
+
+	END_TEST;
+}
+
 bool test_remove_empty() {
 	Map<string, int> map;
 	assert(map.size() == 0);
@@ -627,6 +654,49 @@ bool test_find() {
 	END_TEST;
 }
 
+bool test_find_const() {
+	Map<string, int> m;
+	assert(m.size() == 0);
+	assert(m.is_empty());
+
+	m.insert({"07", 7});
+	m.insert({"03", 3});
+	m.insert({"11", 11});
+	m.insert({"01", 1});
+	m.insert({"05", 5});
+	m.insert({"09", 9});
+	m.insert({"13", 13});
+	m.insert({"00", 0});
+	m.insert({"02", 2});
+	m.insert({"04", 4});
+	m.insert({"06", 6});
+	m.insert({"08", 8});
+	m.insert({"10", 10});
+	m.insert({"12", 12});
+	m.insert({"14", 14});
+	assert(m.size() == 15);
+
+	const Map<string, int> map(m);
+	Map_const_iterator end = map.end();
+	assert(map.find("00") != end);
+	assert(map.find("01") != end);
+	assert(map.find("02") != end);
+	assert(map.find("03") != end);
+	assert(map.find("04") != end);
+	assert(map.find("05") != end);
+	assert(map.find("06") != end);
+	assert(map.find("07") != end);
+	assert(map.find("08") != end);
+	assert(map.find("09") != end);
+	assert(map.find("10") != end);
+	assert(map.find("11") != end);
+	assert(map.find("12") != end);
+	assert(map.find("13") != end);
+	assert(map.find("14") != end);
+
+	END_TEST;
+}
+
 bool test_iter_end() {
 	Map<string, int> map;
 	assert(map.size() == 0);
@@ -728,6 +798,329 @@ bool test_iter_string() {
 	iter = map.end();
 	ss << iter.to_string();
 	assert(ss.str() == "<Map::iterator -> [nullptr]>");
+
+	END_TEST;
+}
+
+bool test_iter_empty() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	map.insert({"07", 7});
+	map.insert({"03", 3});
+	map.insert({"11", 11});
+	map.insert({"01", 1});
+	map.insert({"05", 5});
+	map.insert({"09", 9});
+	map.insert({"13", 13});
+	map.insert({"00", 0});
+	map.insert({"02", 2});
+	map.insert({"04", 4});
+	map.insert({"06", 6});
+	map.insert({"08", 8});
+	map.insert({"10", 10});
+	map.insert({"12", 12});
+	map.insert({"14", 14});
+	assert(map.size() == 15);
+
+	Map_iterator<string, int> iter(map.find("07"));
+	map.make_empty();
+	iter = map.begin();
+	expect_throw(*iter, runtime_error);
+
+	END_TEST;
+}
+
+bool test_iter_remove_leaf() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	map.insert({"07", 7});
+	map.insert({"03", 3});
+	map.insert({"11", 11});
+	map.insert({"01", 1});
+	map.insert({"05", 5});
+	map.insert({"09", 9});
+	map.insert({"13", 13});
+	map.insert({"00", 0});
+	map.insert({"02", 2});
+	map.insert({"04", 4});
+	map.insert({"06", 6});
+	map.insert({"08", 8});
+	map.insert({"10", 10});
+	map.insert({"12", 12});
+	map.insert({"14", 14});
+	assert(map.size() == 15);
+
+	Map_const_iterator<string, int> index = map.find("14");
+	Map_iterator<string, int> iter = map.remove(index);
+	expect_throw(*iter, runtime_error);
+	expect_throw(iter->first, runtime_error);
+	expect_throw(iter->second, runtime_error);
+
+	index = map.find("12");
+	iter = map.remove(index);
+	assert(iter->first == "13");
+	assert(iter->second == 13);
+
+	index = map.find("10");
+	iter = map.remove(index);
+	assert(iter->first == "11");
+	assert(iter->second == 11);
+
+	index = map.find("08");
+	iter = map.remove(index);
+	assert(iter->first == "09");
+	assert(iter->second == 9);
+
+	index = map.find("06");
+	iter = map.remove(index);
+	assert(iter->first == "07");
+	assert(iter->second == 7);
+
+	index = map.find("04");
+	iter = map.remove(index);
+	assert(iter->first == "05");
+	assert(iter->second == 5);
+
+	index = map.find("02");
+	iter = map.remove(index);
+	assert(iter->first == "03");
+	assert(iter->second == 3);
+
+	index = map.find("00");
+	iter = map.remove(index);
+	assert(iter->first == "01");
+	assert(iter->second == 1);
+
+	index = map.find("13");
+	iter = map.remove(index);
+	expect_throw(*iter, runtime_error);
+	expect_throw(iter->first, runtime_error);
+	expect_throw(iter->second, runtime_error);
+
+	index = map.find("09");
+	iter = map.remove(index);
+	assert(iter->first == "11");
+	assert(iter->second == 11);
+
+	index = map.find("05");
+	iter = map.remove(index);
+	assert(iter->first == "07");
+	assert(iter->second == 7);
+
+	index = map.find("01");
+	iter = map.remove(index);
+	assert(iter->first == "03");
+	assert(iter->second == 3);
+
+	index = map.find("11");
+	iter = map.remove(index);
+	expect_throw(*iter, runtime_error);
+	expect_throw(iter->first, runtime_error);
+	expect_throw(iter->second, runtime_error);
+
+	index = map.find("03");
+	iter = map.remove(index);
+	assert(iter->first == "07");
+	assert(iter->second == 7);
+
+	index = map.find("07");
+	iter = map.remove(index);
+	expect_throw(*iter, runtime_error);
+	expect_throw(iter->first, runtime_error);
+	expect_throw(iter->second, runtime_error);
+
+	END_TEST;
+}
+
+bool test_iter_remove_middle() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	map.insert({"07", 7});
+	map.insert({"03", 3});
+	map.insert({"11", 11});
+	map.insert({"01", 1});
+	map.insert({"05", 5});
+	map.insert({"09", 9});
+	map.insert({"13", 13});
+	map.insert({"00", 0});
+	map.insert({"02", 2});
+	map.insert({"04", 4});
+	map.insert({"06", 6});
+	map.insert({"08", 8});
+	map.insert({"10", 10});
+	map.insert({"12", 12});
+	map.insert({"14", 14});
+	assert(map.size() == 15);
+
+	Map_const_iterator<string, int> index = map.find("13");
+	Map_iterator<string, int> iter = map.remove(index);
+	assert(iter->first == "14");
+	assert(iter->second == 14);
+
+	index = map.find("12");
+	iter = map.remove(index);
+	assert(iter->first == "14");
+	assert(iter->second == 14);
+
+	assert(map.remove("08"));
+	index = map.find("09");
+	iter = map.remove(index);
+	assert(iter->first == "10");
+	assert(iter->second == 10);
+
+	assert(map.size() == 11);
+
+	END_TEST;
+}
+
+bool test_iter_remove_root() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	map.insert({"07", 7});
+	map.insert({"03", 3});
+	map.insert({"11", 11});
+	map.insert({"01", 1});
+	map.insert({"05", 5});
+	map.insert({"09", 9});
+	map.insert({"13", 13});
+	map.insert({"00", 0});
+	map.insert({"02", 2});
+	map.insert({"04", 4});
+	map.insert({"06", 6});
+	map.insert({"08", 8});
+	map.insert({"10", 10});
+	map.insert({"12", 12});
+	map.insert({"14", 14});
+	assert(map.size() == 15);
+
+	Map_const_iterator<string, int> index = map.find("07");
+	Map_iterator<string, int> iter = map.remove(index);
+	assert(iter->first == "08");
+	assert(iter->second == 8);
+
+	index = map.find("08");
+	iter = map.remove(index);
+	assert(iter->first == "09");
+	assert(iter->second == 9);
+
+	index = map.find("09");
+	iter = map.remove(index);
+	assert(iter->first == "10");
+	assert(iter->second == 10);
+
+	index = map.find("10");
+	iter = map.remove(index);
+	assert(iter->first == "11");
+	assert(iter->second == 11);
+
+	index = map.find("11");
+	iter = map.remove(index);
+	assert(iter->first == "12");
+	assert(iter->second == 12);
+
+	index = map.find("12");
+	iter = map.remove(index);
+	assert(iter->first == "13");
+	assert(iter->second == 13);
+
+	index = map.find("05");
+	iter = map.remove(index);
+	assert(iter->first == "06");
+	assert(iter->second == 6);
+
+	index = map.find("06");
+	iter = map.remove(index);
+	assert(iter->first == "13");
+	assert(iter->second == 13);
+
+	index = map.find("03");
+	iter = map.remove(index);
+	assert(iter->first == "04");
+	assert(iter->second == 4);
+
+	index = map.find("04");
+	iter = map.remove(index);
+	assert(iter->first == "13");
+	assert(iter->second == 13);
+
+	index = map.find("13");
+	iter = map.remove(index);
+	assert(iter->first == "14");
+	assert(iter->second == 14);
+
+	index = map.find("02");
+	iter = map.remove(index);
+	assert(iter->first == "14");
+	assert(iter->second == 14);
+
+	index = map.find("01");
+	iter = map.remove(index);
+	assert(iter->first == "14");
+	assert(iter->second == 14);
+
+	index = map.find("14");
+	iter = map.remove(index);
+	expect_throw(*iter, runtime_error);
+	expect_throw(iter->first, runtime_error);
+	expect_throw(iter->second, runtime_error);
+
+	index = map.find("00");
+	iter = map.remove(index);
+	expect_throw(*iter, runtime_error);
+	expect_throw(iter->first, runtime_error);
+	expect_throw(iter->second, runtime_error);
+
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+
+	END_TEST;
+}
+
+bool test_iter_remove_empty() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	Map_const_iterator<string, int> index = map.end();
+	Map_iterator<string, int> iter = map.remove(index);
+	expect_throw(*iter, runtime_error);
+
+	END_TEST;
+}
+
+bool test_iter_remove_invalid() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	map.insert({"07", 7});
+	map.insert({"03", 3});
+	map.insert({"11", 11});
+	map.insert({"01", 1});
+	map.insert({"05", 5});
+	map.insert({"09", 9});
+	map.insert({"13", 13});
+	map.insert({"00", 0});
+	map.insert({"02", 2});
+	map.insert({"04", 4});
+	map.insert({"06", 6});
+	map.insert({"08", 8});
+	map.insert({"10", 10});
+	map.insert({"12", 12});
+	map.insert({"14", 14});
+	assert(map.size() == 15);
+
+	Map_const_iterator<string, int> index = map.end();
+	expect_throw(map.remove(index), invalid_argument);
 
 	END_TEST;
 }
@@ -1182,21 +1575,29 @@ int main() {
 	test(insert_iter);
 	test(insert_dup_pair);
 	test(insert_dup_iter);
+	test(insert_iter_end);
 	test(remove_empty);
 	test(remove_invalid);
 	test(remove_leaf);
 	test(remove_middle);
 	test(remove_root);
 	test(find);
+	test(find_const);
+	test(at);
+	test(at_set);
+	test(at_invalid);
 	test(iter_end);
 	test(iter_forward);
 	test(iter_string);
+	test(iter_empty);
+	test(iter_remove_leaf);
+	test(iter_remove_middle);
+	test(iter_remove_root);
+	test(iter_remove_empty);
+	test(iter_remove_invalid);
 	test(const_iter_end);
 	test(const_iter_forward);
 	test(const_iter_string);
-	test(at);
-	test(at_invalid);
-	test(at_set);
 	test(print_map);
 	test(print_tree);
 	test(print_empty);

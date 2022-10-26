@@ -12,7 +12,6 @@ using std::cout, std::ostream, std::stringstream;
 using std::runtime_error, std::invalid_argument, std::out_of_range;
 using std::string;
 
-// forward declarations
 template <class K, class V> class Map;
 template <class K, class V> class Map_const_iterator;
 template <class K, class V> class Map_iterator;
@@ -53,18 +52,26 @@ public:
      *
      * @param value value to put in this node
      */
-    Map_Node(const pair<const Key, Value> pair) : _pair{new pair<const Key, Value>{pair}}, _height{1}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
-    Map_Node(const Map_Node& rhs) = default;
+    Map_Node(const pair<const Key, Value> p) : _pair{new pair<const Key, Value>(p)}, _height{1}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
 
-    ~Map_Node() {
-        if (this->_pair)
-            delete this->_pair;
+    Map_Node(const Map_Node& rhs) : Map_Node(rhs._pair) {}
+
+    Map_Node& operator=(const Map_Node& rhs) {
+        if (this != &rhs) {
+            this->clear();
+            this->_pair = new pair<const Key, Value>(rhs._pair);
+        }
     }
 
-    Map_Node& operator=(const Map_Node& rhs) = default;
+    ~Map_Node() { this->clear(); }
 
-    const pair<const Key, Value>& data() const { return *this->_pair; }
-    pair<const Key, Value> data() { return *this->_pair; }
+    void clear() {
+        if (this->_pair)
+            delete this->_pair;
+        this->_parent = nullptr;
+        this->_pair = nullptr;
+        this->_height = 0;
+    }
 
     /**
      * @brief Determine if this node is a leaf.
@@ -159,7 +166,6 @@ public:
     }
 };
 
-// TODO(stduent): implement this
 template <class Key, class Value>
 class Map_iterator : public Map_const_iterator<Key, Value> {
 private:
@@ -226,7 +232,6 @@ public:
     }
 };
 
-// TODO(stduent): implement this
 template <class Key, class Value>
 class Map {
 private:
@@ -238,15 +243,15 @@ private:
     template <typename Type>
     Type max(const Type& a, const Type& b) const { return a > b ? a : b; }
 
-    long height(Node*& root) const { return !root ? 0l : root->_height; }
+    long height(Node* const& root) const { return !root ? 0l : root->_height; }
 
-    long balace_factor(Node*& root) const {
+    long balace_factor(Node* const& root) const {
         return !root ?
             0l :
             this->height(root->_left) - this->height(root->_right);
     }
 
-    size_t calcHeight(Node*& root) const {
+    size_t calcHeight(Node* const& root) const {
         return 1 + this->max<long>(this->height(root->_left), this->height(root->_right));
     }
 
@@ -254,7 +259,7 @@ private:
         if (node) {
             node->_left = this->clear(node->_left);
             node->_right = this->clear(node->_right);
-            node->_parent = nullptr;
+            node->clear();
             delete node;
         }
 
@@ -262,7 +267,7 @@ private:
         return node;
     }
 
-    Node* copy(const Node* root) {
+    Node* copy(Node* const& root) {
         if (!root)
             return nullptr;
 
@@ -346,29 +351,39 @@ private:
     }
 
     Node* remove(Node*& root, const Key& _key) {
-        if (_key < root->_pair->first)
+        if (_key < root->_pair->first) {
             root->_left = this->remove(root->_left, _key);
-        else if (_key > root->_pair->first)
+            if (root->_left)
+                root->_left->_parent = root;
+        } else if (_key > root->_pair->first) {
             root->_right = this->remove(root->_right, _key);
-        else {
+            if (root->_right)
+                root->_right->_parent = root;
+        } else {
+            Node* temp = nullptr;
             if (root->isLeaf()) {
+                root->clear();
                 delete root;
                 root = nullptr;
                 return root;
             } else if (!root->_left) {
-                Node* temp = root->_right;
+                temp = root->_right;
+                root->clear();
                 delete root;
                 root = nullptr;
                 return temp;
             } else if (!root->_right) {
-                Node* temp = root->_left;
+                temp = root->_left;
+                root->clear();
                 delete root;
                 root = nullptr;
                 return temp;
             } else {
-                Node* temp = this->find_min(root->_right);
+                temp = this->find_min(root->_right);
                 swap(root->_pair, temp->_pair);
                 root->_right = this->remove(root->_right, temp->_pair->first);
+                if (root->_right)
+                    root->_right->_parent = root;
             }
         }
 
@@ -376,7 +391,7 @@ private:
         return root;
     }
 
-    const Node* search(const Node* root, const Key& _key) const {
+    Node* search(Node* const& root, const Key& _key) const {
         if (!root)
             return nullptr;
         if (root->_pair->first == _key)
@@ -384,13 +399,14 @@ private:
         return this->search(_key < root->_pair->first ? root->_left : root->_right, _key);
     }
 
-    Node* find_min(Node* root) const {
-        while (root && root->_left)
-            root = root->_left;
-        return root;
+    Node* find_min(Node* const& root) const {
+        Node* node = root;
+        while (node && node->_left)
+            node = node->_left;
+        return node;
     }
 
-    void print_tree(const Node* root, ostream& os, size_t trace) const {
+    void print_tree(Node* const& root, ostream& os, size_t trace) const {
         if (root->_right)
             this->print_tree(root->_right, os, trace + 1);
         os << string(trace * 2, ' ') << *root << "\n";
@@ -419,8 +435,7 @@ public:
         if (node)
             return node->_pair->second;
         stringstream ss;
-        ss << key;
-        ss << " is not in the map.";
+        ss << key << " is not in the map.";
         throw out_of_range(ss.str());
     }
 
@@ -435,21 +450,22 @@ public:
     }
 
     Value& operator[](const Key& key) {
-        Node* node = this->search(this->_root, key);
-        if (node)
-            return node->_pair->second;
+        const_iterator index = this->find(key);
+        if (index._node)
+            return this->at(key);
         else {
-            pair<iterator, bool> p(this->insert({key, Value()}));
-            p.first->second;
+            iterator it = this->insert(index, {key, Value()});
+            return this->at(key);
         }
     }
+
     const Value& operator[](const Key& key) const {
         Node* node = this->search(this->_root, key);
         if (node)
-            return node->_pair->second;
+            return this->at(key);
         else {
             pair<iterator, bool> p(this->insert({key, Value()}));
-            p.first->second;
+            return this->at(key);
         }
     }
 
@@ -498,17 +514,25 @@ public:
         return 1;
     }
 
-    iterator remove(const_iterator iter) {
+    iterator remove(const_iterator index) {
         if (!this->_root)
-            throw invalid_argument("Set is empty");
-        const_iterator end(this->end());
-        if (iter == end)
+            return iterator(nullptr);
+        if (!index._node)
             throw invalid_argument("Iterator does not point anywhere");
-        const Key& key = iter->first;
-        iterator it(++iter);
-        this->_root = this->remove(this->_root, key);
+
+        const_iterator temp = index;
+        iterator it = (++temp)._node;
+        Key value;
+        try {
+            value = temp->first;
+        } catch (const runtime_error& err) {
+            it = nullptr;
+        }
+        this->_root = this->remove(this->_root, index->first);
+        if (this->_root)
+            this->_root->_parent = nullptr;
         --this->_size;
-        return it;
+        return it._node ? this->find(value) : it;
     }
 
     bool contains(const Key& key) const { return this->search(this->_root, key); }

@@ -1,30 +1,29 @@
 #include "my_map.h"
-#include "my_map.h"
 #include <iostream>
 
 struct ComparableValue {
     int value;
-    
+
     ComparableValue() : value{0} {}
     explicit ComparableValue(int value) : value{value} {}
-    
-    bool operator<(const ComparableValue& rhs) const { 
-        return value < rhs.value; 
+
+    bool operator<(const ComparableValue& rhs) const {
+        return value < rhs.value;
     }
-    bool operator>(const ComparableValue& rhs) const { 
-        return rhs < *this; 
+    bool operator>(const ComparableValue& rhs) const {
+        return rhs < *this;
     }
-    bool operator>=(const ComparableValue& rhs) const { 
-        return !(*this < rhs); 
+    bool operator>=(const ComparableValue& rhs) const {
+        return !(*this < rhs);
     }
-    bool operator<=(const ComparableValue& rhs) const { 
-        return !(*this > rhs); 
+    bool operator<=(const ComparableValue& rhs) const {
+        return !(*this > rhs);
     }
-    bool operator!=(const ComparableValue& rhs) const { 
-        return *this < rhs || *this > rhs; 
+    bool operator!=(const ComparableValue& rhs) const {
+        return *this < rhs || *this > rhs;
     }
-    bool operator==(const ComparableValue& rhs) const { 
-        return !(*this != rhs); 
+    bool operator==(const ComparableValue& rhs) const {
+        return !(*this != rhs);
     }
 };
 
@@ -36,7 +35,7 @@ std::ostream& operator<<(std::ostream& os, const ComparableValue& value) {
 int main() {
     // Map
     {
-        Map<std::string,int> map;
+        Map<std::string, int> map;
         map["two"] = 2;
         const auto [iter, success] = map.insert({"one", 1});
         auto iter2 = map.insert(iter, {"three", 3});
@@ -55,9 +54,9 @@ int main() {
         map.print_map();
         map.make_empty();
     }
-    
+
     {
-        Map<ComparableValue,int> map;
+        Map<ComparableValue, int> map;
         map[ComparableValue(2)] = 2;
         const auto [iter, success] = map.insert({ComparableValue(1), 1});
         auto iter2 = map.insert(iter, {ComparableValue(3), 3});
@@ -76,6 +75,6 @@ int main() {
         map.print_map();
         map.make_empty();
     }
-    
+
     return 0;
 }

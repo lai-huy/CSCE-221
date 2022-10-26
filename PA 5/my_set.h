@@ -55,9 +55,10 @@ public:
      */
     Set_Node(const Comparable& value) : _value{Comparable(value)}, _height{1}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
 
-    const Comparable& value() const { return this->_value; }
-
-    Comparable value() { return this->_value; }
+    void clear() {
+        this->_parent = nullptr;
+        this->_height = 0;
+    }
 
     /**
      * @brief Determine if this node is a leaf.
@@ -68,6 +69,7 @@ public:
     bool isLeaf() const { return !this->_left && !this->_right; }
 
     bool isLeft() const { return this->_parent ? this == this->_parent->_left : false; }
+
     bool isRight() const { return this->_parent ? this == this->_parent->_right : false; }
 };
 
@@ -81,7 +83,7 @@ protected:
 public:
     Set_const_iterator() : _node{nullptr} {}
     Set_const_iterator(const Node* node) : _node{node} {}
-    Set_const_iterator(const Set_const_iterator& rhs) : _node{rhs._node} {}
+    Set_const_iterator(const Set_const_iterator& rhs) : Set_const_iterator(rhs._node) {}
 
     Set_const_iterator& operator=(const Set_const_iterator& rhs) {
         if (this != &rhs)
@@ -238,18 +240,17 @@ private:
     template <typename Type>
     Type max(const Type& a, const Type& b) const { return a > b ? a : b; }
 
-    long height(const Node* root) const { return root ? root->_height : 0l; }
+    long height(Node* const& root) const { return root ? root->_height : 0l; }
 
-    long balace_factor(Node*& root) const { return root ? this->height(root->_left) - this->height(root->_right) : 0l; }
+    long balace_factor(Node* const& root) const { return root ? this->height(root->_left) - this->height(root->_right) : 0l; }
 
-    size_t calcHeight(Node*& root) const { return 1 + this->max(this->height(root->_left), this->height(root->_right)); }
+    size_t calcHeight(Node* const& root) const { return 1 + this->max(this->height(root->_left), this->height(root->_right)); }
 
     Node*& clear(Node*& node) {
         if (node) {
             node->_left = this->clear(node->_left);
             node->_right = this->clear(node->_right);
-            node->_parent = nullptr;
-            node->_height = 0;
+            node->clear();
             delete node;
         }
 
@@ -257,7 +258,7 @@ private:
         return node;
     }
 
-    Node* copy(const Node* root) {
+    Node* copy(Node* const& root) {
         if (!root)
             return nullptr;
 
@@ -348,22 +349,19 @@ private:
         } else {
             Node* temp;
             if (root->isLeaf()) {
-                root->_height = 0;
-                root->_parent = nullptr;
+                root->clear();
                 delete root;
                 root = nullptr;
                 return root;
             } else if (!root->_left) {
                 temp = root->_right;
-                root->_height = 0;
-                root->_parent = nullptr;
+                root->clear();
                 delete root;
                 root = nullptr;
                 return temp;
             } else if (!root->_right) {
                 temp = root->_left;
-                root->_height = 0;
-                root->_parent = nullptr;
+                root->clear();
                 delete root;
                 root = nullptr;
                 return temp;
@@ -379,7 +377,7 @@ private:
         return root;
     }
 
-    const Node* search(const Node* root, const Comparable& value) const {
+    const Node* search(Node* const& root, const Comparable& value) const {
         if (!root)
             return nullptr;
         if (root->_value == value)
@@ -474,24 +472,25 @@ public:
         return 1;
     }
 
-    iterator remove(const_iterator iter) {
+    iterator remove(const_iterator index) {
         if (!this->_root)
             return iterator(nullptr);
-        if (!iter._node)
+        if (!index._node)
             throw invalid_argument("Iterator does not point anywhere");
 
-        const_iterator temp = iter;
-        iterator it;
-        ++temp;
-        if (!temp._node)
+        const_iterator temp = index;
+        iterator it = (++temp)._node;
+        Comparable value;
+        try {
+            value = *temp;
+        } catch (const runtime_error& err) {
             it = nullptr;
-        else if (temp == this->find_max(this->_root))
-            it = iter._node;
-        else
-            it = temp._node;
-        this->_root = this->remove(this->_root, *iter);
+        }
+        this->_root = this->remove(this->_root, *index);
+        if (this->_root)
+            this->_root->_parent = nullptr;
         --this->_size;
-        return it;
+        return it._node ? this->find(value) : it;
     }
 
     bool contains(const Comparable& value) const { return this->search(this->_root, value); }
