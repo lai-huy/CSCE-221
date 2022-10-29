@@ -8,9 +8,10 @@
 #include <vector>
 
 using std::ostream, std::cout;
-using std::hash, std::find;
+using std::hash, std::find, std::swap;
 using std::vector, std::list;
 using std::out_of_range, std::invalid_argument;
+using std::numeric_limits;
 
 template <class Key, class Hash = hash<Key>>
 class HashTable {
@@ -20,14 +21,21 @@ private:
     size_t _bucket;
     float _mlf;
 
+    /**
+     * @brief Primality Test. Source: https://en.wikipedia.org/wiki/Primality_test#C,_C++,_C#_&_D
+     *
+     * @param num
+     * @return true
+     * @return false
+     */
     bool isPrime(const size_t& num) const {
         if (num < 2)
             return false;
         if (num < 4)
             return true;
-        if (num % 2 == 0)
+        if (!(num % 2))
             return false;
-        if (num % 3 == 0)
+        if (!(num % 3))
             return false;
         for (size_t i = 5; i * i <= num; i += 6) {
             if (num % i == 0)
@@ -47,9 +55,13 @@ private:
 
 public:
     HashTable() : HashTable(11) {}
-    explicit HashTable(size_t size) : _table{vector<list<Key>>(size)}, _size{0}, _bucket{size}, _mlf{1.0f} {}
+    explicit HashTable(size_t size) : _table{vector<list<Key>>(size)}, _size{0}, _bucket{size}, _mlf{1.0f} {
+        if (!size)
+            throw invalid_argument("Initial size of table canont be zero.");
+    }
 
     bool is_empty() const { return !this->_size; }
+
     size_t size() const { return this->_size; }
 
     void make_empty() {
@@ -95,22 +107,27 @@ public:
         return this->_table.at(index).size();
     };
 
-    size_t bucket(const Key& key) const { return Hash()(key) % this->_bucket; }
+    size_t bucket(const Key& key) const { return Hash{}(key) % this->_bucket; }
 
-    float load_factor() const { return static_cast<float>(this->_size) / this->_bucket; }
+    float load_factor() const { return this->_size / static_cast<float>(this->_bucket); }
 
     float max_load_factor() const { return this->_mlf; }
 
     void max_load_factor(float lf) {
-        if (lf == .0f)
-            throw invalid_argument("new max load factor is 0");
+        if (lf < .0f)
+            throw invalid_argument("new max load factor is negative");
         if (lf != lf)
             throw invalid_argument("new max load factor is not a number");
+        if (lf == numeric_limits<float>::infinity())
+            throw invalid_argument("new max load factor is infinite");
+        this->_mlf = lf;
+        if (this->load_factor() > this->_mlf)
+            this->rehash(this->nextPrime(static_cast<size_t>(this->_size / this->_mlf)));
     }
 
     void rehash(size_t bucket) {
         if (bucket != this->_bucket) {
-            this->_bucket = static_cast<float>(this->_size) / bucket > this->_mlf ? static_cast<size_t>(this->_size / this->_mlf) : bucket;
+            this->_bucket = static_cast<float>(this->_size) / bucket > this->_mlf ? this->nextPrime(static_cast<size_t>(this->_size / this->_mlf)) : bucket;
             vector<Key> temp;
             for (const list<Key>& l : this->_table)
                 for (const Key& key : l)
@@ -136,40 +153,45 @@ public:
                 os << "]\n";
             }
         } else
-            os << "<empty>";
+            os << "<empty>\n";
     }
 
     // ----------------------- Optional ----------------------- //
-    // HashTable(const HashTable& rhs) : _table{vector<list<Key>>(rhs._table)} {}
-    // HashTable(HashTable&& rhs) : _table{vector<list<Key>>()}, _size{0}, _bucket{0} {
-    //     this->_table.swap(rhs._table);
-    //     swap(this->_size, rhs._size);
-    //     swap(this->_bucket, rhs._bucket);
-    // }
+    HashTable(const HashTable& rhs) : _table{vector<list<Key>>(rhs._table)}, _size{rhs._size}, _bucket{rhs._bucket}, _mlf{rhs._mlf} {}
 
-    // ~HashTable() { this->make_empty(); }
+    HashTable(HashTable&& rhs) : _table{vector<list<Key>>()}, _size{0}, _bucket{0}, _mlf{.0f} {
+        this->_table.swap(rhs._table);
+        swap(this->_size, rhs._size);
+        swap(this->_bucket, rhs._bucket);
+    }
 
-    // HashTable& operator=(const HashTable& rhs) {
-    //     if (this != &rhs) {
-    //         this->make_empty();
-    //         this->_table = rhs._table;
-    //         this->_size = rhs._size;
-    //         this->_bucket = rhs._bucket;
-    //     }
-    // }
+    ~HashTable() { this->make_empty(); }
 
-    // HashTable& operator=(HashTable&& rhs) {
-    //     if (this != &rhs) {
-    //         this->make_empty();
-    //         swap(this->_table, rhs._table);
-    //         swap(this->_size, rhs._size);
-    //         swap(this->_bucket, rhs._bucket);
-    //     }
-    // }
+    HashTable& operator=(const HashTable& rhs) {
+        if (this != &rhs) {
+            this->make_empty();
+            this->_table = rhs._table;
+            this->_size = rhs._size;
+            this->_bucket = rhs._bucket;
+        }
 
-    // void insert(Key&& key) {
-    //     Key k;
-    //     swap(k, key);
-    //     this->insert(k);
-    // }
+        return *this;
+    }
+
+    HashTable& operator=(HashTable&& rhs) {
+        if (this != &rhs) {
+            this->make_empty();
+            swap(this->_table, rhs._table);
+            swap(this->_size, rhs._size);
+            swap(this->_bucket, rhs._bucket);
+        }
+
+        return *this;
+    }
+
+    bool insert(Key&& key) {
+        Key k;
+        swap(k, key);
+        return this->insert(k);
+    }
 };
