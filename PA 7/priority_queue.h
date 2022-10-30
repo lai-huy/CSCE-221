@@ -1,22 +1,27 @@
 #pragma once
 
 #include <functional>
-#include <vector>
+#include <deque>
+#include <initializer_list>
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
+#include <vector>
 #include "heap.h"
 
 using std::ostream, std::cout;
+using std::vector, std::less;
 
-template <class Comparable, class Container = std::vector<Comparable>, class Compare = std::less<typename Container::value_type>>
+template <class Comparable, class Container = vector<Comparable>, class Compare = less<typename Container::value_type>>
 class PriorityQueue {
-    Compare compare;
-    Container container;
+    Compare _compare;
+    Container _container;
 
 public:
-    PriorityQueue();
-    explicit PriorityQueue(const Compare& compare);
-    explicit PriorityQueue(const Container& container);
-    PriorityQueue(const Compare& compare, const Container& container);
+    PriorityQueue() : PriorityQueue(Compare(), Container()) {}
+    explicit PriorityQueue(const Compare& compare) : PriorityQueue(compare, Container()) {}
+    explicit PriorityQueue(const Container& container) : PriorityQueue(Compare(), container) {}
+    PriorityQueue(const Compare& compare, const Container& container) : _compare{Compare(compare)}, _container{Container(container)} {}
 
     typename Container::const_reference top() const;
 
@@ -25,13 +30,14 @@ public:
 
     void make_empty();
     void push(const typename Container::value_type& val);
+    void pop();
 
-    void print_queue(ostream& os = cout) cosnt;
+    void print_queue(ostream& os = cout) const;
 
     // ----------------------- Optional ----------------------- //
-    // PriorityQueue(const PriorityQueue&);
-    // ~PriorityQueue();
-    // PriorityQueue& operator=(const PriorityQueue& rhs);
+    PriorityQueue(const PriorityQueue&) = default;
+    ~PriorityQueue() = default;
+    PriorityQueue& operator=(const PriorityQueue& rhs) = default;
 
     // PriorityQueue(const Compare& compare, Container&& container);
     // PriorityQueue(PriorityQueue&& rhs);
