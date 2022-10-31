@@ -75,7 +75,7 @@ private:
      * @return true if the value is found
      * @return false otherwise
      */
-    bool contains(const Node* root, const Comparable& val) const {
+    bool contains(const Node* const& root, const Comparable& val) const {
         if (!root)
             return false;
         if (root->_value == val)
@@ -90,7 +90,7 @@ private:
      * @param os ostream to push to
      * @param trace how much to indent each line
      */
-    void print_tree(const Node* root, ostream& os, size_t trace) const {
+    void print_tree(const Node* const& root, ostream& os, size_t trace) const {
         if (!root) {
             os << "<empty>\n";
             return;
@@ -114,6 +114,7 @@ private:
             root->_left = this->clear(root->_left);
             root->_right = this->clear(root->_right);
             delete root;
+            root = nullptr;
         }
 
         return nullptr;
@@ -125,7 +126,7 @@ private:
      * @param root current subtree to copy into
      * @return Node* a new subtree
      */
-    Node* copy(const Node* root) {
+    Node* copy(const Node* const& root) {
         if (!root)
             return nullptr;
 
@@ -205,6 +206,12 @@ private:
         return curr;
     }
 
+    /**
+     * @brief Find the node whose value is the largest in the subtree
+     *
+     * @param root subtree to search through
+     * @return const Node* a pointer to the largest node
+     */
     const Node* find_max(Node* const& root) const {
         Node* curr = root;
         while (curr && curr->_right)
@@ -295,10 +302,7 @@ public:
      *
      * @param os ostream to push to
      */
-    void print_tree(ostream& os = cout) const {
-        size_t i = 0;
-        this->print_tree(this->_root, os, i);
-    }
+    void print_tree(ostream& os = cout) const { this->print_tree(this->_root, os, 0); }
 
     /**
      * @brief Return the root of the tree
@@ -308,9 +312,19 @@ public:
     const Node* root() const { return this->_root; }
 
     // ----------------------- Optional ----------------------- //
-
+    /**
+     * @brief Construct a new Binary Search Tree object
+     *
+     * @param rhs Binary Search Tree to move from
+     */
     BinarySearchTree(BinarySearchTree&& rhs) : _root{nullptr} { swap(this->_root, rhs._root); }
 
+    /**
+     * @brief Move assignment operator
+     *
+     * @param rhs Binary Search Tree to move from
+     * @return BinarySearchTree& *this
+     */
     BinarySearchTree& operator=(BinarySearchTree&& rhs) {
         if (this != &rhs) {
             this->make_empty();
@@ -320,6 +334,11 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Move insert a comparable into the Binary Search Tree
+     *
+     * @param val comparable to insert
+     */
     void insert(Comparable&& val) {
         Comparable v;
         swap(v, val);

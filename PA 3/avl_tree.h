@@ -447,9 +447,19 @@ public:
     const Node* root() const { return this->_root; }
 
     // ----------------------- Optional ----------------------- //
-
+    /**
+     * @brief Construct a new AVLTree object
+     *
+     * @param rhs AVL Tree to move from
+     */
     AVLTree(AVLTree&& rhs) : _root{nullptr} { swap(this->_root, rhs._root); }
 
+    /**
+     * @brief Move assignment operator
+     *
+     * @param rhs AVL tree to move from
+     * @return AVLTree& *this
+     */
     AVLTree& operator=(AVLTree&& rhs) {
         if (this != &rhs) {
             this->_root = this->clear(this->_root);
@@ -459,6 +469,11 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Move insert a comparable into the avl tree
+     *
+     * @param value Comparable to insert
+     */
     void insert(Comparable&& value) {
         Comparable v;
         swap(v, value);
