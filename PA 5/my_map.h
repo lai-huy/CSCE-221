@@ -16,6 +16,12 @@ template <class K, class V> class Map;
 template <class K, class V> class Map_const_iterator;
 template <class K, class V> class Map_iterator;
 
+/**
+ * @brief Node class for map
+ *
+ * @tparam Key key type of the node
+ * @tparam Value value type of the node
+ */
 template <class Key, class Value>
 class Map_Node {
     friend class Map<Key, Value>;
@@ -54,17 +60,36 @@ public:
      */
     Map_Node(const pair<const Key, Value> p) : _pair{new pair<const Key, Value>(p)}, _height{1}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
 
-    Map_Node(const Map_Node& rhs) : Map_Node(rhs._pair) {}
+    /**
+     * @brief Construct a new Map_Node object
+     *
+     * @param rhs Node to copy from
+     */
+    Map_Node(const Map_Node& rhs) : Map_Node(*rhs._pair) {}
 
+    /**
+     * @brief Copy assignment operator
+     *
+     * @param rhs node to copy from
+     * @return Map_Node& *this
+     */
     Map_Node& operator=(const Map_Node& rhs) {
         if (this != &rhs) {
             this->clear();
-            this->_pair = new pair<const Key, Value>(rhs._pair);
+            this->_pair = new pair<const Key, Value>(*rhs._pair);
         }
+
+        return *this;
     }
 
+    /**
+     * @brief Destroy the Map_Node object
+     */
     ~Map_Node() { this->clear(); }
 
+    /**
+     * @brief Reset the attributes to their default values
+     */
     void clear() {
         if (this->_pair)
             delete this->_pair;
@@ -81,16 +106,38 @@ public:
      */
     bool isLeaf() const { return !this->_left && !this->_right; }
 
+    /**
+     * @brief Determine if this node is a left child
+     *
+     * @return true if this node is a left child
+     * @return false otherwise
+     */
     bool isLeft() const { return this->_parent ? this == this->_parent->_left : false; }
 
+    /**
+     * @brief Determine if this node is a right child
+     *
+     * @return true if this node is a right child
+     * @return false otherwise
+     */
     bool isRight() const { return this->_parent ? this == this->_parent->_right : false; }
 
-    friend ostream& operator<<(ostream& os, const Map_Node& node) {
-        os << node._pair->first << ": " << node._pair->second;
-        return os;
-    }
+    /**
+     * @brief insertion operator
+     *
+     * @param os ostream to print to
+     * @param node node to print
+     * @return ostream& ostream to print to
+     */
+    friend ostream& operator<<(ostream& os, const Map_Node& node) { return os << node._pair->first << ": " << node._pair->second; }
 };
 
+/**
+ * @brief Const iterator for map
+ *
+ * @tparam Key key type
+ * @tparam Value value type
+ */
 template <class Key, class Value>
 class Map_const_iterator {
 private:
@@ -98,32 +145,74 @@ private:
     typedef Map_Node<Key, Value> Node;
     typedef pair<const Key, Value> value_type;
 protected:
+    /**
+     * @brief current Node of the iterator
+     */
     const Node* _node;
 public:
-    Map_const_iterator() : _node{nullptr} {};
-    Map_const_iterator(const Node* node) : _node{node} {}
-    Map_const_iterator(const Map_const_iterator& rhs) : _node{rhs._node} {}
+    /**
+     * @brief Construct a new Map_const_iterator object
+     */
+    Map_const_iterator() : Map_const_iterator(nullptr) {};
 
+    /**
+     * @brief Construct a new Map_const_iterator object
+     *
+     * @param node node to point to
+     */
+    Map_const_iterator(const Node* node) : _node{node} {}
+
+    /**
+     * @brief Construct a new Map_const_iterator object
+     *
+     * @param rhs const iterator to copy from
+     */
+    Map_const_iterator(const Map_const_iterator& rhs) : Map_const_iterator(rhs._node) {}
+
+    /**
+     * @brief Copy assignment operator
+     *
+     * @param rhs const iterator to copy from
+     * @return Map_const_iterator& *this
+     */
     Map_const_iterator& operator=(const Map_const_iterator& rhs) {
         if (this != &rhs)
             this->_node = rhs._node;
         return *this;
     }
 
+    /**
+     * @brief Destroy the Map_const_iterator object
+     */
     virtual ~Map_const_iterator() { this->_node = nullptr; }
 
+    /**
+     * @brief Indirection operator
+     *
+     * @return const value_type& value stored in the node of this iterator
+     */
     const value_type& operator*() const {
         if (!this->_node)
             throw runtime_error("Segmentation Fault");
         return *this->_node->_pair;
     }
 
+    /**
+     * @brief Structure Dereference operator
+     *
+     * @return const value_type* pointer to the value stored in the node of this iterator
+     */
     const value_type* operator->() const {
         if (!this->_node)
             throw runtime_error("Segmentaion Fault");
         return this->_node->_pair;
     }
 
+    /**
+     * @brief Prefix Increment operator
+     *
+     * @return Map_const_iterator& *this
+     */
     Map_const_iterator& operator++() {
         if (!this->_node)
             return *this;
@@ -144,16 +233,42 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Postfix Increment operator
+     *
+     * @return Map_const_iterator iterator before incrementing
+     */
     Map_const_iterator operator++(int) {
         Map_const_iterator iter(*this);
         ++(*this);
         return iter;
     }
 
+    /**
+     * @brief equality operator
+     *
+     * @param lhs first const iterator
+     * @param rhs second const iterator
+     * @return true if the two iterators point to the same node
+     * @return false otherwise
+     */
     friend bool operator==(const Map_const_iterator& lhs, const Map_const_iterator& rhs) { return lhs._node == rhs._node; }
 
+    /**
+     * @brief negated equality operator
+     *
+     * @param lhs first const iterator
+     * @param rhs second const iterator
+     * @return true if the two iteratos point to different nodes
+     * @return false otherwise
+     */
     friend bool operator!=(const Map_const_iterator& lhs, const Map_const_iterator& rhs) { return lhs._node != rhs._node; }
 
+    /**
+     * @brief Convert this iterator to a std::string
+     *
+     * @return string printable version of this
+     */
     virtual string to_string() const {
         stringstream ss;
         ss << "<Map::const_iterator -> [";
@@ -166,6 +281,12 @@ public:
     }
 };
 
+/**
+ * @brief Iterator for map
+ *
+ * @tparam Key key type
+ * @tparam Value value type
+ */
 template <class Key, class Value>
 class Map_iterator : public Map_const_iterator<Key, Value> {
 private:
@@ -174,22 +295,52 @@ private:
     typedef pair<const Key, Value> value_type;
     typedef Map_const_iterator<Key, Value> const_iterator;
 public:
+    /**
+     * @brief Construct a new Map_iterator object
+     */
     Map_iterator() : Map_const_iterator<Key, Value>() {}
+
+    /**
+     * @brief Construct a new Map_iterator object
+     *
+     * @param node node to point to
+     */
     Map_iterator(const Node* node) : Map_const_iterator<Key, Value>(node) {}
+
+    /**
+     * @brief Construct a new Map_iterator object
+     *
+     * @param rhs const iterator to copy from
+     */
     Map_iterator(const Map_const_iterator<Key, Value>& rhs) : Map_const_iterator<Key, Value>(rhs) {}
 
-    value_type operator*() const {
+    /**
+     * @brief
+     *
+     * @return value_type
+     */
+    value_type& operator*() const {
         if (!this->_node)
             throw runtime_error("Segmentation Fault");
         return *this->_node->_pair;
     }
 
-    const value_type* operator->() const {
+    /**
+     * @brief
+     *
+     * @return value_type*
+     */
+    value_type* operator->() const {
         if (!this->_node)
             throw runtime_error("Segmentaion Fault");
-        return this->_node->_pair;
+        return &*this->_node->_pair;
     }
 
+    /**
+     * @brief Prefix increment operator
+     *
+     * @return Map_iterator& iterator after incrementing
+     */
     Map_iterator& operator++() {
         if (!this->_node)
             return *this;
@@ -210,16 +361,42 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Postfix increment operator
+     *
+     * @return Map_iterator iterator before incrementing
+     */
     Map_iterator operator++(int) {
         Map_iterator iter(*this);
         ++(*this);
         return iter;
     }
 
+    /**
+     * @brief equality operator
+     *
+     * @param lhs first iterator
+     * @param rhs second iterator
+     * @return true if the two iteratos point to the same node
+     * @return false otherwise
+     */
     friend bool operator==(const Map_iterator& lhs, const Map_iterator& rhs) { return lhs._node == rhs._node; }
 
+    /**
+     * @brief negated equality operator
+     *
+     * @param lhs first iterator
+     * @param rhs second iterator
+     * @return true if the two iteratos point to different nodes
+     * @return false otherwise
+     */
     friend bool operator!=(const Map_iterator& lhs, const Map_iterator& rhs) { return lhs._node != rhs._node; }
 
+    /**
+     * @brief Converts this iterator to a std::string
+     *
+     * @return string printable version of this
+     */
     string to_string() const override {
         stringstream ss;
         ss << "<Map::iterator -> [";
@@ -237,7 +414,14 @@ class Map {
 private:
     typedef Map_Node<Key, Value> Node;
 
+    /**
+     * @brief root of the tree
+     */
     Node* _root;
+
+    /**
+     * @brief Number of nodes in the tree
+     */
     size_t _size;
 
     template <typename Type>
@@ -417,9 +601,29 @@ public:
     typedef Map_const_iterator<Key, Value> const_iterator;
     typedef Map_iterator<Key, Value> iterator;
 
+    /**
+     * @brief Construct a new Map object
+     */
     Map() : _root{nullptr}, _size{0} {}
+
+    /**
+     * @brief Construct a new Map object
+     *
+     * @param rhs map to copy from
+     */
     Map(const Map& rhs) : _root{this->copy(rhs._root)}, _size{rhs._size} {}
+
+    /**
+     * @brief Destroy the Map object
+     */
     ~Map() { this->make_empty(); }
+
+    /**
+     * @brief Copy assignment operator
+     *
+     * @param rhs
+     * @return Map&
+     */
     Map& operator=(const Map& rhs) {
         if (this != &rhs) {
             this->make_empty();
@@ -430,6 +634,12 @@ public:
         return *this;
     }
 
+    /**
+     * @brief
+     *
+     * @param key
+     * @return Value&
+     */
     Value& at(const Key& key) {
         const Node* node = this->search(this->_root, key);
         if (node)
@@ -439,6 +649,12 @@ public:
         throw out_of_range(ss.str());
     }
 
+    /**
+     * @brief
+     *
+     * @param key
+     * @return const Value&
+     */
     const Value& at(const Key& key) const {
         const Node* node = this->_size(this->_root, key);
         if (node)
@@ -449,6 +665,12 @@ public:
         throw out_of_range(ss.str());
     }
 
+    /**
+     * @brief
+     *
+     * @param key
+     * @return Value&
+     */
     Value& operator[](const Key& key) {
         const_iterator index = this->find(key);
         if (index._node)
@@ -459,6 +681,12 @@ public:
         }
     }
 
+    /**
+     * @brief
+     *
+     * @param key
+     * @return const Value&
+     */
     const Value& operator[](const Key& key) const {
         Node* node = this->search(this->_root, key);
         if (node)
@@ -469,19 +697,63 @@ public:
         }
     }
 
+    /**
+     * @brief
+     *
+     * @return iterator
+     */
     iterator begin() { return iterator(this->find_min(this->_root)); }
+
+    /**
+     * @brief
+     *
+     * @return const_iterator
+     */
     const_iterator begin() const { return const_iterator(this->find_min(this->_root)); }
+
+    /**
+     * @brief
+     *
+     * @return iterator
+     */
     iterator end() { return iterator(nullptr); }
+
+    /**
+     * @brief
+     *
+     * @return const_iterator
+     */
     const_iterator end() const { return const_iterator(nullptr); }
 
+    /**
+     * @brief
+     *
+     * @return true
+     * @return false
+     */
     bool is_empty() const { return !this->_size; }
+
+    /**
+     * @brief
+     *
+     * @return size_t
+     */
     size_t size() const { return this->_size; }
 
+    /**
+     * @brief Prevents memory leaks by deallocating the map
+     */
     void make_empty() {
         this->_root = this->clear(this->_root);
         this->_size = 0;
     }
 
+    /**
+     * @brief
+     *
+     * @param _pair
+     * @return pair<iterator, bool>
+     */
     pair<iterator, bool> insert(const pair<const Key, Value>& _pair) {
         const Node* node = this->search(this->_root, _pair.first);
         if (node)
@@ -489,9 +761,16 @@ public:
 
         this->_root = this->insert(this->_root, _pair);
         ++this->_size;
-        return pair(iterator(this->search(this->_root, _pair.first)), true);
+        return pair(this->find(_pair.first), true);
     }
 
+    /**
+     * @brief
+     *
+     * @param hint
+     * @param _pair
+     * @return iterator
+     */
     iterator insert(const_iterator hint, const pair<const Key, Value>& _pair) {
         const Node* node = this->search(this->_root, _pair.first);
         if (node)
@@ -503,9 +782,15 @@ public:
         else
             this->insert(const_cast<Node*&>(location), _pair);
         ++this->_size;
-        return iterator(this->search(this->_root, _pair.first));
+        return this->find(_pair.first);
     }
 
+    /**
+     * @brief
+     *
+     * @param key
+     * @return size_t
+     */
     size_t remove(const Key& key) {
         if (!this->contains(key))
             return 0;
@@ -514,6 +799,12 @@ public:
         return 1;
     }
 
+    /**
+     * @brief
+     *
+     * @param index
+     * @return iterator
+     */
     iterator remove(const_iterator index) {
         if (!this->_root)
             return iterator(nullptr);
@@ -535,12 +826,36 @@ public:
         return it._node ? this->find(value) : it;
     }
 
+    /**
+     * @brief
+     *
+     * @param key
+     * @return true
+     * @return false
+     */
     bool contains(const Key& key) const { return this->search(this->_root, key); }
 
+    /**
+     * @brief
+     *
+     * @param key
+     * @return iterator
+     */
     iterator find(const Key& key) { return iterator(this->search(this->_root, key)); }
 
+    /**
+     * @brief
+     *
+     * @param key
+     * @return const_iterator
+     */
     const_iterator find(const Key& key) const { return const_iterator(this->search(this->_root, key)); }
 
+    /**
+     * @brief
+     *
+     * @param os
+     */
     void print_map(ostream& os = cout) const {
         if (this->_size) {
             os << "{";
@@ -557,18 +872,36 @@ public:
     }
 
     // ----------------------- Optional ----------------------- //
+    /**
+     * @brief Construct a new Map object
+     *
+     * @param rhs map to move from
+     */
     Map(Map&& rhs) : Map() { swap(this->_root, rhs._root); swap(this->_size, rhs._size); }
 
+    /**
+     * @brief Move assignment operator
+     *
+     * @param rhs map to move from
+     * @return Map& *this
+     */
     Map& operator=(Map&& rhs) {
         if (this != &rhs) {
             this->make_empty();
             swap(this->_root, rhs._root);
             swap(this->_root, rhs._size);
         }
+
+        return *this;
     }
 
     // pair<iterator, bool> insert(pair<const Key, Value>&& pair);
     // iterator insert(const_iterator hint, pair<const Key, Value>&& pair);
+    /**
+     * @brief print the internal tree
+     *
+     * @param os ostream to print to
+     */
     void print_tree(ostream& os = cout) const {
         if (this->_size)
             this->print_tree(this->_root, os, 0);
@@ -578,6 +911,4 @@ public:
 };
 
 template <class Key, class Value>
-ostream& operator<<(ostream& os, const Map_const_iterator<Key, Value>& iter) {
-    return os << iter.to_string();
-}
+ostream& operator<<(ostream& os, const Map_const_iterator<Key, Value>& iter) { return os << iter.to_string(); }
