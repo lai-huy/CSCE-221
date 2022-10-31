@@ -642,6 +642,7 @@ private:
             temp = temp->right;
         return temp;
     }
+
 public:
     /**
      * @brief Construct a new Red Black Tree object
