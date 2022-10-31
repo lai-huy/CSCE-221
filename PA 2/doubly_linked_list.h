@@ -7,6 +7,7 @@
 
 using std::out_of_range;
 using std::cout;
+using std::swap;
 
 /**
  * @brief A Doubly Linked List
@@ -16,16 +17,57 @@ using std::cout;
 template <typename Object>
 class DoublyLinkedList {
 public:
+    /**
+     * @brief indivudual node for the linked list
+     */
     struct Node {
+        /**
+         * @brief Objected stored in the node
+         */
         Object _value;
+
+        /**
+         * @brief a pointer to the next node in the linked list
+         */
         Node* _next;
+
+        /**
+         * @brief a pointer to the previous node in the linked list
+         */
         Node* _prev;
 
+        /**
+         * @brief Construct a new Node object
+         */
         Node() : _value{Object()}, _next{nullptr}, _prev{nullptr} {}
-        Node(const Node& rhs) : _value{rhs._value}, _next{nullptr}, _prev{nullptr} {}
+
+        /**
+         * @brief Construct a new Node object
+         *
+         * @param obj object to set as the value
+         */
         Node(const Object& obj) : _value{obj}, _next{nullptr}, _prev{nullptr} {}
+
+        /**
+         * @brief Construct a new Node object
+         *
+         * @param rhs node to copy from
+         */
+        Node(const Node& rhs) : Node(rhs._value) {}
+
+        /**
+         * @brief Destroy the Node object
+         */
+        ~Node() {}
+
+        /**
+         * @brief Copy assignment operator
+         *
+         * @param rhs node to copy from
+         * @return Node& *this
+         */
         Node& operator=(const Node& rhs) {
-            if (this != rhs)
+            if (this != &rhs)
                 this->_value = rhs._value;
             return *this;
         }
@@ -91,7 +133,7 @@ public:
             next = next->_next;
         }
 
-        this->_size = rhs.size();
+        this->_size = rhs._size;
         this->_tail = curr;
         this->_tail->_prev = prev;
     }
@@ -314,18 +356,18 @@ public:
         friend bool operator!=(const iterator& lhs, const iterator& rhs) { return lhs._node != rhs._node; }
     };
 
-    DoublyLinkedList(DoublyLinkedList&& rhs) : _size{rhs._size}, _head{rhs._head}, _tail{rhs._tail} {
-        rhs._size = 0;
-        rhs._head = nullptr;
-        rhs._tail = nullptr;
+    DoublyLinkedList(DoublyLinkedList&& rhs) : DoublyLinkedList() {
+        swap(this->_size, rhs._size);
+        swap(this->_head, rhs._head);
+        swap(this->_tail, rhs._tail);
     }
 
     DoublyLinkedList& operator=(DoublyLinkedList&& rhs) {
         if (this != &rhs) {
             this->clear();
-            std::swap(this->_size, rhs._size);
-            std::swap(this->_head, rhs._head);
-            std::swap(this->_tail, rhs._tail);
+            swap(this->_size, rhs._size);
+            swap(this->_head, rhs._head);
+            swap(this->_tail, rhs._tail);
         }
 
         return *this;
@@ -333,7 +375,7 @@ public:
 
     void insert(size_t index, Object&& value) {
         Object o;
-        std::swap(o, value);
+        swap(o, value);
         this->insert(index, o);
     }
 

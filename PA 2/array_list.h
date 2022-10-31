@@ -7,6 +7,7 @@
 #include <utility>
 
 using std::out_of_range;
+using std::swap;
 
 /**
  * @brief Array List
@@ -31,6 +32,9 @@ private:
      */
     Object* _data;
 
+    /**
+     * @brief Resets attributes to their default values
+     */
     void clear() {
         if (this->_data)
             delete[] this->_data;
@@ -40,6 +44,11 @@ private:
         this->_data = nullptr;
     }
 
+    /**
+     * @brief Copies from another arraylist into this arraylist
+     *
+     * @param rhs ArraList to copy from
+     */
     void copy(const ArrayList& rhs) {
         if (!rhs.size())
             return;
@@ -75,16 +84,12 @@ public:
      *
      * @param rhs ArrayList to copy from
      */
-    ArrayList(const ArrayList& rhs) : _size{rhs._size}, _capacity{rhs._capacity}, _data{nullptr} {
-        this->copy(rhs);
-    }
+    ArrayList(const ArrayList& rhs) : _size{rhs._size}, _capacity{rhs._capacity}, _data{nullptr} { this->copy(rhs); }
 
     /**
      * @brief Destroy the Array List object
      */
-    ~ArrayList() {
-        this->clear();
-    }
+    ~ArrayList() { this->clear(); }
 
     /**
      * @brief Copy assignment operator
@@ -106,27 +111,21 @@ public:
      *
      * @return size_t this->_size;
      */
-    size_t size() const {
-        return this->_size;
-    }
+    size_t size() const { return this->_size; }
 
     /**
      * @brief Determine the capacity of the Array List
      *
      * @return size_t this->_size;
      */
-    size_t capacity() const {
-        return this->_capacity;
-    }
+    size_t capacity() const { return this->_capacity; }
 
     /**
      * @brief Return the internal pointer
      *
      * @return Object* this->_data;
      */
-    Object* data() const {
-        return this->_data;
-    }
+    Object* data() const { return this->_data; }
 
     /**
      * @brief Access a specific element in this array list
@@ -194,15 +193,16 @@ public:
         --this->_size;
     }
 
+    // ----------------------- Optional ----------------------- //
     /**
      * @brief Construct a new Array List object
      *
      * @param rhs ArrayList to copy from
      */
-    ArrayList(ArrayList&& rhs) : _size{rhs._size}, _capacity{rhs._capacity}, _data{rhs._data} {
-        rhs._size = 0;
-        rhs._capacity = 0;
-        rhs._data = nullptr;
+    ArrayList(ArrayList&& rhs) : ArrayList() {
+        swap(this->_size, rhs._size);
+        swap(this->_capacity, rhs._capacity);
+        swap(this->_data, rhs._data);
     }
 
     /**
@@ -213,16 +213,13 @@ public:
      */
     ArrayList& operator=(ArrayList&& rhs) {
         if (this != &rhs) {
-            delete[] this->_data;
-
-            this->_size = rhs._size;
-            this->_capacity = rhs._capacity;
-            this->_data = rhs._data;
-
-            rhs._size = 0;
-            rhs._capacity = 1;
-            rhs._data = nullptr;
+            this->clear();
+            swap(this->_size, rhs._size);
+            swap(this->_capacity, rhs._capacity);
+            swap(this->_data, rhs._data);
         }
+
+        return *this;
     }
 
     /**
@@ -232,35 +229,10 @@ public:
      * @param obj object to insert
      */
     void insert(size_t index, Object&& obj) {
-        if (index > this->_size)
-            throw out_of_range("Index out of bounds");
-
-        if (this->_size + 1 > this->_capacity) {
-            this->_capacity *= 2;
-            Object* temp = this->_data;
-            this->_data = new Object[this->_capacity]{};
-
-            for (size_t i = 0; i < this->_capacity; ++i)
-                this->_data[i] = i < this->_size ? temp[i] : Object();
-
-            delete[] temp;
-        }
-
-        if (!this->_data)
-            this->_data = new Object[this->_capacity]{};
-
-        if (!index) {
-            for (size_t i = this->_size - 1; i < this->_size; --i)
-                this->_data[i + 1] = this->_data[i];
-        } else if (this->_size)
-            for (size_t i = this->_size - 1; i >= index; --i)
-                this->_data[i + 1] = this->_data[i];
-
-        ++this->_size;
-        this->_data[index] = obj;
+        Object o{};
+        swap(o, obj);
+        this->insert(index, o);
     }
-
-    // ----------------------- Optional ----------------------- //
 
     /**
      * @brief returns a constant reference to the element at the specified index
