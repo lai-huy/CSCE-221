@@ -712,7 +712,6 @@ bool test_random() {
     for (const int& num : nums) {
         // cout << "Remove " << num << "\n";
         rbt.remove(num);
-
     }
 
     END_TEST;

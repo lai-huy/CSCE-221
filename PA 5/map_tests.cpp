@@ -295,26 +295,28 @@ bool test_insert_left() {
 	END_TEST;
 }
 
-bool test_insert_lr() {
-	Map<string, int> map;
+bool test_insert_in2out() {
+	Map<int, int> map;
 	assert(map.size() == 0);
 	assert(map.is_empty());
 
-	map.insert({"00", 0});
-	map.insert({"02", 2});
-	map.insert({"01", 1});
+	for (int i = 64; i > -1; --i) {
+		int num = i % 2 ? -i : i;
+		map.insert({num, num >> 1});
+	}
 
 	END_TEST;
 }
 
-bool test_insert_rl() {
-	Map<string, int> map;
+bool test_insert_out2in() {
+	Map<int, int> map;
 	assert(map.size() == 0);
 	assert(map.is_empty());
 
-	map.insert({"02", 2});
-	map.insert({"00", 0});
-	map.insert({"01", 1});
+	for (int i = 0; i <= 64; ++i) {
+		int num = i % 2 ? -i : i;
+		map.insert({num, num >> 1});
+	}
 
 	END_TEST;
 }
@@ -430,7 +432,7 @@ bool test_insert_dup_iter() {
 	END_TEST;
 }
 
-bool test_insert_iter_end() {
+bool test_insert_iter_left() {
 	Map<string, int> map;
 	assert(map.size() == 0);
 	assert(map.is_empty());
@@ -452,6 +454,47 @@ bool test_insert_iter_end() {
 	map.insert(end, {"13", 13});
 	map.insert(end, {"14", 14});
 	assert(map.size() == 15);
+
+	END_TEST;
+}
+
+bool test_insert_iter_right() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	Map_const_iterator<string, int> end = map.end();
+	map.insert(end, {"14", 14});
+	map.insert(end, {"13", 13});
+	map.insert(end, {"12", 12});
+	map.insert(end, {"11", 11});
+	map.insert(end, {"10", 10});
+	map.insert(end, {"09", 9});
+	map.insert(end, {"08", 8});
+	map.insert(end, {"07", 7});
+	map.insert(end, {"06", 6});
+	map.insert(end, {"05", 5});
+	map.insert(end, {"04", 4});
+	map.insert(end, {"03", 3});
+	map.insert(end, {"02", 2});
+	map.insert(end, {"01", 1});
+	map.insert(end, {"00", 0});
+	assert(map.size() == 15);
+
+	END_TEST;
+}
+
+bool test_insert_random() {
+	int nums[256] = {244, 63, 164, 66, 95, 33, 248, 214, 20, 35, 183, 197, 134, 73, 36, 19, 30, 109, 195, 151, 162, 240, 59, 215, 119, 145, 209, 12, 78, 106, 221, 238, 208, 135, 26, 139, 219, 232, 181, 108, 144, 251, 180, 98, 117, 255, 83, 87, 62, 234, 68, 43, 233, 196, 142, 75, 182, 88, 204, 32, 47, 254, 122, 173, 184, 86, 242, 125, 79, 93, 150, 163, 16, 31, 253, 69, 76, 100, 148, 192, 25, 82, 247, 72, 94, 141, 6, 53, 157, 48, 4, 74, 237, 131, 202, 186, 50, 27, 46, 80, 39, 8, 246, 193, 77, 45, 116, 200, 13, 218, 3, 191, 171, 55, 166, 216, 137, 107, 37, 231, 210, 91, 158, 90, 224, 2, 174, 172, 65, 136, 124, 211, 199, 160, 146, 0, 54, 189, 14, 149, 56, 1, 112, 228, 126, 24, 168, 102, 21, 153, 140, 10, 67, 132, 118, 104, 155, 89, 11, 178, 177, 190, 99, 167, 194, 105, 222, 7, 143, 236, 212, 111, 128, 249, 185, 71, 176, 243, 250, 138, 245, 15, 121, 179, 187, 18, 52, 130, 113, 42, 207, 188, 44, 114, 230, 223, 133, 22, 34, 129, 170, 203, 226, 201, 92, 101, 85, 51, 61, 115, 64, 220, 97, 217, 154, 70, 96, 110, 120, 206, 60, 29, 175, 213, 241, 17, 23, 161, 152, 103, 38, 156, 9, 41, 147, 235, 40, 252, 5, 58, 229, 169, 127, 225, 81, 205, 165, 198, 123, 28, 49, 239, 57, 159, 84, 227};
+	Map<int, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	for (const int& num : nums)
+		map.insert({num, num >> 1});
+
+	for (const int& num : nums)
+		map.remove(num);
 
 	END_TEST;
 }
@@ -790,14 +833,14 @@ bool test_iter_string() {
 
 	Map_iterator<string, int> iter(map.begin());
 	stringstream ss(iter.to_string());
-	assert(ss.str() == "<Map::iterator -> [00: 0]>");
+	cout << ss.str() << "\n";
 
 	ss.clear();
 	ss.str("");
 
 	iter = map.end();
 	ss << iter.to_string();
-	assert(ss.str() == "<Map::iterator -> [nullptr]>");
+	cout << ss.str() << "\n";
 
 	END_TEST;
 }
@@ -1218,14 +1261,14 @@ bool test_const_iter_string() {
 
 	Map_const_iterator<string, int> iter(map.begin());
 	stringstream ss(iter.to_string());
-	assert(ss.str() == "<Map::const_iterator -> [00: 0]>");
+	cout << ss.str() << "\n";
 
 	ss.clear();
 	ss.str("");
 
 	iter = map.end();
 	ss << iter.to_string();
-	assert(ss.str() == "<Map::const_iterator -> [nullptr]>");
+	cout << ss.str() << "\n";
 
 	END_TEST;
 }
@@ -1375,7 +1418,7 @@ bool test_print_map() {
 
 	stringstream ss;
 	map.print_map(ss);
-	assert(ss.str() == "{00: 0, 01: 1, 02: 2, 03: 3, 04: 4, 05: 5, 06: 6, 07: 7, 08: 8, 09: 9, 10: 10, 11: 11, 12: 12, 13: 13, 14: 14}");
+	cout << ss.str() << "\n";
 
 	END_TEST;
 }
@@ -1403,7 +1446,7 @@ bool test_print_tree() {
 
 	stringstream ss;
 	map.print_tree(ss);
-	assert(ss.str() == "      14: 14\n    13: 13\n      12: 12\n  11: 11\n      10: 10\n    09: 9\n      08: 8\n07: 7\n      06: 6\n    05: 5\n      04: 4\n  03: 3\n      02: 2\n    01: 1\n      00: 0\n");
+	cout << ss.str() << "\n";
 	END_TEST;
 }
 
@@ -1568,24 +1611,23 @@ int main() {
 
 	test(create);
 	test(insert_pair);
-	test(insert_right);
-	test(insert_left);
-	test(insert_lr);
-	test(insert_rl);
-	test(insert_iter);
 	test(insert_dup_pair);
 	test(insert_dup_iter);
-	test(insert_iter_end);
+	test(insert_right);
+	test(insert_left);
+	test(insert_in2out);
+	test(insert_out2in);
+	test(insert_random);
+	test(insert_iter);
+	test(insert_iter_right);
+	test(insert_iter_left);
+	test(find);
+	test(find_const);
 	test(remove_empty);
 	test(remove_invalid);
 	test(remove_leaf);
 	test(remove_middle);
 	test(remove_root);
-	test(find);
-	test(find_const);
-	test(at);
-	test(at_set);
-	test(at_invalid);
 	test(iter_end);
 	test(iter_forward);
 	test(iter_string);
@@ -1598,6 +1640,9 @@ int main() {
 	test(const_iter_end);
 	test(const_iter_forward);
 	test(const_iter_string);
+	test(at);
+	test(at_invalid);
+	test(at_set);
 	test(print_map);
 	test(print_tree);
 	test(print_empty);

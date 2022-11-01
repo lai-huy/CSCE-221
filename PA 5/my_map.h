@@ -17,126 +17,173 @@ template <class K, class V> class Map_const_iterator;
 template <class K, class V> class Map_iterator;
 
 /**
+ * @brief Color of each node
+ */
+enum Color { RED, BLACK };
+
+/**
  * @brief Node class for map
  *
  * @tparam Key key type of the node
- * @tparam Value value type of the node
+ * @tparam Value key type of the node
  */
 template <class Key, class Value>
 class Map_Node {
     friend class Map<Key, Value>;
     friend class Map_const_iterator<Key, Value>;
     friend class Map_iterator<Key, Value>;
-private:
+    typedef Map_Node<Key, Value> Node;
+
     /**
-     * @brief Value stored in this node
+     * @brief pointer to a Key, Value pair stored in the node
      */
     pair<const Key, Value>* _pair;
 
     /**
-     * @brief Largets distance to a leaf node
+     * @brief Color of this node
      */
-    size_t _height;
+    Color _color;
 
     /**
-     * @brief A pointer to the left node
+     * @brief a pointer to the left child of this node
      */
-    Map_Node* _left;
+    Node* _left;
 
     /**
-     * @brief A pointer to the right node
+     * @brief a pointer to the right child of this node
+     *
      */
-    Map_Node* _right;
+    Node* _right;
 
     /**
-     * @brief A pointer to the parent of this node
+     * @brief a pointer to the parent of this node
      */
-    Map_Node* _parent;
+    Node* _parent;
 public:
     /**
      * @brief Construct a new Node object
      *
-     * @param value value to put in this node
-     */
-    Map_Node(const pair<const Key, Value> p) : _pair{new pair<const Key, Value>(p)}, _height{1}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
+     * @param rhs comparable to set as the key
+    */
+    Map_Node(const pair<const Key, Value>& rhs) : Map_Node(rhs, Color::RED) {}
 
     /**
-     * @brief Construct a new Map_Node object
+     * @brief Construct a new Node object
      *
-     * @param rhs Node to copy from
+     * @param rhs comparable to set as the key
+     * @param color Color to set as the color
      */
-    Map_Node(const Map_Node& rhs) : Map_Node(*rhs._pair) {}
+    Map_Node(const pair<const Key, Value>& rhs, const Color& color) : _pair{new pair<const Key, Value>(rhs)}, _color{color}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
 
     /**
-     * @brief Copy assignment operator
+     * @brief Determines the sibling of this node
      *
-     * @param rhs node to copy from
-     * @return Map_Node& *this
+     * @return Node* a pointer to the sibling of this node
      */
-    Map_Node& operator=(const Map_Node& rhs) {
-        if (this != &rhs) {
-            this->clear();
-            this->_pair = new pair<const Key, Value>(*rhs._pair);
-        }
-
-        return *this;
+    Node* sibling() const {
+        if (!this->_parent)
+            return nullptr;
+        return this->isRight() ? this->_parent->_left : this->_parent->_right;
     }
 
     /**
-     * @brief Destroy the Map_Node object
-     */
-    ~Map_Node() { this->clear(); }
-
-    /**
-     * @brief Reset the attributes to their default values
-     */
-    void clear() {
-        if (this->_pair)
-            delete this->_pair;
-        this->_parent = nullptr;
-        this->_pair = nullptr;
-        this->_height = 0;
-    }
-
-    /**
-     * @brief Determine if this node is a leaf.
+     * @brief Determine if both children are a specified color
      *
-     * @return true if this node is a leaf
+     * @param color the color of both children
+     * @return true if both children are a specified color
      * @return false otherwise
      */
-    bool isLeaf() const { return !this->_left && !this->_right; }
+    bool hasColorChildren(const Color& color) const {
+        return (!this->_left && !this->_right && color == Color::BLACK) ||
+            ((this->_left && this->_left->_color == color) && (this->_right && this->_right->_color == color));
+    }
 
     /**
-     * @brief Determine if this node is a left child
+     * @brief Determines if the left nibling is red
      *
-     * @return true if this node is a left child
+     * @return true if left nibling is red
+     * @return false otherwise
+     */
+    bool leftNiblingRed() const {
+        Node* sibling = this->sibling();
+        return sibling && sibling->_left && sibling->_left->_color == Color::RED;
+    }
+
+    /**
+     * @brief Determines if the right nibling if red
+     *
+     * @return true if the right nibling if red
+     * @return false otherwise
+     */
+    bool rightNiblingRed() const {
+        Node* sibling = this->sibling();
+        return sibling && sibling->_right && sibling->_right->_color == Color::RED;
+    }
+
+    /**
+     * @brief Determine if this is a left child
+     *
+     * @return true if this is a left child
      * @return false otherwise
      */
     bool isLeft() const { return this->_parent ? this == this->_parent->_left : false; }
 
     /**
-     * @brief Determine if this node is a right child
+     * @brief Determine if this is a right child
      *
-     * @return true if this node is a right child
+     * @return true if this is a right child
      * @return false otherwise
      */
     bool isRight() const { return this->_parent ? this == this->_parent->_right : false; }
 
     /**
-     * @brief insertion operator
+     * @brief Counts the number of children this node has
      *
-     * @param os ostream to print to
-     * @param node node to print
-     * @return ostream& ostream to print to
+     * @return size_t the number of children this node has
      */
-    friend ostream& operator<<(ostream& os, const Map_Node& node) { return os << node._pair->first << ": " << node._pair->second; }
+    size_t countChildren() const {
+        size_t count = 0;
+        if (this->_left)
+            ++count;
+        if (this->_right)
+            ++count;
+        return count;
+    }
+
+    /**
+     * @brief Converts this node to a std::string
+     *
+     * @return string printable version of this
+     */
+    string to_string() const {
+        stringstream ss;
+        switch (this->_color) {
+        case Color::RED:
+            ss << "🟥 ";
+            break;
+        default:
+            ss << "⬛ ";
+            break;
+        }
+        ss << this->_pair->first << ": " << this->_pair->second;
+        return ss.str();
+    }
+
+    /**
+     * @brief Insertion operator
+     *
+     * @param os ostream to insert to
+     * @param node node to print
+     * @return ostream& ostream to insert to
+     */
+    friend ostream& operator<<(ostream& os, const Node& node) { return os << node.to_string(); }
 };
 
 /**
  * @brief Const iterator for map
  *
  * @tparam Key key type
- * @tparam Value value type
+ * @tparam Value key type
  */
 template <class Key, class Value>
 class Map_const_iterator {
@@ -148,7 +195,7 @@ protected:
     /**
      * @brief current Node of the iterator
      */
-    const Node* _node;
+    Node* _node;
 public:
     /**
      * @brief Construct a new Map_const_iterator object
@@ -160,7 +207,7 @@ public:
      *
      * @param node node to point to
      */
-    Map_const_iterator(const Node* node) : _node{node} {}
+    Map_const_iterator(Node* const& node) : _node{node} {}
 
     /**
      * @brief Construct a new Map_const_iterator object
@@ -189,7 +236,7 @@ public:
     /**
      * @brief Indirection operator
      *
-     * @return const value_type& value stored in the node of this iterator
+     * @return const value_type& key stored in the node of this iterator
      */
     const value_type& operator*() const {
         if (!this->_node)
@@ -200,7 +247,7 @@ public:
     /**
      * @brief Structure Dereference operator
      *
-     * @return const value_type* pointer to the value stored in the node of this iterator
+     * @return const value_type* pointer to the key stored in the node of this iterator
      */
     const value_type* operator->() const {
         if (!this->_node)
@@ -285,7 +332,7 @@ public:
  * @brief Iterator for map
  *
  * @tparam Key key type
- * @tparam Value value type
+ * @tparam Value key type
  */
 template <class Key, class Value>
 class Map_iterator : public Map_const_iterator<Key, Value> {
@@ -305,7 +352,7 @@ public:
      *
      * @param node node to point to
      */
-    Map_iterator(const Node* node) : Map_const_iterator<Key, Value>(node) {}
+    Map_iterator(Node* const& node) : Map_const_iterator<Key, Value>(node) {}
 
     /**
      * @brief Construct a new Map_iterator object
@@ -333,7 +380,7 @@ public:
     value_type* operator->() const {
         if (!this->_node)
             throw runtime_error("Segmentaion Fault");
-        return &*this->_node->_pair;
+        return this->_node->_pair;
     }
 
     /**
@@ -411,51 +458,455 @@ public:
 
 template <class Key, class Value>
 class Map {
-private:
+public:
     typedef Map_Node<Key, Value> Node;
+    typedef Map_const_iterator<Key, Value> const_iterator;
+    typedef Map_iterator<Key, Value> iterator;
+    typedef pair<const Key, Value> value_type;
 
+private:
+private:
     /**
-     * @brief root of the tree
+     * @brief Root of the 🟥⬛🌲
      */
     Node* _root;
 
     /**
-     * @brief Number of nodes in the tree
+     * @brief size of the set
      */
     size_t _size;
 
-    template <typename Type>
-    Type max(const Type& a, const Type& b) const { return a > b ? a : b; }
-
-    long height(Node* const& root) const { return !root ? 0l : root->_height; }
-
-    long balace_factor(Node* const& root) const {
-        return !root ?
-            0l :
-            this->height(root->_left) - this->height(root->_right);
+    /**
+     * @brief Determine if a subtree contains a key
+     *
+     * @param root subtree's root
+     * @param key key to search for
+     * @return true if the subtree contains the key
+     * @return false otherwise
+     */
+    bool contains(Node* const& root, const Key& key) {
+        if (!root)
+            return false;
+        if (root->_pair->first == key)
+            return true;
+        return this->contains(root->_pair->first > key ? root->_left : root->_right, key);
     }
 
-    size_t calcHeight(Node* const& root) const {
-        return 1 + this->max<long>(this->height(root->_left), this->height(root->_right));
-    }
-
-    Node*& clear(Node*& node) {
-        if (node) {
-            node->_left = this->clear(node->_left);
-            node->_right = this->clear(node->_right);
-            node->clear();
-            delete node;
+    /**
+     * @brief Inserts a key into a subtree
+     *
+     * @param node subtree's root
+     * @param pair key to insert
+     */
+    void insert(Node* node, const value_type& pair) {
+        if (!node) {
+            node = new Node(pair);
+            if (!this->_root)
+                this->_root = node;
+            return;
         }
 
-        node = nullptr;
-        return node;
+        if (node->_pair->first == pair.first)
+            return;
+
+        if (node->_pair->first > pair.first) {
+            if (!node->_left) {
+                node->_left = new Node(pair);
+                node->_left->_parent = node;
+
+                if (node->_color == Color::BLACK)
+                    return;
+                if (!node->sibling()) {
+                    if (node->isLeft()) {
+                        node = this->rotateRight(node->_parent);
+                        node->_color = Color::BLACK;
+                        node->_left->_color = node->_right->_color = Color::RED;
+                        return;
+                    } else {
+                        node = this->rotateRight(node);
+                        node = this->rotateLeft(node->_parent);
+                        node->_color = Color::BLACK;
+                        node->_left->_color = node->_right->_color = Color::RED;
+                        return;
+                    }
+                }
+            }
+        } else if (node->_pair->first < pair.first) {
+            if (!node->_right) {
+                node->_right = new Node(pair);
+                node->_right->_parent = node;
+                if (node->_color == Color::BLACK)
+                    return;
+                if (!node->sibling()) {
+                    if (node->isRight()) {
+                        node = this->rotateLeft(node->_parent);
+                        node->_color = Color::BLACK;
+                        node->_right->_color = node->_left->_color = Color::RED;
+                        return;
+                    } else {
+                        node = this->rotateLeft(node);
+                        node = this->rotateRight(node->_parent);
+                        node->_color = Color::BLACK;
+                        node->_right->_color = node->_left->_color = Color::RED;
+                        return;
+                    }
+                }
+            }
+        }
+
+        if (node->hasColorChildren(Color::RED)) {
+            node->_color = Color::RED;
+            node->_right->_color = node->_left->_color = Color::BLACK;
+
+            if (node->_parent && node->_parent->_color == Color::RED) {
+                if (node->isLeft() && node->_parent->isLeft()) {
+                    node = this->rotateRight(node->_parent->_parent);
+                    node->_color = Color::BLACK;
+                    node->_left->_color = node->_right->_color = Color::RED;
+                    this->insert(node, pair);
+                    return;
+                }
+                if (node->isRight() && node->_parent->isRight()) {
+                    node = this->rotateLeft(node->_parent->_parent);
+                    node->_color = Color::BLACK;
+                    node->_left->_color = node->_right->_color = Color::RED;
+                    this->insert(node, pair);
+                    return;
+                }
+                if (node->isRight() && node->_parent->isLeft()) {
+                    node = this->rotateLeft(node->_parent);
+                    node = this->rotateRight(node->_parent);
+                    node->_color = Color::BLACK;
+                    node->_left->_color = node->_right->_color = Color::RED;
+                    this->insert(node, pair);
+                    return;
+                }
+                if (node->isLeft() && node->_parent->isRight()) {
+                    node = this->rotateRight(node->_parent);
+                    node = this->rotateLeft(node->_parent);
+                    node->_color = Color::BLACK;
+                    node->_left->_color = node->_right->_color = Color::RED;
+                    this->insert(node, pair);
+                    return;
+                }
+            }
+        }
+        this->insert(node->_pair->first > pair.first ? node->_left : node->_right, pair);
     }
 
-    Node* copy(Node* const& root) {
+    /**
+     * @brief Remove a key from a subtree
+     *
+     * @param node subtree's root
+     * @param key key to remove
+     */
+    void remove(Node* node, const Key& key) {
+        if (node == this->_root && node->_pair->first == key && !node->countChildren()) {
+            delete node;
+            node = this->_root = nullptr;
+        } else if (node && node->hasColorChildren(Color::BLACK) && node == this->_root) {
+            this->_root->_color = Color::RED;
+            this->decideDelete(this->_root, key);
+        } else
+            this->setUpRemoval(node, key);
+        if (this->_root)
+            this->_root->_color = Color::BLACK;
+    }
+
+    /**
+     * @brief Determine which direction to traverse when deleting
+     *
+     * @param node subtree's root
+     * @param key key to remove
+     */
+    void decideDelete(Node* node, const Key& key) {
+        if (!node)
+            return;
+        if (node->_pair->first > key && !node->_left)
+            return;
+        if (node->_pair->first < key && !node->_right)
+            return;
+        if (node->_pair->first == key)
+            this->removeNode(node);
+        else
+            this->setUpRedLeaf(node->_pair->first > key ? node->_left : node->_right, key);
+    }
+
+    /**
+     * @brief Set up Red Leaf for removal
+     *
+     * @param node subtree's root
+     * @param key key to remove
+     */
+    void setUpRedLeaf(Node* node, const Key& key) {
+        if (!node) return;
+        if (node->hasColorChildren(Color::BLACK))
+            this->setUpRotations(node, key);
+        else
+            this->setUpRemoval(node, key);
+    }
+
+    /**
+     * @brief Set up rotations on the way down
+     *
+     * @param node subtree's root
+     * @param key key to remove
+     */
+    void setUpRotations(Node* node, const Key& key) {
+        Node* sibling = node->sibling();
+        if (sibling && sibling->hasColorChildren(Color::BLACK)) {
+            this->recolorChildren(node, key);
+        } else if ((node->isLeft() && node->leftNiblingRed()) || (node->isRight() && node->rightNiblingRed())) {
+            this->rotateNiblingRed(node, key);
+        } else
+            this->rotateNiblingBlack(node, key);
+    }
+
+    /**
+     * @brief Recolor node and its sibling to RED
+     *
+     * @param node node to recolor
+     * @param key key to remove
+     */
+    void recolorChildren(Node* node, const Key& key) {
+        node->_color = node->sibling()->_color = Color::RED;
+        if (node->_parent)
+            node->_parent->_color = Color::BLACK;
+        this->decideDelete(node, key);
+    }
+
+    /**
+     * @brief Rotates if the node's nibling is red
+     *
+     * @param node subtree's root
+     * @param key key to remove
+     */
+    void rotateNiblingRed(Node* node, const Key& key) {
+        if (node->isLeft()) {
+            node = this->rotateRight(node->sibling());
+            node = this->rotateLeft(node->_parent);
+            node->_left->_color = Color::BLACK;
+            node->_left->_left->_color = Color::RED;
+            node = node->_left->_left;
+        } else {
+            node = this->rotateLeft(node->sibling());
+            node = this->rotateRight(node->_parent);
+            node->_right->_color = Color::BLACK;
+            node->_right->_right->_color = Color::RED;
+            node = node->_right->_right;
+        }
+        this->decideDelete(node, key);
+    }
+
+    /**
+     * @brief Rotates if the node's nibling is black
+     *
+     * @param node subtree's root
+     * @param key key to remove
+     */
+    void rotateNiblingBlack(Node* node, const Key& key) {
+        if (node->isLeft()) {
+            node = this->rotateLeft(node->_parent);
+            node->_color = Color::RED;
+            node->_right->_color = node->_left->_color = Color::BLACK;
+            node = node->_left->_left;
+        } else {
+            node = this->rotateRight(node->_parent);
+            node->_color = Color::RED;
+            node->_right->_color = node->_left->_color = Color::BLACK;
+            node = node->_right->_right;
+        }
+        node->_color = Color::RED;
+        this->decideDelete(node, key);
+    }
+
+    /**
+     * @brief Set
+     *
+     * @param node
+     * @param key
+     */
+    void setUpRemoval(Node* node, const Key& key) {
+        if (key == node->_pair->first)
+            this->removeNode(node);
+        else {
+            node = node->_pair->first > key ? node->_left : node->_right;
+            if (!node) return;
+            else if (node->_color == Color::RED)
+                this->decideDelete(node, key);
+            else
+                this->rotateRemoval(node, key);
+        }
+    }
+
+    /**
+     * @brief Rotate on the way down
+     *
+     * @param node subtree's root
+     * @param key key to remove
+     */
+    void rotateRemoval(Node* node, const Key& key) {
+        if (node->isLeft()) {
+            node = this->rotateLeft(node->_parent);
+            node->_left->_color = Color::RED;
+            node->_color = Color::BLACK;
+            node = node->_left->_left;
+        } else {
+            node = this->rotateRight(node->_parent);
+            node->_right->_color = Color::RED;
+            node->_color = Color::BLACK;
+            node = node->_right->_right;
+        }
+        this->setUpRedLeaf(node, key);
+    }
+
+    /**
+     * @brief Removes the node from the tree
+     *
+     * @param node a pointer to the node to remove
+     */
+    void removeNode(Node* node) {
+        if (!node)
+            return;
+        switch (node->countChildren()) {
+        case 0:
+            if (node->isLeft())
+                node->_parent->_left = nullptr;
+            if (node->isRight())
+                node->_parent->_right = nullptr;
+            if (node != this->_root) {
+                delete node;
+                node = nullptr;
+            }
+            return;
+        case 1:
+            if (node->isLeft()) {
+                if (node->_left) {
+                    node->_parent->_left = node->_left;
+                    node->_left->_parent = node->_parent;
+                    node->_left->_color = Color::BLACK;
+                } else if (node->_right) {
+                    node->_parent->_left = node->_right;
+                    node->_right->_parent = node->_parent;
+                    node->_right->_color = Color::BLACK;
+                }
+            } else if (node->isRight()) {
+                if (node->_right) {
+                    node->_parent->_right = node->_right;
+                    node->_right->_parent = node->_parent;
+                    node->_right->_color = Color::BLACK;
+                } else if (node->_left) {
+                    node->_parent->_right = node->_left;
+                    node->_left->_parent = node->_parent;
+                    node->_left->_color = Color::BLACK;
+                }
+            } else if (node == this->_root)
+                this->_root = node->_left ? node->_left : node->_right;
+            delete node;
+            node = nullptr;
+            return;
+        default:
+            Node* temp = this->find_min(node->_right);
+            value_type* key = temp->_pair;
+            if (node->_color == Color::RED) {
+                node->_pair = temp->_pair;
+                this->setUpRedLeaf(node->_right, node->_pair->first);
+            } else {
+                this->setUpRemoval(node, temp->_pair->first);
+                node->_pair = key;
+            }
+            return;
+        }
+    }
+
+    /**
+     * @brief print a subtree to an ostream
+     *
+     * @param root subtree's root
+     * @param os ostream to print to
+     * @param lvl depth of root
+     */
+    void print_tree(const Node* const& root, ostream& os, size_t lvl) const {
+        if (root->_right)
+            this->print_tree(root->_right, os, lvl + 1);
+        os << string(lvl << 2, ' ') << *root << "\n";
+        if (root->_left)
+            this->print_tree(root->_left, os, lvl + 1);
+    }
+
+    /**
+     * @brief Rotate left arround a node
+     *
+     * @param root node to rotate arround
+     * @return Node* a pointer to the replacement node
+     */
+    Node* rotateLeft(Node* root) {
+        Node* temp = root->_right;
+        root->_right = temp->_left;
+        if (temp->_left)
+            temp->_left->_parent = root;
+        temp->_parent = root->_parent;
+        if (!root->_parent)
+            this->_root = temp;
+        else if (root->isRight())
+            root->_parent->_right = temp;
+        else if (root->isLeft())
+            root->_parent->_left = temp;
+        temp->_left = root;
+        root->_parent = temp;
+        return temp;
+    }
+
+    /**
+     * @brief Rotate right arround a node
+     *
+     * @param root node to rotate arround
+     * @return Node* a pointer to the replacement node
+     */
+    Node* rotateRight(Node* root) {
+        Node* temp = root->_left;
+        root->_left = temp->_right;
+        if (temp->_right)
+            temp->_right->_parent = root;
+        temp->_parent = root->_parent;
+        if (!root->_parent)
+            this->_root = temp;
+        else if (root->isLeft())
+            root->_parent->_left = temp;
+        else if (root->isRight())
+            root->_parent->_right = temp;
+        temp->_right = root;
+        root->_parent = temp;
+        return temp;
+    }
+
+    /**
+     * @brief Prevents memory leaks by dellocating
+     *
+     * @param root current subtree being cleared
+     * @return Node* nullptr
+     */
+    Node* clear(Node*& root) {
+        if (root) {
+            root->_left = this->clear(root->_left);
+            root->_right = this->clear(root->_right);
+            root->_parent = nullptr;
+            delete root;
+        }
+
+        return root = nullptr;
+    }
+
+    /**
+     * @brief Copy a subtree into this tree's subtree
+     *
+     * @param root subtree to copy from
+     * @return Node* new subtree
+     */
+    Node* copy(const Node* const& root) {
         if (!root)
             return nullptr;
-
-        Node* node = new Node(*root->_pair);
+        Node* node = new Node(*root->_pair, root->_color);
         node->_left = this->copy(root->_left);
         if (node->_left)
             node->_left->_parent = node;
@@ -465,142 +916,41 @@ private:
         return node;
     }
 
-    Node* balance(Node*& root) {
-        root->_height = 1 + this->max(this->height(root->_left), this->height(root->_right));
-        long bf = this->balace_factor(root);
-        if (bf > 1)
-            root = this->balace_factor(root->_left) > 0 ? ll_rotate(root) : lr_rotate(root);
-        else if (bf < -1)
-            root = this->balace_factor(root->_right) > 0 ? rl_rotate(root) : rr_rotate(root);
-        return root;
-    }
-
-    Node* rr_rotate(Node*& root) {
-        Node* temp = root->_right;
-        root->_right = temp->_left;
-        if (root->_right)
-            root->_right->_parent = root;
-        temp->_left = root;
-        if (temp->_left)
-            temp->_left->_parent = temp;
-
-        root->_height = this->calcHeight(root);
-        temp->_height = this->calcHeight(temp);
-
+    /**
+     * @brief Finds the minimum node of a subtree
+     *
+     * @param node subtree's root
+     * @return Node* a pointer to the node with the minimum key
+     */
+    Node* find_min(Node* const& node) const {
+        Node* temp = node;
+        while (temp && temp->_left)
+            temp = temp->_left;
         return temp;
     }
 
-    Node* ll_rotate(Node*& root) {
-        Node* temp = root->_left;
-        root->_left = temp->_right;
-        if (root->_left)
-            root->_left->_parent = root;
-        temp->_right = root;
-        if (temp->_right)
-            temp->_right->_parent = temp;
-
-        root->_height = this->calcHeight(root);
-        temp->_height = this->calcHeight(temp);
-
+    /**
+     * @brief Finds the maximum node of a subtree
+     *
+     * @param node subtree's root
+     * @return Node* a poitner to the node with the maximum key
+     */
+    Node* find_max(Node* const& node) const {
+        Node* temp = node;
+        while (temp && temp->_right)
+            temp = temp->_right;
         return temp;
     }
 
-    Node* lr_rotate(Node*& root) {
-        Node* temp = root->_left;
-        root->_left = this->rr_rotate(temp);
-        root->_left->_parent = root;
-        return this->ll_rotate(root);
-    }
-
-    Node* rl_rotate(Node*& root) {
-        Node* temp = root->_right;
-        root->_right = this->ll_rotate(temp);
-        root->_right->_parent = root;
-        return this->rr_rotate(root);
-    }
-
-    Node* insert(Node*& root, const pair<const Key, Value>& _pair) {
-        if (!root)
-            return new Node(_pair);
-        if (_pair.first < root->_pair->first) {
-            root->_left = this->insert(root->_left, _pair);
-            root->_left->_parent = root;
-        } else if (_pair.first > root->_pair->first) {
-            root->_right = this->insert(root->_right, _pair);
-            root->_right->_parent = root;
-        }
-
-        root = this->balance(root);
-        return root;
-    }
-
-    Node* remove(Node*& root, const Key& _key) {
-        if (_key < root->_pair->first) {
-            root->_left = this->remove(root->_left, _key);
-            if (root->_left)
-                root->_left->_parent = root;
-        } else if (_key > root->_pair->first) {
-            root->_right = this->remove(root->_right, _key);
-            if (root->_right)
-                root->_right->_parent = root;
-        } else {
-            Node* temp = nullptr;
-            if (root->isLeaf()) {
-                root->clear();
-                delete root;
-                root = nullptr;
-                return root;
-            } else if (!root->_left) {
-                temp = root->_right;
-                root->clear();
-                delete root;
-                root = nullptr;
-                return temp;
-            } else if (!root->_right) {
-                temp = root->_left;
-                root->clear();
-                delete root;
-                root = nullptr;
-                return temp;
-            } else {
-                temp = this->find_min(root->_right);
-                swap(root->_pair, temp->_pair);
-                root->_right = this->remove(root->_right, temp->_pair->first);
-                if (root->_right)
-                    root->_right->_parent = root;
-            }
-        }
-
-        root = this->balance(root);
-        return root;
-    }
-
-    Node* search(Node* const& root, const Key& _key) const {
+    Node* search(Node* const& root, const Key& key) const {
         if (!root)
             return nullptr;
-        if (root->_pair->first == _key)
+        if (root->_pair->first == key)
             return root;
-        return this->search(_key < root->_pair->first ? root->_left : root->_right, _key);
+        return this->search(root->_pair->first < key ? root->_right : root->_left, key);
     }
 
-    Node* find_min(Node* const& root) const {
-        Node* node = root;
-        while (node && node->_left)
-            node = node->_left;
-        return node;
-    }
-
-    void print_tree(Node* const& root, ostream& os, size_t trace) const {
-        if (root->_right)
-            this->print_tree(root->_right, os, trace + 1);
-        os << string(trace * 2, ' ') << *root << "\n";
-        if (root->_left)
-            this->print_tree(root->_left, os, trace + 1);
-    }
 public:
-    typedef Map_const_iterator<Key, Value> const_iterator;
-    typedef Map_iterator<Key, Value> iterator;
-
     /**
      * @brief Construct a new Map object
      */
@@ -641,7 +991,7 @@ public:
      * @return Value&
      */
     Value& at(const Key& key) {
-        const Node* node = this->search(this->_root, key);
+        Node* node = this->search(this->_root, key);
         if (node)
             return node->_pair->second;
         stringstream ss;
@@ -656,7 +1006,7 @@ public:
      * @return const Value&
      */
     const Value& at(const Key& key) const {
-        const Node* node = this->_size(this->_root, key);
+        Node* node = this->_size(this->_root, key);
         if (node)
             return node->_pair->second;
         stringstream ss;
@@ -755,11 +1105,12 @@ public:
      * @return pair<iterator, bool>
      */
     pair<iterator, bool> insert(const pair<const Key, Value>& _pair) {
-        const Node* node = this->search(this->_root, _pair.first);
+        Node* node = this->search(this->_root, _pair.first);
         if (node)
             return pair(iterator(node), false);
 
-        this->_root = this->insert(this->_root, _pair);
+        this->insert(this->_root, _pair);
+        this->_root->_color = Color::BLACK;
         ++this->_size;
         return pair(this->find(_pair.first), true);
     }
@@ -772,15 +1123,16 @@ public:
      * @return iterator
      */
     iterator insert(const_iterator hint, const pair<const Key, Value>& _pair) {
-        const Node* node = this->search(this->_root, _pair.first);
+        Node* node = this->search(this->_root, _pair.first);
         if (node)
             return iterator(node);
 
         const Node* location = hint._node;
         if (!this->_root || !location)
-            this->_root = this->insert(this->_root, _pair);
+            this->insert(this->_root, _pair);
         else
             this->insert(const_cast<Node*&>(location), _pair);
+        this->_root->_color = Color::BLACK;
         ++this->_size;
         return this->find(_pair.first);
     }
@@ -794,7 +1146,11 @@ public:
     size_t remove(const Key& key) {
         if (!this->contains(key))
             return 0;
-        this->_root = this->remove(this->_root, key);
+        this->remove(this->_root, key);
+        if (this->_root) {
+            this->_root->_parent = nullptr;
+            this->_root->_color = Color::BLACK;
+        }
         --this->_size;
         return 1;
     }
@@ -813,17 +1169,19 @@ public:
 
         const_iterator temp = index;
         iterator it = (++temp)._node;
-        Key value;
+        Key key;
         try {
-            value = temp->first;
+            key = temp->first;
         } catch (const runtime_error& err) {
             it = nullptr;
         }
-        this->_root = this->remove(this->_root, index->first);
-        if (this->_root)
+        this->remove(this->_root, index->first);
+        if (this->_root) {
             this->_root->_parent = nullptr;
+            this->_root->_color = Color::BLACK;
+        }
         --this->_size;
-        return it._node ? this->find(value) : it;
+        return it._node ? this->find(key) : it;
     }
 
     /**

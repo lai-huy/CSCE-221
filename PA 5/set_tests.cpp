@@ -90,7 +90,7 @@ bool test_insert_pair() {
 	assert(set.size() == 0);
 	assert(set.is_empty());
 
-	pair<Set_iterator<int>, bool> p(set.insert(7));
+	pair<Set<int>::iterator, bool> p = set.insert(7);
 	{
 		assert(set.size() == 1);
 		assert(*p.first == 7);
@@ -249,28 +249,41 @@ bool test_insert_left() {
 	END_TEST;
 }
 
-bool test_insert_rl() {
+bool test_insert_in2out() {
 	Set<int> set;
 	assert(set.size() == 0);
 	assert(set.is_empty());
 
-	expect_no_throw(set.insert(0));
-	expect_no_throw(set.insert(2));
-	expect_no_throw(set.insert(1));
-	assert(set.size() == 3);
+	for (int i = 0; i <= 64; ++i) {
+		int num = i % 2 ? -i : i;
+		set.insert(num);
+	}
 
 	END_TEST;
 }
 
-bool test_insert_lr() {
+bool test_insert_out2in() {
 	Set<int> set;
 	assert(set.size() == 0);
 	assert(set.is_empty());
 
-	expect_no_throw(set.insert(2));
-	expect_no_throw(set.insert(0));
-	expect_no_throw(set.insert(1));
-	assert(set.size() == 3);
+	for (int i = 64; i > -1; --i) {
+		int num = i % 2 ? -i : i;
+		set.insert(num);
+	}
+
+	END_TEST;
+}
+
+bool test_insert_random() {
+	int nums[256] = {244, 63, 164, 66, 95, 33, 248, 214, 20, 35, 183, 197, 134, 73, 36, 19, 30, 109, 195, 151, 162, 240, 59, 215, 119, 145, 209, 12, 78, 106, 221, 238, 208, 135, 26, 139, 219, 232, 181, 108, 144, 251, 180, 98, 117, 255, 83, 87, 62, 234, 68, 43, 233, 196, 142, 75, 182, 88, 204, 32, 47, 254, 122, 173, 184, 86, 242, 125, 79, 93, 150, 163, 16, 31, 253, 69, 76, 100, 148, 192, 25, 82, 247, 72, 94, 141, 6, 53, 157, 48, 4, 74, 237, 131, 202, 186, 50, 27, 46, 80, 39, 8, 246, 193, 77, 45, 116, 200, 13, 218, 3, 191, 171, 55, 166, 216, 137, 107, 37, 231, 210, 91, 158, 90, 224, 2, 174, 172, 65, 136, 124, 211, 199, 160, 146, 0, 54, 189, 14, 149, 56, 1, 112, 228, 126, 24, 168, 102, 21, 153, 140, 10, 67, 132, 118, 104, 155, 89, 11, 178, 177, 190, 99, 167, 194, 105, 222, 7, 143, 236, 212, 111, 128, 249, 185, 71, 176, 243, 250, 138, 245, 15, 121, 179, 187, 18, 52, 130, 113, 42, 207, 188, 44, 114, 230, 223, 133, 22, 34, 129, 170, 203, 226, 201, 92, 101, 85, 51, 61, 115, 64, 220, 97, 217, 154, 70, 96, 110, 120, 206, 60, 29, 175, 213, 241, 17, 23, 161, 152, 103, 38, 156, 9, 41, 147, 235, 40, 252, 5, 58, 229, 169, 127, 225, 81, 205, 165, 198, 123, 28, 49, 239, 57, 159, 84, 227};
+	Set<int> set;
+
+	for (const int& num : nums)
+		set.insert(num);
+
+	for (const int& num : nums)
+		set.remove(num);
 
 	END_TEST;
 }
@@ -358,7 +371,7 @@ bool test_insert_iter() {
 	END_TEST;
 }
 
-bool test_insert_iter_end() {
+bool test_insert_iter_right() {
 	Set<int> set;
 	assert(set.size() == 0);
 	assert(set.is_empty());
@@ -379,6 +392,32 @@ bool test_insert_iter_end() {
 	set.insert(end, 12);
 	set.insert(end, 13);
 	set.insert(end, 14);
+	assert(set.size() == 15);
+
+	END_TEST;
+}
+
+bool test_insert_iter_left() {
+	Set<int> set;
+	assert(set.size() == 0);
+	assert(set.is_empty());
+
+	Set_const_iterator<int> end = set.end();
+	set.insert(end, 14);
+	set.insert(end, 13);
+	set.insert(end, 12);
+	set.insert(end, 11);
+	set.insert(end, 10);
+	set.insert(end, 9);
+	set.insert(end, 8);
+	set.insert(end, 7);
+	set.insert(end, 6);
+	set.insert(end, 5);
+	set.insert(end, 4);
+	set.insert(end, 3);
+	set.insert(end, 2);
+	set.insert(end, 1);
+	set.insert(end, 0);
 	assert(set.size() == 15);
 
 	END_TEST;
@@ -1220,7 +1259,7 @@ bool test_print_tree() {
 
 	stringstream ss;
 	expect_no_throw(set.print_tree(ss));
-	assert(ss.str() == "      14\n    13\n      12\n  11\n      10\n    9\n      8\n7\n      6\n    5\n      4\n  3\n      2\n    1\n      0\n");
+	cout << ss.str() << "\n";
 
 	END_TEST;
 }
@@ -1415,21 +1454,23 @@ int main() {
 
 	test(create);
 	test(insert_pair);
-	test(insert_right);
-	test(insert_left);
-	test(insert_lr);
-	test(insert_rl);
 	test(insert_dup_pair);
 	test(insert_dup_iter);
+	test(insert_right);
+	test(insert_left);
+	test(insert_in2out);
+	test(insert_out2in);
+	test(insert_random);
 	test(insert_iter);
-	test(insert_iter_end);
+	test(insert_iter_right);
+	test(insert_iter_left);
+	test(find);
+	test(find_const);
 	test(remove_empty);
 	test(remove_invalid);
 	test(remove_leaf);
 	test(remove_middle);
 	test(remove_root);
-	test(find);
-	test(find_const);
 	test(iter_end);
 	test(iter_forward);
 	test(iter_string);
