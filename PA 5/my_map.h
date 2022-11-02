@@ -76,6 +76,34 @@ public:
     Map_Node(const pair<const Key, Value>& rhs, const Color& color) : _pair{new pair<const Key, Value>(rhs)}, _color{color}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
 
     /**
+     * @brief Construct a new Map_Node object
+     *
+     * @param rhs Node to copy from
+     */
+    Map_Node(const Map_Node& rhs) : Map_Node(*rhs._pair, rhs._color) {}
+
+    /**
+     * @brief Destroy the Map_Node object
+     */
+    ~Map_Node() { this->clear(); }
+
+    /**
+     * @brief Copy assignment operator
+     *
+     * @param rhs
+     * @return Map_Node&
+     */
+    Map_Node& operator=(const Map_Node& rhs) {
+        if (this != &rhs) {
+            this->clear();
+            this->_pair = new pair<const Key, Value>(*rhs._pair);
+            this->_color = rhs._color;
+        }
+
+        return *this;
+    }
+
+    /**
      * @brief Determines the sibling of this node
      *
      * @return Node* a pointer to the sibling of this node
@@ -177,6 +205,16 @@ public:
      * @return ostream& ostream to insert to
      */
     friend ostream& operator<<(ostream& os, const Node& node) { return os << node.to_string(); }
+
+    /**
+     * @brief Sets the attributes of this node to their default values
+     */
+    void clear() {
+        if (this->_pair)
+            delete this->_pair;
+        this->_parent = nullptr;
+        this->_pair = nullptr;
+    }
 };
 
 /**
@@ -362,6 +400,11 @@ public:
     Map_iterator(const Map_const_iterator<Key, Value>& rhs) : Map_const_iterator<Key, Value>(rhs) {}
 
     /**
+     * @brief Destroy the Map_iterator object
+     */
+    ~Map_iterator() { this->_node = nullptr; }
+
+    /**
      * @brief
      *
      * @return value_type
@@ -506,9 +549,6 @@ private:
             return;
         }
 
-        if (node->_pair->first == pair.first)
-            return;
-
         if (node->_pair->first > pair.first) {
             if (!node->_left) {
                 node->_left = new Node(pair);
@@ -602,6 +642,7 @@ private:
      */
     void remove(Node* node, const Key& key) {
         if (node == this->_root && node->_pair->first == key && !node->countChildren()) {
+            node->clear();
             delete node;
             node = this->_root = nullptr;
         } else if (node && node->hasColorChildren(Color::BLACK) && node == this->_root) {
@@ -609,8 +650,6 @@ private:
             this->decideDelete(this->_root, key);
         } else
             this->setUpRemoval(node, key);
-        if (this->_root)
-            this->_root->_color = Color::BLACK;
     }
 
     /**
@@ -620,12 +659,6 @@ private:
      * @param key key to remove
      */
     void decideDelete(Node* node, const Key& key) {
-        if (!node)
-            return;
-        if (node->_pair->first > key && !node->_left)
-            return;
-        if (node->_pair->first < key && !node->_right)
-            return;
         if (node->_pair->first == key)
             this->removeNode(node);
         else
@@ -766,8 +799,6 @@ private:
      * @param node a pointer to the node to remove
      */
     void removeNode(Node* node) {
-        if (!node)
-            return;
         switch (node->countChildren()) {
         case 0:
             if (node->isLeft())
@@ -775,6 +806,7 @@ private:
             if (node->isRight())
                 node->_parent->_right = nullptr;
             if (node != this->_root) {
+                node->clear();
                 delete node;
                 node = nullptr;
             }
@@ -802,18 +834,21 @@ private:
                 }
             } else if (node == this->_root)
                 this->_root = node->_left ? node->_left : node->_right;
+            node->clear();
             delete node;
             node = nullptr;
             return;
         default:
             Node* temp = this->find_min(node->_right);
-            value_type* key = temp->_pair;
+            value_type* value = new value_type(*temp->_pair);
             if (node->_color == Color::RED) {
-                node->_pair = temp->_pair;
+                delete node->_pair;
+                node->_pair = value;
                 this->setUpRedLeaf(node->_right, node->_pair->first);
             } else {
                 this->setUpRemoval(node, temp->_pair->first);
-                node->_pair = key;
+                delete node->_pair;
+                node->_pair = value;
             }
             return;
         }
@@ -890,7 +925,7 @@ private:
         if (root) {
             root->_left = this->clear(root->_left);
             root->_right = this->clear(root->_right);
-            root->_parent = nullptr;
+            root->clear();
             delete root;
         }
 
@@ -1006,7 +1041,7 @@ public:
      * @return const Value&
      */
     const Value& at(const Key& key) const {
-        Node* node = this->_size(this->_root, key);
+        Node* node = this->search(this->_root, key);
         if (node)
             return node->_pair->second;
         stringstream ss;
@@ -1026,7 +1061,7 @@ public:
         if (index._node)
             return this->at(key);
         else {
-            iterator it = this->insert(index, {key, Value()});
+            this->insert(index, {key, Value()});
             return this->at(key);
         }
     }
@@ -1038,11 +1073,11 @@ public:
      * @return const Value&
      */
     const Value& operator[](const Key& key) const {
-        Node* node = this->search(this->_root, key);
-        if (node)
-            return this->at(key);
+        const_iterator index = this->find(key);
+        if (index._node)
+            return index->second;
         else {
-            pair<iterator, bool> p(this->insert({key, Value()}));
+            this->insert(index, {key, Value()});
             return this->at(key);
         }
     }
@@ -1111,6 +1146,7 @@ public:
 
         this->insert(this->_root, _pair);
         this->_root->_color = Color::BLACK;
+        this->_root->_parent = nullptr;
         ++this->_size;
         return pair(this->find(_pair.first), true);
     }
@@ -1127,12 +1163,12 @@ public:
         if (node)
             return iterator(node);
 
-        const Node* location = hint._node;
-        if (!this->_root || !location)
+        if (!this->_root || !hint._node)
             this->insert(this->_root, _pair);
         else
-            this->insert(const_cast<Node*&>(location), _pair);
+            this->insert(hint._node, _pair);
         this->_root->_color = Color::BLACK;
+        this->_root->_parent = nullptr;
         ++this->_size;
         return this->find(_pair.first);
     }
@@ -1144,7 +1180,7 @@ public:
      * @return size_t
      */
     size_t remove(const Key& key) {
-        if (!this->contains(key))
+        if (!this->search(this->_root, key))
             return 0;
         this->remove(this->_root, key);
         if (this->_root) {
@@ -1166,6 +1202,8 @@ public:
             return iterator(nullptr);
         if (!index._node)
             throw invalid_argument("Iterator does not point anywhere");
+        if (!this->search(this->_root, index->first))
+            throw invalid_argument("Iterator points to an invalid node");
 
         const_iterator temp = index;
         iterator it = (++temp)._node;

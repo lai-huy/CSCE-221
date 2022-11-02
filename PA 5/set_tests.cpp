@@ -1449,6 +1449,13 @@ bool test_self_assignment() {
 	END_TEST;
 }
 
+bool test_node() {
+	Set_Node<int> node(INT32_MAX, Color::RED);
+	assert(node.sibling() == nullptr);
+
+	END_TEST;
+}
+
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
@@ -1491,6 +1498,7 @@ int main() {
 	test(copy_oper);
 	test(copy_oper_empty);
 	test(self_assignment);
+	test(node);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";

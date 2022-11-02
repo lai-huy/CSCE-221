@@ -261,7 +261,6 @@ public:
     Set_const_iterator& operator++() {
         if (!this->_node)
             return *this;
-        Comparable value = this->_node->_value;
         if (this->_node->_right) {
             this->_node = this->_node->_right;
             while (this->_node->_left)
@@ -275,9 +274,6 @@ public:
 
             this->_node = parent;
         }
-
-        if (this->_node && value > this->_node->_value)
-            this->_node = nullptr;
 
         return *this;
     }
@@ -645,12 +641,6 @@ private:
      * @param value value to remove
      */
     void decideDelete(Node* node, const Comparable& value) {
-        if (!node)
-            return;
-        if (node->_value > value && !node->_left)
-            return;
-        if (node->_value < value && !node->_right)
-            return;
         if (node->_value == value)
             this->removeNode(node);
         else
@@ -791,8 +781,6 @@ private:
      * @param node a pointer to the node to remove
      */
     void removeNode(Node* node) {
-        if (!node)
-            return;
         switch (node->countChildren()) {
         case 0:
             if (node->isLeft())

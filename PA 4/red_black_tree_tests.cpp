@@ -363,15 +363,21 @@ bool test_remove_root() {
     rbt.insert(12);
     rbt.insert(14);
 
-
     rbt.remove(7);
-
-
     rbt.remove(8);
-
-
     rbt.remove(9);
-
+    rbt.remove(10);
+    rbt.remove(11);
+    rbt.remove(12);
+    rbt.remove(3);
+    rbt.remove(4);
+    rbt.remove(5);
+    rbt.remove(6);
+    rbt.remove(13);
+    rbt.remove(2);
+    rbt.remove(1);
+    rbt.remove(14);
+    rbt.remove(0);
 
     END_TEST;
 }
