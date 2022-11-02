@@ -1070,22 +1070,22 @@ bool test_iter_remove_root() {
 	assert(iter->first == "13");
 	assert(iter->second == 13);
 
-	index = map.find("05");
-	iter = map.remove(index);
-	assert(iter->first == "06");
-	assert(iter->second == 6);
-
-	index = map.find("06");
-	iter = map.remove(index);
-	assert(iter->first == "13");
-	assert(iter->second == 13);
-
 	index = map.find("03");
 	iter = map.remove(index);
 	assert(iter->first == "04");
 	assert(iter->second == 4);
 
 	index = map.find("04");
+	iter = map.remove(index);
+	assert(iter->first == "05");
+	assert(iter->second == 5);
+
+	index = map.find("05");
+	iter = map.remove(index);
+	assert(iter->first == "06");
+	assert(iter->second == 6);
+
+	index = map.find("06");
 	iter = map.remove(index);
 	assert(iter->first == "13");
 	assert(iter->second == 13);
@@ -1168,6 +1168,47 @@ bool test_iter_remove_invalid() {
 	Map_Node<string, int> node({"15", 15}, Color::RED);
 	index = &node;
 	expect_throw(map.remove(index), invalid_argument);
+
+	END_TEST;
+}
+
+bool test_iter_remove_begin() {
+	Map<string, int> map;
+	assert(map.size() == 0);
+	assert(map.is_empty());
+
+	map.insert({"07", 7});
+	map.insert({"03", 3});
+	map.insert({"11", 11});
+	map.insert({"01", 1});
+	map.insert({"05", 5});
+	map.insert({"09", 9});
+	map.insert({"13", 13});
+	map.insert({"00", 0});
+	map.insert({"02", 2});
+	map.insert({"04", 4});
+	map.insert({"06", 6});
+	map.insert({"08", 8});
+	map.insert({"10", 10});
+	map.insert({"12", 12});
+	map.insert({"14", 14});
+	assert(map.size() == 15);
+
+	map.remove(map.begin());
+	map.remove(map.begin());
+	map.remove(map.begin());
+	map.remove(map.begin());
+	map.remove(map.begin());
+	map.remove(map.begin());
+	map.remove(map.begin());
+	map.remove(map.begin());
+	map.remove(map.begin());
+	map.remove(map.begin());
+	map.remove(map.begin());
+	map.remove(map.begin());
+	map.remove(map.begin());
+	map.remove(map.begin());
+	map.remove(map.begin());
 
 	END_TEST;
 }
@@ -1648,6 +1689,7 @@ int main() {
 	test(iter_remove_root);
 	test(iter_remove_empty);
 	test(iter_remove_invalid);
+	test(iter_remove_begin);
 	test(const_iter_end);
 	test(const_iter_forward);
 	test(const_iter_string);
