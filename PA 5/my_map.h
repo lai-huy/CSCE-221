@@ -961,6 +961,13 @@ private:
         return temp;
     }
 
+    /**
+     * @brief Find a value in a subtree
+     *
+     * @param root subtree's root
+     * @param key key to find in the map
+     * @return Node* the node found
+     */
     Node* search(Node* const& root, const Key& key) const {
         if (!root)
             return nullptr;
@@ -990,8 +997,8 @@ public:
     /**
      * @brief Copy assignment operator
      *
-     * @param rhs
-     * @return Map&
+     * @param rhs Map to copy from
+     * @return Map& *this
      */
     Map& operator=(const Map& rhs) {
         if (this != &rhs) {
@@ -1004,10 +1011,10 @@ public:
     }
 
     /**
-     * @brief
+     * @brief access a value at the specified key
      *
-     * @param key
-     * @return Value&
+     * @param key Key to get the value of
+     * @return Value& value of the key
      */
     Value& at(const Key& key) {
         Node* node = this->search(this->_root, key);
@@ -1019,10 +1026,10 @@ public:
     }
 
     /**
-     * @brief
+     * @brief access a value at the specified key
      *
-     * @param key
-     * @return const Value&
+     * @param key Key to get the value of
+     * @return const Value& value of key
      */
     const Value& at(const Key& key) const {
         Node* node = this->search(this->_root, key);
@@ -1035,10 +1042,10 @@ public:
     }
 
     /**
-     * @brief
+     * @brief access or insert a specified value at a specified key
      *
-     * @param key
-     * @return Value&
+     * @param key key to access or insert
+     * @return Value& value
      */
     Value& operator[](const Key& key) {
         const_iterator index = this->find(key);
@@ -1051,10 +1058,10 @@ public:
     }
 
     /**
-     * @brief
+     * @brief access or insert a specified value at a specified key
      *
-     * @param key
-     * @return const Value&
+     * @param key key to access or insert
+     * @return const Value& value
      */
     const Value& operator[](const Key& key) const {
         const_iterator index = this->find(key);
@@ -1067,45 +1074,45 @@ public:
     }
 
     /**
-     * @brief
+     * @brief return an iterator that points to the first element of the map
      *
-     * @return iterator
+     * @return iterator to the first element of the map
      */
     iterator begin() { return iterator(this->find_min(this->_root)); }
 
     /**
-     * @brief
+     * @brief return a constant iterator that points to the first element of the map
      *
-     * @return const_iterator
+     * @return const_iterator to the first element of the map
      */
     const_iterator begin() const { return const_iterator(this->find_min(this->_root)); }
 
     /**
-     * @brief
+     * @brief return an iterator that points to just past the end of the map
      *
-     * @return iterator
+     * @return iterator to just past the end of the map
      */
     iterator end() { return iterator(nullptr); }
 
     /**
-     * @brief
+     * @brief return a constant iterator that points to just past the end of the map
      *
-     * @return const_iterator
+     * @return const_iterator to just past the end of the map
      */
     const_iterator end() const { return const_iterator(nullptr); }
 
     /**
-     * @brief
+     * @brief determine if the map is empty
      *
-     * @return true
-     * @return false
+     * @return true if the map is empty
+     * @return false otherwise
      */
     bool is_empty() const { return !this->_size; }
 
     /**
-     * @brief
+     * @brief determine the size of the map
      *
-     * @return size_t
+     * @return size_t the number of elements in the map
      */
     size_t size() const { return this->_size; }
 
@@ -1118,10 +1125,10 @@ public:
     }
 
     /**
-     * @brief
+     * @brief insert the given lvalue reference into the map
      *
-     * @param _pair
-     * @return pair<iterator, bool>
+     * @param _pair lvalue to insert
+     * @return pair<iterator, bool> iterator to the inserted element and boolean which indicates whether the insertion was successful
      */
     pair<iterator, bool> insert(const pair<const Key, Value>& _pair) {
         Node* node = this->search(this->_root, _pair.first);
@@ -1136,11 +1143,11 @@ public:
     }
 
     /**
-     * @brief
+     * @brief insert the given lvalue reference into the set just after the specified position
      *
-     * @param hint
-     * @param _pair
-     * @return iterator
+     * @param hint specified location
+     * @param _pair lvalue to insert
+     * @return iterator to the inserted element
      */
     iterator insert(const_iterator hint, const pair<const Key, Value>& _pair) {
         Node* node = this->search(this->_root, _pair.first);
@@ -1184,10 +1191,10 @@ public:
     }
 
     /**
-     * @brief
+     * @brief remove the specified key and its value from the map.
      *
-     * @param key
-     * @return size_t
+     * @param key key to remove
+     * @return size_t the number of elements removed from the map
      */
     size_t remove(const Key& key) {
         if (!this->search(this->_root, key))
@@ -1202,10 +1209,10 @@ public:
     }
 
     /**
-     * @brief
+     * @brief remove the specified key-value pair by position from the map
      *
-     * @param index
-     * @return iterator
+     * @param index const_iterator to the key-value pair to remove
+     * @return iterator to the key-value pair immediately after the removed pair
      */
     iterator remove(const_iterator index) {
         if (!index._node)
@@ -1231,34 +1238,34 @@ public:
     }
 
     /**
-     * @brief
+     * @brief determine if a key is in the map
      *
-     * @param key
-     * @return true
-     * @return false
+     * @param key Key to search for
+     * @return true if the key is found
+     * @return false otherwise
      */
     bool contains(const Key& key) const { return this->search(this->_root, key); }
 
     /**
-     * @brief
+     * @brief return an iterator that points to the key-value pair in the map
      *
-     * @param key
-     * @return iterator
+     * @param key Key to search for
+     * @return iterator that points to the key-value pair
      */
     iterator find(const Key& key) { return iterator(this->search(this->_root, key)); }
 
     /**
-     * @brief
+     * @brief return a constant iterator that points to the key-value pair in the map
      *
-     * @param key
-     * @return const_iterator
+     * @param key Key to search for
+     * @return const_iterator that points to the key-value pair
      */
     const_iterator find(const Key& key) const { return const_iterator(this->search(this->_root, key)); }
 
     /**
-     * @brief
+     * @brief print the map to an ostream
      *
-     * @param os
+     * @param os ostream to print to
      */
     void print_map(ostream& os = cout) const {
         if (this->_size) {
@@ -1299,12 +1306,25 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Move insert a pair into the map
+     *
+     * @param pair pair to move insert
+     * @return pair<iterator, bool> an iterator to the key-value pair inserted and if the insertion was successful
+     */
     pair<iterator, bool> insert(pair<const Key, Value>&& pair) {
         value_type p(pair.first, Value());
         swap(p.second, pair.second);
         return this->insert(p);
     }
 
+    /**
+     * @brief Move insert a pair into the map
+     *
+     * @param hint location to insert at
+     * @param pair pair to move insert
+     * @return iterator to the key-value pair inserted
+     */
     iterator insert(const_iterator hint, pair<const Key, Value>&& pair) {
         value_type p(pair.first, Value());
         swap(p.second, pair.second);
