@@ -1153,26 +1153,30 @@ public:
             this->insert(this->_root, _pair);
         else {
             Node* location = hint._node;
-            // go up the tree until 🥪
-            while ((_pair.first < location->_pair->first && _pair.first < location->_parent->_pair->first) || (_pair.first > location->_pair->first && _pair.first > location->_parent->_pair->first)) {
-                location = location->_parent;
-                if (location == this->_root)
-                    break;
-            }
+            Node* min = this->find_min(this->_root);
+            Node* max = this->find_max(this->_root);
+
+            if (!(_pair.first < min->_pair->first && location == min) || (_pair.first > max->_pair->first && location == max))
+                // go up the tree until 🥪
+                while ((_pair.first < location->_pair->first && _pair.first < location->_parent->_pair->first) || (_pair.first > location->_pair->first && _pair.first > location->_parent->_pair->first)) {
+                    location = location->_parent;
+                    if (location == this->_root)
+                        break;
+                }
 
             // go up the tree until balance condition
             if (location != this->_root) {
                 Node* sibling = location->sibling();
-                bool balance = location->_color == RED && sibling->_color == Color::RED && location->_parent->_color == Color::BLACK;
+                bool balance = sibling && location->_color == RED && sibling->_color == Color::RED && location->_parent->_color == Color::BLACK;
                 while (!balance) {
                     location = location->_parent;
                     if (location == this->_root)
                         break;
-                    balance = location->_color == RED && sibling->_color == Color::RED && location->_parent->_color == Color::BLACK;
+                    balance = sibling && location->_color == RED && sibling->_color == Color::RED && location->_parent->_color == Color::BLACK;
                 }
             }
 
-            this->insert(location, _pair);
+            this->insert(location->_parent ? location->_parent : location, _pair);
         }
         ++this->_size;
         this->_root->_color = Color::BLACK;

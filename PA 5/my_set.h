@@ -1063,26 +1063,30 @@ public:
             this->insert(this->_root, value);
         else {
             Node* location = hint._node;
-            // go up the tree until 🥪
-            while ((value < location->_value && value < location->_parent->_value) || (value > location->_value && value > location->_parent->_value)) {
-                location = location->_parent;
-                if (location == this->_root)
-                    break;
-            }
+            Node* min = this->find_min(this->_root);
+            Node* max = this->find_max(this->_root);
+
+            if (!(value < min->_value && location == min) || (value > max->_value && location == max))
+                // go up the tree until 🥪
+                while ((value < location->_value && value < location->_parent->_value) || (value > location->_value && value > location->_parent->_value)) {
+                    location = location->_parent;
+                    if (location == this->_root)
+                        break;
+                }
 
             // go up the tree until balance condition
             if (location != this->_root) {
                 Node* sibling = location->sibling();
-                bool balance = location->_color == RED && sibling->_color == Color::RED && location->_parent->_color == Color::BLACK;
+                bool balance = sibling && location->_color == Color::RED && sibling->_color == Color::RED && location->_parent->_color == Color::BLACK;
                 while (!balance) {
                     location = location->_parent;
                     if (location == this->_root)
                         break;
-                    balance = location->_color == RED && sibling->_color == Color::RED && location->_parent->_color == Color::BLACK;
+                    balance = sibling && location->_color == Color::RED && sibling->_color == Color::RED && location->_parent->_color == Color::BLACK;
                 }
             }
 
-            this->insert(location, value);
+            this->insert(location->_parent ? location->_parent : location, value);
         }
         ++this->_size;
         this->_root->_color = Color::BLACK;

@@ -7,7 +7,7 @@
 #include "my_set.h"
 
 using std::pair;
-using std::out_of_range, std::invalid_argument;
+using std::invalid_argument, std::runtime_error;
 using std::cout;
 
 #define black   "\033[30m"
@@ -1537,6 +1537,63 @@ bool test_node() {
 	END_TEST;
 }
 
+bool test_insert_begin() {
+	Set<int> set;
+	assert(set.size() == 0);
+	assert(set.is_empty());
+
+	Set_iterator<int> iter = set.insert(set.begin(), 14);
+	assert(*iter == 14);
+	++iter;
+	expect_throw(*iter, runtime_error);
+
+	iter = set.insert(set.begin(), 13);
+	assert(*iter == 13);
+	++iter;
+	assert(*iter == 14);
+
+	iter = set.insert(set.begin(), 12);
+	assert(*iter == 12);
+	++iter;
+	assert(*iter == 13);
+
+	iter = set.insert(set.begin(), 11);
+	set.print_tree();
+	assert(*iter == 11);
+	++iter;
+	assert(*iter == 12);
+
+	iter = set.insert(set.begin(), 10);
+	assert(*iter == 10);
+	++iter;
+	assert(*iter == 11);
+
+	iter = set.insert(set.begin(), 9);
+	assert(*iter == 9);
+	++iter;
+	assert(*iter == 10);
+
+	iter = set.insert(set.begin(), 8);
+	assert(*iter == 8);
+	++iter;
+	assert(*iter == 9);
+
+	iter = set.insert(set.begin(), 7);
+	assert(*iter == 7);
+	++iter;
+	assert(*iter == 8);
+
+	set.insert(set.begin(), 6);
+	set.insert(set.begin(), 5);
+	set.insert(set.begin(), 4);
+	set.insert(set.begin(), 3);
+	set.insert(set.begin(), 2);
+	set.insert(set.begin(), 1);
+	set.insert(set.begin(), 0);
+
+	END_TEST;
+}
+
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
@@ -1549,6 +1606,7 @@ int main() {
 	test(insert_in2out);
 	test(insert_out2in);
 	test(insert_random);
+	test(insert_begin);
 	test(insert_iter);
 	test(insert_iter_right);
 	test(insert_iter_left);
