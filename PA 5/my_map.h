@@ -520,22 +520,6 @@ private:
     size_t _size;
 
     /**
-     * @brief Determine if a subtree contains a key
-     *
-     * @param root subtree's root
-     * @param key key to search for
-     * @return true if the subtree contains the key
-     * @return false otherwise
-     */
-    bool contains(Node* const& root, const Key& key) {
-        if (!root)
-            return false;
-        if (root->_pair->first == key)
-            return true;
-        return this->contains(root->_pair->first > key ? root->_left : root->_right, key);
-    }
-
-    /**
      * @brief Inserts a key into a subtree
      *
      * @param node subtree's root
@@ -1165,11 +1149,33 @@ public:
 
         if (!this->_root || !hint._node)
             this->insert(this->_root, _pair);
-        else
-            this->insert(hint._node, _pair);
-        this->_root->_color = Color::BLACK;
-        this->_root->_parent = nullptr;
+        else if (hint._node == this->_root)
+            this->insert(this->_root, _pair);
+        else {
+            Node* location = hint._node;
+            // go up the tree until 🥪
+            while ((_pair.first < location->_pair->first && _pair.first < location->_parent->_pair->first) || (_pair.first > location->_pair->first && _pair.first > location->_parent->_pair->first)) {
+                location = location->_parent;
+                if (location == this->_root)
+                    break;
+            }
+
+            // go up the tree until balance condition
+            if (location != this->_root) {
+                Node* sibling = location->sibling();
+                bool balance = location->_color == RED && sibling->_color == Color::RED && location->_parent->_color == Color::BLACK;
+                while (!balance) {
+                    location = location->_parent;
+                    if (location == this->_root)
+                        break;
+                    balance = location->_color == RED && sibling->_color == Color::RED && location->_parent->_color == Color::BLACK;
+                }
+            }
+
+            this->insert(location, _pair);
+        }
         ++this->_size;
+        this->_root->_color = Color::BLACK;
         return this->find(_pair.first);
     }
 
@@ -1198,8 +1204,6 @@ public:
      * @return iterator
      */
     iterator remove(const_iterator index) {
-        if (!this->_root)
-            return iterator(nullptr);
         if (!index._node)
             throw invalid_argument("Iterator does not point anywhere");
         if (!this->search(this->_root, index->first))
@@ -1291,8 +1295,18 @@ public:
         return *this;
     }
 
-    // pair<iterator, bool> insert(pair<const Key, Value>&& pair);
-    // iterator insert(const_iterator hint, pair<const Key, Value>&& pair);
+    pair<iterator, bool> insert(pair<const Key, Value>&& pair) {
+        value_type p(pair.first, Value());
+        swap(p.second, pair.second);
+        return this->insert(p);
+    }
+
+    iterator insert(const_iterator hint, pair<const Key, Value>&& pair) {
+        value_type p(pair.first, Value());
+        swap(p.second, pair.second);
+        return this->insert(hint, p);
+    }
+
     /**
      * @brief print the internal tree
      *

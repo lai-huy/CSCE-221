@@ -498,22 +498,6 @@ private:
     size_t _size;
 
     /**
-     * @brief Determine if a subtree contains a value
-     *
-     * @param root subtree's root
-     * @param value value to search for
-     * @return true if the subtree contains the value
-     * @return false otherwise
-     */
-    bool contains(Node* const& root, const Comparable& value) {
-        if (!root)
-            return false;
-        if (root->_value == value)
-            return true;
-        return this->contains(root->_value > value ? root->_left : root->_right, value);
-    }
-
-    /**
      * @brief Inserts a value into a subtree
      *
      * @param node subtree's root
@@ -526,9 +510,6 @@ private:
                 this->_root = node;
             return;
         }
-
-        if (node->_value == value)
-            return;
 
         if (node->_value > value) {
             if (!node->_left) {
@@ -1076,11 +1057,33 @@ public:
         if (node)
             return iterator(node);
 
-        const Node* location = hint._node;
-        if (!this->_root || !location)
+        if (!this->_root || !hint._node)
             this->insert(this->_root, value);
-        else
-            this->insert(const_cast<Node*&>(location), value);
+        else if (hint._node == this->_root)
+            this->insert(this->_root, value);
+        else {
+            Node* location = hint._node;
+            // go up the tree until 🥪
+            while ((value < location->_value && value < location->_parent->_value) || (value > location->_value && value > location->_parent->_value)) {
+                location = location->_parent;
+                if (location == this->_root)
+                    break;
+            }
+
+            // go up the tree until balance condition
+            if (location != this->_root) {
+                Node* sibling = location->sibling();
+                bool balance = location->_color == RED && sibling->_color == Color::RED && location->_parent->_color == Color::BLACK;
+                while (!balance) {
+                    location = location->_parent;
+                    if (location == this->_root)
+                        break;
+                    balance = location->_color == RED && sibling->_color == Color::RED && location->_parent->_color == Color::BLACK;
+                }
+            }
+
+            this->insert(location, value);
+        }
         ++this->_size;
         this->_root->_color = Color::BLACK;
         return this->find(value);
@@ -1093,7 +1096,7 @@ public:
      * @return size_t the number of elementes removed
      */
     size_t remove(const Comparable& value) {
-        if (!this->contains(value))
+        if (!this->search(this->_root, value))
             return 0;
         this->remove(this->_root, value);
         --this->_size;
@@ -1107,10 +1110,10 @@ public:
      * @return iterator to the next value in the set
      */
     iterator remove(const_iterator index) {
-        if (!this->_root)
-            return iterator(nullptr);
         if (!index._node)
             throw invalid_argument("Iterator does not point anywhere");
+        if (!this->search(this->_root, *index))
+            throw invalid_argument("Iterator does not point to a value in the set");
 
         const_iterator temp = index;
         iterator it = (++temp)._node;
@@ -1121,8 +1124,10 @@ public:
             it = nullptr;
         }
         this->remove(this->_root, *index);
-        if (this->_root)
+        if (this->_root) {
             this->_root->_parent = nullptr;
+            this->_root->_color = Color::BLACK;
+        }
         --this->_size;
         return it._node ? this->find(value) : it;
     }
@@ -1219,7 +1224,7 @@ public:
      * @return iterator
      */
     iterator insert(const_iterator hint, Comparable&& value) {
-        Comparable v = Comparable();
+        Comparable v{};
         swap(v, value);
         return this->insert(hint, v);
     }

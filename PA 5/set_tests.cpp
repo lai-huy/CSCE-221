@@ -875,6 +875,81 @@ bool test_iter_empty() {
 	END_TEST;
 }
 
+bool test_insert_iter_wrong() {
+	Set<int> set;
+	set.insert(7);
+	set.insert(3);
+	set.insert(11);
+
+	Set_const_iterator<int> index = set.find(11);
+	Set_iterator<int> iter = set.insert(index, 5);
+	assert(*iter == 5);
+	++iter;
+	assert(*iter == 7);
+
+	iter = set.insert(index, 1);
+	assert(*iter == 1);
+	++iter;
+	assert(*iter == 3);
+
+	index = set.find(3);
+	iter = set.insert(index, 9);
+	assert(*iter == 9);
+	++iter;
+	assert(*iter == 11);
+
+	iter = set.insert(index, 13);
+	assert(*iter == 13);
+	++iter;
+	expect_throw(*iter, runtime_error);
+
+	index = set.find(13);
+	iter = set.insert(index, 0);
+	assert(*iter == 0);
+	++iter;
+	assert(*iter == 1);
+
+	iter = set.insert(index, 2);
+	assert(*iter == 2);
+	++iter;
+	assert(*iter == 3);
+
+	index = set.find(9);
+	iter = set.insert(index, 4);
+	assert(*iter == 4);
+	++iter;
+	assert(*iter == 5);
+
+	iter = set.insert(index, 6);
+	assert(*iter == 6);
+	++iter;
+	assert(*iter == 7);
+
+	index = set.find(5);
+	iter = set.insert(index, 8);
+	assert(*iter == 8);
+	++iter;
+	assert(*iter == 9);
+
+	iter = set.insert(index, 10);
+	assert(*iter == 10);
+	++iter;
+	assert(*iter == 11);
+
+	index = set.find(1);
+	iter = set.insert(index, 12);
+	assert(*iter == 12);
+	++iter;
+	assert(*iter == 13);
+
+	iter = set.insert(index, 14);
+	assert(*iter == 14);
+	++iter;
+	expect_throw(*iter, runtime_error);
+
+	END_TEST;
+}
+
 bool test_iter_remove_leaf() {
 	Set<int> set;
 	assert(set.size() == 0);
@@ -1107,9 +1182,12 @@ bool test_iter_remove_invalid() {
 	assert(set.size() == 15);
 
 	Set_const_iterator<int> end = set.end();
+	Set_Node<int> node = Set_Node(INT32_MAX, Color::RED);
 	expect_throw(set.remove(end), invalid_argument);
 	set.make_empty();
-	assert(set.remove(end) == end);
+	expect_throw(set.remove(end), invalid_argument);
+	end = &node;
+	expect_throw(set.remove(end), invalid_argument);
 
 	END_TEST;
 }
@@ -1121,8 +1199,8 @@ bool test_iter_remove_empty() {
 
 	Set_Node<int> node = Set_Node(INT32_MAX, Color::RED);
 	Set_const_iterator<int> index = &node;
-	expect_no_throw(set.remove(set.end()));
-	expect_no_throw(set.remove(index));
+	expect_throw(set.remove(set.end()), invalid_argument);
+	expect_throw(set.remove(index), invalid_argument);
 
 	END_TEST;
 }
@@ -1474,6 +1552,7 @@ int main() {
 	test(insert_iter);
 	test(insert_iter_right);
 	test(insert_iter_left);
+	test(insert_iter_wrong);
 	test(find);
 	test(find_const);
 	test(remove_empty);
