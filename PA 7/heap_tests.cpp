@@ -7,8 +7,9 @@
 #include <vector>
 #include "heap.h"
 
-using std::cout;
+using std::cout, std::ostream;
 using std::vector;
+using std::less, std::greater;
 
 #define black   "\033[30m"
 #define red     "\033[31m"
@@ -77,22 +78,25 @@ namespace {
     bool test_passed = true;
 }
 
+template <typename Object>
+void print(const vector<Object>& vect, ostream& os = cout) {
+    for (const Object& obj : vect)
+        os << obj << " ";
+    os << "\n";
+}
+
 bool test_heapify() {
-    vector<int> heap{3, 4, 5, 7, 9, 6,8, 2, 1};
-    for (const int& i : heap)
-        cout << i << " ";
-    cout << "\n";
+    vector<int> heap = {3, 2, 4, 1, 5, 9};
+    print(heap);
 
     heapify(&heap, less<int>{});
-    for (const int& i : heap)
-        cout << i << " ";
-    cout << "\n";
+    print(heap);
 
     END_TEST;
 }
 
 bool test_min() {
-    vector<int> heap{3, 4, 5, 7, 9, 6,8, 2, 1};
+    vector<int> heap = {3, 2, 4, 1, 5, 9};
     heapify(heap, less<int>{});
 
     assert(heap_get_min(heap) == 1);
@@ -100,7 +104,28 @@ bool test_min() {
     END_TEST;
 }
 
-/*
+bool test_min_empty() {
+    vector<int> heap;
+    expect_throw(heap_get_min(heap), invalid_argument);
+    END_TEST;
+}
+
+bool test_delete_min() {
+    vector<int> heap = {3, 2, 4, 1, 5, 9};
+    less<int> comp{};
+    heapify(heap, comp);
+
+    heap_delete_min(heap, comp);
+    print(heap);
+    END_TEST;
+}
+
+bool test_delete_min_empty() {
+    vector<int> heap;
+    expect_throw(heap_delete_min(heap, less<int>{}), invalid_argument);
+    END_TEST;
+}
+
 bool test_example() {
     vector<int> heap{150,80,40,30,10,70,110,100,20,90,60,50,120,140,130};
     cout << "before heapify: ";
@@ -129,14 +154,16 @@ bool test_example() {
 
     END_TEST;
 }
-*/
 
 int main() {
     unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
     test(heapify);
     test(min);
-    // test(example);
+    test(min_empty);
+    test(delete_min);
+    test(delete_min_empty);
+    test(example);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";
