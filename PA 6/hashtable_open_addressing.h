@@ -156,13 +156,13 @@ public:
     }
 
     size_t position(const Key& key) const {
-        size_t index = Hash()(key) % this->_table.size();
+        size_t index = Hash()(key) % this->_bucket;
         size_t i = 1;
         Cell cell = this->_table.at(index);
         while (cell._state != State::INACTIVE) {
             if (cell._state == State::DELETE && cell._value == key)
                 break;
-            index = (Hash()(key) + i * i) % this->_table.size();
+            index = (Hash()(key) + i) % this->_bucket;
             cell = this->_table.at(index);
             ++i;
         }

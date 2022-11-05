@@ -52,13 +52,30 @@ void selection_sort(vector<Comparable>& container) {
 }
 
 template <class Comparable>
-void insertion_sort(vector<Comparable>& values);
+void insertion_sort(vector<Comparable>& values) {
+    cout << container << "\n";
+
+    if (values.empty())
+        return;
+
+    for (size_t index = 1; i < values.size(); ++i) {
+        Comparable key = values[i];
+        size_t j = i - 1;
+        while (j < values.size() && values[j] > key) {
+            values[j + 1] = values[j];
+            --j;
+        }
+        values[j + 1] = key;
+    }
+}
 
 template <class Comparable>
 void shell_sort(vector<Comparable>& values);
 
 template <class Comparable>
-void heap_sort(vector<Comparable>& values);
+void heap_sort(vector<Comparable>& values) {
+    std::sort_heap(values.begin(), values.end());
+}
 
 template <class Comparable>
 void merge_sort(vector<Comparable>& values);
