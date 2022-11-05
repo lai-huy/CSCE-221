@@ -514,93 +514,159 @@ bool test_print_empty() {
 	END_TEST;
 }
 
-/*
-bool test_example() {
-	cout << "make an empty hash table with 11 buckets for strings" <<
-		"\n";
-	HashTable<std::string> table(11);
-	cout << "initial size is " << table.size() << "\n";
-	cout << "initial bucket count is " << table.bucket_count() << "\n";
-	cout << "initial load factor is " << table.load_factor() << "\n";
-	cout << "initial max load factor is " << table.max_load_factor() <<
-		"\n";
-	cout << "insert several strings\n";
-	table.insert("And them who hold High Places");
-	table.insert("Must be the ones to start");
-	table.insert("To mold a new Reality");
-	table.insert("Closer to the Heart");
-	table.insert("The Blacksmith and the Artist");
-	table.insert("Reflect it in their Art");
-	table.insert("Forge their Creativity");
-	table.insert("Closer to the Heart");
-	table.insert("Philosophers and Plowmen");
-	table.insert("Each must know their Part");
-	table.insert("To sow a new Mentality");
-	table.insert("Closer to the Heart");
-	table.insert("You can be the Captain");
-	table.insert("I will draw the Chart");
-	table.insert("Sailing into Destiny");
-	table.insert("Closer to the Heart");
-	cout << "size is " << table.size() << "\n";
-	cout << "bucket count is " << table.bucket_count() << "\n";
-	cout << "load factor is " << table.load_factor() << "\n";
-	cout << "max load factor is " << table.max_load_factor() << "\n";
-	{
-		cout << "print the table\n";
-		std::stringstream ss;
-		table.print_table(ss);
-		cout << ss.str() << "\n";
-	}
-	cout << "remove \"Philosophers and Plowmen\"\n";
-	table.remove("Philosophers and Plowmen");
-	cout << "remove \"Each must know their Part\"\n";
+bool test_copy() {
+	HashTable<int, hash<int>> table;
+	assert(table.size() == 0);
+	assert(table.is_empty());
+	assert(table.bucket_count() == 11);
 
-	table.remove("Each must know their Part");
-	cout << "size is " << table.size() << "\n";
-	cout << "bucket count is " << table.bucket_count() << "\n";
-	cout << "load factor is " << table.load_factor() << "\n";
-	cout << "max load factor is " << table.max_load_factor() << "\n";
-	{
-		cout << "print the table\n";
-		std::stringstream ss;
-		table.print_table(ss);
-		cout << ss.str() << "\n";
-	}
-	cout << "set max load factor to 2\n";
-	table.max_load_factor(2);
-	cout << "rehash the table to size 7\n";
-	table.rehash(7);
-	cout << "size is " << table.size() << "\n";
-	cout << "bucket count is " << table.bucket_count() << "\n";
-	cout << "load factor is " << table.load_factor() << "\n";
-	cout << "max load factor is " << table.max_load_factor() << "\n";
-	{
-		cout << "print the table\n";
-		std::stringstream ss;
-		table.print_table(ss);
-		cout << ss.str() << "\n";
-	}
-	cout << "find \"The Blacksmith and the Artist\"\n";
-	size_t index = table.bucket("The Blacksmith and the Artist");
-	cout << " ==> bucket " << index << "\n";
-	cout << "     which has " << table.bucket_size(index) << " elements" <<
-		"\n";
-	cout << "make the table empty\n";
-	table.make_empty();
-	cout << "size is " << table.size() << "\n";
-	cout << "bucket count is " << table.bucket_count() << "\n";
-	cout << "load factor is " << table.load_factor() << "\n";
-	cout << "max load factor is " << table.max_load_factor() << "\n";
+	table.insert(0);
+	table.insert(1);
+	table.insert(2);
+	table.insert(3);
+	table.insert(4);
+	table.insert(5);
+	table.insert(6);
+	table.insert(7);
+	table.insert(8);
+	table.insert(9);
+	table.insert(10);
+	assert(table.size() == 11);
+	assert(table.bucket_count() == 11);
 
-	{
-		cout << "print the table\n";
-		std::stringstream ss;
-		table.print_table(ss);
-		cout << ss.str() << "\n";
-	}
+	HashTable<int, hash<int>> a(table);
+	assert(a.size() == table.size());
+	assert(a.bucket_count() == table.bucket_count());
+	assert(a.max_load_factor() == table.max_load_factor());
 
 	END_TEST;
-}*/
+}
+
+bool test_copy_empty() {
+	HashTable<int, hash<int>> table;
+	assert(table.size() == 0);
+	assert(table.is_empty());
+	assert(table.bucket_count() == 11);
+
+	HashTable<int, hash<int>> a(table);
+	assert(a.size() == table.size());
+	assert(a.bucket_count() == table.bucket_count());
+	assert(a.max_load_factor() == table.max_load_factor());
+	assert(a.is_empty());
+
+	END_TEST;
+}
+
+bool test_assignment() {
+	HashTable<int, hash<int>> table;
+	assert(table.size() == 0);
+	assert(table.is_empty());
+	assert(table.bucket_count() == 11);
+
+	table.insert(0);
+	table.insert(1);
+	table.insert(2);
+	table.insert(3);
+	table.insert(4);
+	table.insert(5);
+	table.insert(6);
+	table.insert(7);
+	table.insert(8);
+	table.insert(9);
+	table.insert(10);
+	assert(table.size() == 11);
+	assert(table.bucket_count() == 11);
+
+	HashTable<int, hash<int>> a(7);
+	a.max_load_factor(2.0f);
+	assert(a.size() == 0);
+	assert(a.is_empty());
+	assert(a.bucket_count() == 7);
+
+	a.insert(0);
+	a.insert(1);
+	a.insert(2);
+	a.insert(3);
+	a.insert(4);
+	a.insert(5);
+	a.insert(6);
+	a.insert(7);
+	a.insert(8);
+	a.insert(9);
+	a.insert(10);
+	a.insert(11);
+	a.insert(12);
+	a.insert(13);
+
+	a = table;
+	assert(a.size() == table.size());
+	assert(a.bucket_count() == table.bucket_count());
+	assert(a.max_load_factor() == table.max_load_factor());
+
+	END_TEST;
+}
+
+bool test_assignment_empty() {
+	HashTable<int, hash<int>> table;
+	assert(table.size() == 0);
+	assert(table.is_empty());
+	assert(table.bucket_count() == 11);
+
+	HashTable<int, hash<int>> a(7);
+	a.max_load_factor(2.0f);
+	assert(a.size() == 0);
+	assert(a.is_empty());
+	assert(a.bucket_count() == 7);
+
+	a.insert(0);
+	a.insert(1);
+	a.insert(2);
+	a.insert(3);
+	a.insert(4);
+	a.insert(5);
+	a.insert(6);
+	a.insert(7);
+	a.insert(8);
+	a.insert(9);
+	a.insert(10);
+	a.insert(11);
+	a.insert(12);
+	a.insert(13);
+
+	a = table;
+	assert(a.size() == table.size());
+	assert(a.bucket_count() == table.bucket_count());
+	assert(a.max_load_factor() == table.max_load_factor());
+
+	END_TEST;
+}
+
+bool test_self_assignment() {
+	HashTable<int, hash<int>> table;
+	assert(table.size() == 0);
+	assert(table.is_empty());
+	assert(table.bucket_count() == 11);
+
+	table.insert(0);
+	table.insert(1);
+	table.insert(2);
+	table.insert(3);
+	table.insert(4);
+	table.insert(5);
+	table.insert(6);
+	table.insert(7);
+	table.insert(8);
+	table.insert(9);
+	table.insert(10);
+	assert(table.size() == 11);
+	assert(table.bucket_count() == 11);
+
+	table = table;
+	assert(table.size() == 11);
+	assert(table.bucket_count() == 11);
+
+	END_TEST;
+}
 
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
@@ -624,6 +690,11 @@ int main() {
 	test(mlf_rehash);
 	test(print);
 	test(print_empty);
+	test(copy);
+	test(copy_empty);
+	test(assignment);
+	test(assignment_empty);
+	test(self_assignment);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";

@@ -21,8 +21,8 @@ public:
         State _state;
         Cell() : Cell(Key(), State::INACTIVE) {}
         Cell(const Key& key) : Cell(key, State::ACTIVE) {}
-        Cell(const Key& key, const State& state) : _value{Key(key)}, _state{state} {}
         Cell(const Cell& rhs) : Cell(rhs._value, rhs._state) {}
+        Cell(const Key& key, const State& state) : _value{Key(key)}, _state{state} {}
 
         Cell& operator=(const Cell& rhs) {
             if (this != &rhs) {
@@ -39,6 +39,7 @@ private:
     vector<Cell> _table;
     size_t _size;
     size_t _bucket;
+    size_t _occupied;
 
     /**
      * @brief Primality Test. Source: https://en.wikipedia.org/wiki/Primality_test#C,_C++,_C#_&_D
@@ -65,6 +66,12 @@ private:
         return true;
     }
 
+    /**
+     * @brief Retreive the next prime from a number
+     *
+     * @param num number to find the next prime of
+     * @return size_t next prime number
+     */
     size_t nextPrime(const size_t& num) const {
         size_t i = num;
         while (!this->isPrime(i))
@@ -88,7 +95,7 @@ private:
 
 public:
     HashTable() : HashTable(11) {}
-    explicit HashTable(size_t buckets) : _table{vector<Cell>(buckets)}, _size{0}, _bucket{buckets} {}
+    explicit HashTable(size_t buckets) : _table{vector<Cell>(buckets)}, _size{0}, _bucket{buckets}, _occupied{0} {}
 
     bool is_empty() const { return !this->_size; }
     size_t size() const { return this->_size; }
@@ -97,6 +104,7 @@ public:
     void make_empty() {
         this->_table.clear();
         this->_size = 0;
+        this->_occupied = 0;
         this->_table.resize(this->_bucket);
     }
 
@@ -104,10 +112,12 @@ public:
         if (this->contains(key))
             return false;
         Cell& cell = this->_table.at(this->position(key));
-        cell._state = State::ACTIVE;
-        cell._value = key;
+        if (cell._state == State::INACTIVE)
+            ++this->_occupied;
         ++this->_size;
-        if (this->_size / static_cast<float>(this->_bucket) > 0.5f)
+        cell._value = key;
+        cell._state = State::ACTIVE;
+        if (this->_occupied / static_cast<float>(this->_bucket) > 0.5f)
             this->rehash();
         return true;
     }
@@ -173,12 +183,13 @@ public:
     }
 
     // ----------------------- Optional ----------------------- //
-    HashTable(const HashTable& rhs) : _table{rhs._table}, _size{rhs._size}, _bucket{rhs._bucket} {}
+    HashTable(const HashTable& rhs) : _table{rhs._table}, _size{rhs._size}, _bucket{rhs._bucket}, _occupied{rhs._occupied} {}
 
     HashTable(HashTable&& rhs) : HashTable() {
         this->_table.swap(rhs._table);
         swap(this->_size, rhs._size);
         swap(this->_bucket, rhs._bucket);
+        swap(this->_occupied, rhs._occupied);
     }
 
     ~HashTable() { this->make_empty(); }
@@ -189,6 +200,7 @@ public:
             this->_table = rhs._table;
             this->_size = rhs._size;
             this->_bucket = rhs._bucket;
+            this->_occupied = rhs._occupied;
         }
 
         return *this;
@@ -200,6 +212,7 @@ public:
             this->_table.swap(rhs._table);
             swap(this->_size, rhs._size);
             swap(this->_bucket, rhs._bucket);
+            swap(this->_occupied, rhs._occupied);
         }
 
         return *this;

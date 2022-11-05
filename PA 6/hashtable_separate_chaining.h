@@ -8,7 +8,7 @@
 #include <vector>
 
 using std::ostream, std::cout;
-using std::hash, std::find, std::swap;
+using std::hash, std::find, std::swap, std::copy, std::back_inserter;
 using std::vector, std::list;
 using std::out_of_range, std::invalid_argument;
 using std::numeric_limits;
@@ -51,6 +51,15 @@ private:
         while (!this->isPrime(i))
             ++i;
         return i;
+    }
+
+    void copy(const HashTable& rhs) {
+        this->_table.resize(rhs._table.size());
+        for (size_t i = 0; i < this->_table.size(); ++i)
+            std::copy(rhs._table.at(i).begin(), rhs._table.at(i).end(), back_inserter(this->_table.at(i)));
+        this->_size = rhs._size;
+        this->_bucket = rhs._bucket;
+        this->_mlf = rhs._mlf;
     }
 
 public:
@@ -114,7 +123,7 @@ public:
     float max_load_factor() const { return this->_mlf; }
 
     void max_load_factor(float lf) {
-        if (lf < .0f)
+        if (lf <= .0f)
             throw invalid_argument("new max load factor is negative");
         if (lf != lf)
             throw invalid_argument("new max load factor is not a number");
@@ -157,9 +166,9 @@ public:
     }
 
     // ----------------------- Optional ----------------------- //
-    HashTable(const HashTable& rhs) : _table{vector<list<Key>>(rhs._table)}, _size{rhs._size}, _bucket{rhs._bucket}, _mlf{rhs._mlf} {}
+    HashTable(const HashTable& rhs) : HashTable() { this->copy(rhs); }
 
-    HashTable(HashTable&& rhs) : _table{vector<list<Key>>()}, _size{0}, _bucket{0}, _mlf{.0f} {
+    HashTable(HashTable&& rhs) : HashTable() {
         this->_table.swap(rhs._table);
         swap(this->_size, rhs._size);
         swap(this->_bucket, rhs._bucket);
@@ -170,9 +179,7 @@ public:
     HashTable& operator=(const HashTable& rhs) {
         if (this != &rhs) {
             this->make_empty();
-            this->_table = rhs._table;
-            this->_size = rhs._size;
-            this->_bucket = rhs._bucket;
+            this->copy(rhs);
         }
 
         return *this;
@@ -181,7 +188,7 @@ public:
     HashTable& operator=(HashTable&& rhs) {
         if (this != &rhs) {
             this->make_empty();
-            swap(this->_table, rhs._table);
+            this->_table.swap(rhs._table);
             swap(this->_size, rhs._size);
             swap(this->_bucket, rhs._bucket);
         }

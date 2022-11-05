@@ -356,38 +356,15 @@ bool test_undelete_conflict() {
 	assert(table.insert(0));
 	assert(table.insert(11));
 	assert(table.insert(22));
-	assert(table.insert(33));
-	assert(table.insert(44));
-	assert(table.size() == 5);
-	assert(table.table_size() == 11);
-
-	assert(table.remove(0));
-	assert(table.size() == 4);
-	assert(table.table_size() == 11);
-
-	assert(table.remove(11));
 	assert(table.size() == 3);
 	assert(table.table_size() == 11);
 
-	assert(table.remove(22));
-	assert(table.size() == 2);
-	assert(table.table_size() == 11);
-
-	assert(table.remove(33));
-	assert(table.size() == 1);
-	assert(table.table_size() == 11);
-
-	assert(table.remove(44));
-	assert(table.size() == 0);
-	assert(table.table_size() == 11);
-
-	assert(table.insert(0));
-	assert(table.insert(11));
-	assert(table.insert(22));
+	assert(table.remove(0));
 	assert(table.insert(33));
-	assert(table.insert(44));
-	assert(table.size() == 5);
-	assert(table.table_size() == 11);
+	assert(!table.contains(0));
+	assert(table.contains(11));
+	assert(table.contains(22));
+	assert(table.contains(33));
 
 	END_TEST;
 }
@@ -446,6 +423,39 @@ bool test_print_empty() {
 	END_TEST;
 }
 
+bool test_copy() {
+	HashTable<int, hash<int>> table;
+	assert(table.size() == 0);
+	assert(table.table_size() == 11);
+	assert(table.is_empty());
+
+	table.insert(0);
+	table.insert(1);
+	table.insert(2);
+	table.insert(3);
+	table.insert(4);
+
+	HashTable<int, hash<int>> a(table);
+	assert(a.size() == table.size());
+	assert(a.table_size() == table.table_size());
+
+	END_TEST;
+}
+
+bool test_copy_empty() {
+	HashTable<int, hash<int>> table;
+	assert(table.size() == 0);
+	assert(table.is_empty());
+	assert(table.table_size() == 11);
+
+	HashTable<int, hash<int>> a(table);
+	assert(a.size() == table.size());
+	assert(a.is_empty() == table.is_empty());
+	assert(a.table_size() == table.table_size());
+
+	END_TEST;
+}
+
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
@@ -465,6 +475,8 @@ int main() {
 	test(contains);
 	test(print);
 	test(print_empty);
+	test(copy);
+	test(copy_empty);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";

@@ -1066,7 +1066,7 @@ public:
             Node* min = this->find_min(this->_root);
             Node* max = this->find_max(this->_root);
 
-            if (!(value < min->_value && location == min) || (value > max->_value && location == max))
+            if (!(value < min->_value && location == min) && !(value > max->_value && location == max))
                 // go up the tree until 🥪
                 while ((value < location->_value && value < location->_parent->_value) || (value > location->_value && value > location->_parent->_value)) {
                     location = location->_parent;
