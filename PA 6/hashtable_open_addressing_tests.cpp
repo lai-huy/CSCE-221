@@ -140,6 +140,9 @@ bool test_insert_rehash() {
 	assert(table.size() == 6);
 	assert(table.table_size() == 23);
 
+	for (int i = 6; i < 64; ++i)
+		assert(table.insert(i));
+
 	END_TEST;
 }
 
@@ -302,6 +305,28 @@ bool test_remove_invalid() {
 	END_TEST;
 }
 
+bool test_remove_middle() {
+	HashTable<int, hash<int>> table;
+	assert(table.size() == 0);
+	assert(table.is_empty());
+	assert(table.table_size() == 11);
+
+	table.insert(3);
+	table.insert(14);
+	table.insert(25);
+	table.insert(36);
+	table.insert(47);
+	assert(table.size() == 5);
+	assert(table.table_size() == 11);
+
+	table.remove(25);
+	assert(table.size() == 4);
+	assert(table.table_size() == 11);
+
+
+	END_TEST;
+}
+
 bool test_undelete() {
 	HashTable<int, hash<int>> table;
 	assert(table.size() == 0);
@@ -393,6 +418,60 @@ bool test_contains() {
 	END_TEST;
 }
 
+bool test_position_undelete() {
+	HashTable<int, hash<int>> table;
+	assert(table.size() == 0);
+	assert(table.is_empty());
+	assert(table.table_size() == 11);
+
+	assert(table.position(0) == 0);
+	table.insert(0);
+	assert(table.size() == 1);
+	assert(table.table_size() == 11);
+
+	assert(table.position(11) == 1);
+	table.insert(11);
+	assert(table.size() == 2);
+	assert(table.table_size() == 11);
+
+	table.remove(0);
+	assert(table.size() == 1);
+	assert(table.table_size() == 11);
+
+	assert(table.position(22) == 2);
+	table.insert(22);
+	assert(table.size() == 2);
+	assert(table.table_size() == 11);
+
+	table.remove(11);
+	assert(table.size() == 1);
+	assert(table.table_size() == 11);
+
+	assert(table.position(33) == 3);
+	table.insert(33);
+	assert(table.size() == 2);
+	assert(table.table_size() == 11);
+
+	assert(table.position(0) == 0);
+	table.insert(0);
+	assert(table.size() == 3);
+	assert(table.table_size() == 11);
+
+	assert(table.position(11) == 1);
+	table.insert(11);
+	assert(table.size() == 4);
+	assert(table.table_size() == 11);
+
+	assert(table.position(44) == 4);
+	table.insert(44);
+	assert(table.size() == 5);
+	assert(table.table_size() == 11);
+
+	assert(table.position(0) == 5);
+
+	END_TEST;
+}
+
 bool test_print() {
 	HashTable<int, hash<int>> table;
 	assert(table.size() == 0);
@@ -470,8 +549,10 @@ int main() {
 	test(remove);
 	test(remove_empty);
 	test(remove_invalid);
+	test(remove_middle);
 	test(undelete);
 	test(undelete_conflict);
+	test(position_undelete);
 	test(contains);
 	test(print);
 	test(print_empty);

@@ -58,9 +58,9 @@ private:
         if (!(num % 3))
             return false;
         for (size_t i = 5; i * i <= num; i += 6) {
-            if (num % i == 0)
+            if (!(num % i))
                 return false;
-            if (num % (i + 2) == 0)
+            if (!(num % (i + 2)))
                 return false;
         }
         return true;
@@ -75,12 +75,12 @@ private:
     size_t nextPrime(const size_t& num) const {
         size_t i = num;
         while (!this->isPrime(i))
-            ++i;
+            i += 2;
         return i;
     }
 
     void rehash() {
-        this->_bucket = this->nextPrime(2 * this->_bucket + 1);
+        this->_bucket = this->nextPrime((this->_bucket << 1) + 1);
         vector<Key> temp;
         for (const Cell& cell : this->_table) {
             if (cell._state != State::ACTIVE)
@@ -160,7 +160,7 @@ public:
         size_t i = 1;
         Cell cell = this->_table.at(index);
         while (cell._state != State::INACTIVE) {
-            if (cell._state == State::DELETE && cell._value == key)
+            if (cell._value == key)
                 break;
             index = (Hash()(key) + i) % this->_bucket;
             cell = this->_table.at(index);
