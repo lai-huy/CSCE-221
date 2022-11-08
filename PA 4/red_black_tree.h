@@ -155,8 +155,11 @@ public:
             case Color::RED:
                 ss << "🟥 ";
                 break;
-            default:
+            case Color::BLACK:
                 ss << "⬛ ";
+                break;
+            default:
+                ss << "🟦 ";
                 break;
             }
             ss << this->value;
@@ -218,18 +221,16 @@ private:
                 if (node->color == Color::BLACK)
                     return;
                 if (!node->sibling()) {
-                    if (node->isLeft()) {
+                    if (node->isLeft())
                         node = this->rotateRight(node->parent);
-                        node->color = Color::BLACK;
-                        node->left->color = node->right->color = Color::RED;
-                        return;
-                    } else {
+                    else {
                         node = this->rotateRight(node);
                         node = this->rotateLeft(node->parent);
-                        node->color = Color::BLACK;
-                        node->left->color = node->right->color = Color::RED;
-                        return;
                     }
+
+                    node->color = Color::BLACK;
+                    node->left->color = node->right->color = Color::RED;
+                    return;
                 }
             }
         } else if (node->value < value) {
@@ -239,18 +240,16 @@ private:
                 if (node->color == Color::BLACK)
                     return;
                 if (!node->sibling()) {
-                    if (node->isRight()) {
+                    if (node->isRight())
                         node = this->rotateLeft(node->parent);
-                        node->color = Color::BLACK;
-                        node->right->color = node->left->color = Color::RED;
-                        return;
-                    } else {
+                    else {
                         node = this->rotateLeft(node);
                         node = this->rotateRight(node->parent);
-                        node->color = Color::BLACK;
-                        node->right->color = node->left->color = Color::RED;
-                        return;
                     }
+
+                    node->color = Color::BLACK;
+                    node->right->color = node->left->color = Color::RED;
+                    return;
                 }
             }
         }
@@ -260,36 +259,22 @@ private:
             node->right->color = node->left->color = Color::BLACK;
 
             if (node->parent && node->parent->color == Color::RED) {
-                if (node->isLeft() && node->parent->isLeft()) {
+                if (node->isLeft() && node->parent->isLeft())
                     node = this->rotateRight(node->parent->parent);
-                    node->color = Color::BLACK;
-                    node->left->color = node->right->color = Color::RED;
-                    this->insert(node, value);
-                    return;
-                }
-                if (node->isRight() && node->parent->isRight()) {
+                else if (node->isRight() && node->parent->isRight())
                     node = this->rotateLeft(node->parent->parent);
-                    node->color = Color::BLACK;
-                    node->left->color = node->right->color = Color::RED;
-                    this->insert(node, value);
-                    return;
-                }
-                if (node->isRight() && node->parent->isLeft()) {
+                else if (node->isRight() && node->parent->isLeft()) {
                     node = this->rotateLeft(node->parent);
                     node = this->rotateRight(node->parent);
-                    node->color = Color::BLACK;
-                    node->left->color = node->right->color = Color::RED;
-                    this->insert(node, value);
-                    return;
-                }
-                if (node->isLeft() && node->parent->isRight()) {
+                } else if (node->isLeft() && node->parent->isRight()) {
                     node = this->rotateRight(node->parent);
                     node = this->rotateLeft(node->parent);
-                    node->color = Color::BLACK;
-                    node->left->color = node->right->color = Color::RED;
-                    this->insert(node, value);
-                    return;
                 }
+
+                node->color = Color::BLACK;
+                node->left->color = node->right->color = Color::RED;
+                this->insert(node, value);
+                return;
             }
         }
         this->insert(node->value > value ? node->left : node->right, value);
@@ -340,7 +325,8 @@ private:
      * @param value value to remove
      */
     void setUpRedLeaf(Node* node, const Comparable& value) {
-        if (!node) return;
+        if (!node)
+            return;
         if (node->hasColorChildren(Color::BLACK))
             this->setUpRotations(node, value);
         else
@@ -355,11 +341,11 @@ private:
      */
     void setUpRotations(Node* node, const Comparable& value) {
         Node* sibling = node->sibling();
-        if (sibling && sibling->hasColorChildren(Color::BLACK)) {
+        if (sibling && sibling->hasColorChildren(Color::BLACK))
             this->recolorChildren(node, value);
-        } else if ((node->isLeft() && node->leftNiblingRed()) || (node->isRight() && node->rightNiblingRed())) {
+        else if ((node->isLeft() && node->leftNiblingRed()) || (node->isRight() && node->rightNiblingRed()))
             this->rotateNiblingRed(node, value);
-        } else
+        else
             this->rotateNiblingBlack(node, value);
     }
 
@@ -432,7 +418,8 @@ private:
             this->removeNode(node);
         else {
             node = node->value > value ? node->left : node->right;
-            if (!node) return;
+            if (!node)
+                return;
             else if (node->color == Color::RED)
                 this->decideDelete(node, value);
             else
@@ -667,11 +654,12 @@ public:
      * @param rbt 🟥⬛🌲 to copy from
      * @return RedBlackTree& *this
      */
-    RedBlackTree& operator=(const RedBlackTree& rbt) {
-        if (&rbt != this) {
-            this->clear(this->_root);
-            this->_root = this->copy(rbt._root);
+    RedBlackTree& operator=(const RedBlackTree& rhs) {
+        if (this != &rhs) {
+            this->make_empty();
+            this->_root = this->copy(rhs._root);
         }
+
         return *this;
     }
 
