@@ -193,7 +193,7 @@ public:
             ss << "⬛ ";
             break;
         }
-        ss << this->_pair->first << ": " << this->_pair->second;
+        ss << *this->_pair;
         return ss.str();
     }
 
@@ -541,18 +541,16 @@ private:
                 if (node->_color == Color::BLACK)
                     return;
                 if (!node->sibling()) {
-                    if (node->isLeft()) {
+                    if (node->isLeft())
                         node = this->rotateRight(node->_parent);
-                        node->_color = Color::BLACK;
-                        node->_left->_color = node->_right->_color = Color::RED;
-                        return;
-                    } else {
+                    else {
                         node = this->rotateRight(node);
                         node = this->rotateLeft(node->_parent);
-                        node->_color = Color::BLACK;
-                        node->_left->_color = node->_right->_color = Color::RED;
-                        return;
                     }
+
+                    node->_color = Color::BLACK;
+                    node->_left->_color = node->_right->_color = Color::RED;
+                    return;
                 }
             }
         } else if (node->_pair->first < pair.first) {
@@ -562,18 +560,16 @@ private:
                 if (node->_color == Color::BLACK)
                     return;
                 if (!node->sibling()) {
-                    if (node->isRight()) {
+                    if (node->isRight())
                         node = this->rotateLeft(node->_parent);
-                        node->_color = Color::BLACK;
-                        node->_right->_color = node->_left->_color = Color::RED;
-                        return;
-                    } else {
+                    else {
                         node = this->rotateLeft(node);
                         node = this->rotateRight(node->_parent);
-                        node->_color = Color::BLACK;
-                        node->_right->_color = node->_left->_color = Color::RED;
-                        return;
                     }
+
+                    node->_color = Color::BLACK;
+                    node->_right->_color = node->_left->_color = Color::RED;
+                    return;
                 }
             }
         }
@@ -585,34 +581,20 @@ private:
             if (node->_parent && node->_parent->_color == Color::RED) {
                 if (node->isLeft() && node->_parent->isLeft()) {
                     node = this->rotateRight(node->_parent->_parent);
-                    node->_color = Color::BLACK;
-                    node->_left->_color = node->_right->_color = Color::RED;
-                    this->insert(node, pair);
-                    return;
-                }
-                if (node->isRight() && node->_parent->isRight()) {
+                } else if (node->isRight() && node->_parent->isRight()) {
                     node = this->rotateLeft(node->_parent->_parent);
-                    node->_color = Color::BLACK;
-                    node->_left->_color = node->_right->_color = Color::RED;
-                    this->insert(node, pair);
-                    return;
-                }
-                if (node->isRight() && node->_parent->isLeft()) {
+                } else if (node->isRight() && node->_parent->isLeft()) {
                     node = this->rotateLeft(node->_parent);
                     node = this->rotateRight(node->_parent);
-                    node->_color = Color::BLACK;
-                    node->_left->_color = node->_right->_color = Color::RED;
-                    this->insert(node, pair);
-                    return;
-                }
-                if (node->isLeft() && node->_parent->isRight()) {
+                } else if (node->isLeft() && node->_parent->isRight()) {
                     node = this->rotateRight(node->_parent);
                     node = this->rotateLeft(node->_parent);
-                    node->_color = Color::BLACK;
-                    node->_left->_color = node->_right->_color = Color::RED;
-                    this->insert(node, pair);
-                    return;
                 }
+
+                node->_color = Color::BLACK;
+                node->_left->_color = node->_right->_color = Color::RED;
+                this->insert(node, pair);
+                return;
             }
         }
         this->insert(node->_pair->first > pair.first ? node->_left : node->_right, pair);
@@ -1272,7 +1254,7 @@ public:
             os << "{";
             const_iterator iter(this->begin());
             for (size_t i = 0; i < this->_size; ++i) {
-                os << iter->first << ": " << iter->second;
+                os << *iter;
                 if (i != this->_size - 1)
                     os << ", ";
                 ++iter;
@@ -1346,3 +1328,6 @@ public:
 
 template <class Key, class Value>
 ostream& operator<<(ostream& os, const Map_const_iterator<Key, Value>& iter) { return os << iter.to_string(); }
+
+template <class Key, class Valye>
+ostream& operator<<(ostream& os, const pair<const Key, Valye>& _pair) { return os << _pair.first << ": " << _pair.second; }

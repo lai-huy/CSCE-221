@@ -161,8 +161,11 @@ public:
         case Color::RED:
             ss << "🟥 ";
             break;
-        default:
+        case Color::BLACK:
             ss << "⬛ ";
+            break;
+        default:
+            ss << "🟦 ";
             break;
         }
         ss << this->_value;
@@ -519,18 +522,16 @@ private:
                 if (node->_color == Color::BLACK)
                     return;
                 if (!node->sibling()) {
-                    if (node->isLeft()) {
+                    if (node->isLeft())
                         node = this->rotateRight(node->_parent);
-                        node->_color = Color::BLACK;
-                        node->_left->_color = node->_right->_color = Color::RED;
-                        return;
-                    } else {
+                    else {
                         node = this->rotateRight(node);
                         node = this->rotateLeft(node->_parent);
-                        node->_color = Color::BLACK;
-                        node->_left->_color = node->_right->_color = Color::RED;
-                        return;
                     }
+
+                    node->_color = Color::BLACK;
+                    node->_left->_color = node->_right->_color = Color::RED;
+                    return;
                 }
             }
         } else if (node->_value < value) {
@@ -540,18 +541,16 @@ private:
                 if (node->_color == Color::BLACK)
                     return;
                 if (!node->sibling()) {
-                    if (node->isRight()) {
+                    if (node->isRight())
                         node = this->rotateLeft(node->_parent);
-                        node->_color = Color::BLACK;
-                        node->_right->_color = node->_left->_color = Color::RED;
-                        return;
-                    } else {
+                    else {
                         node = this->rotateLeft(node);
                         node = this->rotateRight(node->_parent);
-                        node->_color = Color::BLACK;
-                        node->_right->_color = node->_left->_color = Color::RED;
-                        return;
                     }
+
+                    node->_color = Color::BLACK;
+                    node->_right->_color = node->_left->_color = Color::RED;
+                    return;
                 }
             }
         }
@@ -561,36 +560,22 @@ private:
             node->_right->_color = node->_left->_color = Color::BLACK;
 
             if (node->_parent && node->_parent->_color == Color::RED) {
-                if (node->isLeft() && node->_parent->isLeft()) {
+                if (node->isLeft() && node->_parent->isLeft())
                     node = this->rotateRight(node->_parent->_parent);
-                    node->_color = Color::BLACK;
-                    node->_left->_color = node->_right->_color = Color::RED;
-                    this->insert(node, value);
-                    return;
-                }
-                if (node->isRight() && node->_parent->isRight()) {
+                else if (node->isRight() && node->_parent->isRight())
                     node = this->rotateLeft(node->_parent->_parent);
-                    node->_color = Color::BLACK;
-                    node->_left->_color = node->_right->_color = Color::RED;
-                    this->insert(node, value);
-                    return;
-                }
-                if (node->isRight() && node->_parent->isLeft()) {
+                else if (node->isRight() && node->_parent->isLeft()) {
                     node = this->rotateLeft(node->_parent);
                     node = this->rotateRight(node->_parent);
-                    node->_color = Color::BLACK;
-                    node->_left->_color = node->_right->_color = Color::RED;
-                    this->insert(node, value);
-                    return;
-                }
-                if (node->isLeft() && node->_parent->isRight()) {
+                } else if (node->isLeft() && node->_parent->isRight()) {
                     node = this->rotateRight(node->_parent);
                     node = this->rotateLeft(node->_parent);
-                    node->_color = Color::BLACK;
-                    node->_left->_color = node->_right->_color = Color::RED;
-                    this->insert(node, value);
-                    return;
                 }
+
+                node->_color = Color::BLACK;
+                node->_left->_color = node->_right->_color = Color::RED;
+                this->insert(node, value);
+                return;
             }
         }
         this->insert(node->_value > value ? node->_left : node->_right, value);
@@ -635,7 +620,8 @@ private:
      * @param value value to remove
      */
     void setUpRedLeaf(Node* node, const Comparable& value) {
-        if (!node) return;
+        if (!node)
+            return;
         if (node->hasColorChildren(Color::BLACK))
             this->setUpRotations(node, value);
         else
@@ -650,11 +636,11 @@ private:
      */
     void setUpRotations(Node* node, const Comparable& value) {
         Node* sibling = node->sibling();
-        if (sibling && sibling->hasColorChildren(Color::BLACK)) {
+        if (sibling && sibling->hasColorChildren(Color::BLACK))
             this->recolorChildren(node, value);
-        } else if ((node->isLeft() && node->leftNiblingRed()) || (node->isRight() && node->rightNiblingRed())) {
+        else if ((node->isLeft() && node->leftNiblingRed()) || (node->isRight() && node->rightNiblingRed()))
             this->rotateNiblingRed(node, value);
-        } else
+        else
             this->rotateNiblingBlack(node, value);
     }
 
@@ -727,7 +713,8 @@ private:
             this->removeNode(node);
         else {
             node = node->_value > value ? node->_left : node->_right;
-            if (!node) return;
+            if (!node)
+                return;
             else if (node->_color == Color::RED)
                 this->decideDelete(node, value);
             else
@@ -820,7 +807,7 @@ private:
      * @param os ostream to print to
      * @param lvl depth of root
      */
-    void print_tree(const Node* const& root, ostream& os, size_t lvl) const {
+    void print_tree(Node* const& root, ostream& os, size_t lvl) const {
         if (root->_right)
             this->print_tree(root->_right, os, lvl + 1);
         os << string(lvl << 2, ' ') << *root << "\n";

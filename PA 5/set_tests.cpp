@@ -1531,8 +1531,9 @@ bool test_self_assignment() {
 }
 
 bool test_node() {
-	Set_Node<int> node(INT32_MAX, Color::RED);
+	Set_Node<int> node(INT32_MAX, static_cast<Color>(4));
 	assert(node.sibling() == nullptr);
+	cout << node << "\n";
 
 	END_TEST;
 }
