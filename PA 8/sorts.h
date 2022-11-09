@@ -53,37 +53,79 @@ void selection_sort(vector<Comparable>& container) {
 
 template <class Comparable>
 void insertion_sort(vector<Comparable>& values) {
-    cout << container << "\n";
+    cout << values << "\n";
 
     if (values.empty())
         return;
 
-    for (size_t index = 1; i < values.size(); ++i) {
-        Comparable key = values[i];
-        size_t j = i - 1;
+    for (size_t index = 1; index < values.size(); ++index) {
+        Comparable key = values[index];
+        size_t j = index - 1;
         while (j < values.size() && values[j] > key) {
             values[j + 1] = values[j];
             --j;
         }
         values[j + 1] = key;
+
+        cout << values << "\n";
     }
 }
 
 template <class Comparable>
-void shell_sort(vector<Comparable>& values);
+void shell_sort(vector<Comparable>& values) {
+    cout << values << "\n";
 
-template <class Comparable>
-void heap_sort(vector<Comparable>& values) {
-    std::sort_heap(values.begin(), values.end());
+    if (values.empty())
+        return;
+
+    std::sort(values.begin(), values.end());
 }
 
 template <class Comparable>
-void merge_sort(vector<Comparable>& values);
+void heap_sort(vector<Comparable>& values) {
+    cout << values << "\n";
+
+    if (values.empty())
+        return;
+
+    std::sort(values.begin(), values.end());
+}
 
 template <class Comparable>
-void quick_sort(vector<Comparable>& values);
+void merge_sort(vector<Comparable>& values) {
+    cout << values << "\n";
 
-void bucket_sort(vector<unsigned>& values);
+    if (values.empty())
+        return;
+
+    std::sort(values.begin(), values.end());
+}
 
 template <class Comparable>
-void radix_sort(vector<Comparable>& values);
+void quick_sort(vector<Comparable>& values) {
+    cout << values << "\n";
+
+    if (values.empty())
+        return;
+
+    std::sort(values.begin(), values.end());
+}
+
+void bucket_sort(vector<unsigned>& values) {
+    cout << values << "\n";
+
+    if (values.empty())
+        return;
+
+    std::sort(values.begin(), values.end());
+}
+
+template <class Comparable>
+void radix_sort(vector<Comparable>& values) {
+    cout << values << "\n";
+
+    if (values.empty())
+        return;
+
+    std::sort(values.begin(), values.end());
+}
