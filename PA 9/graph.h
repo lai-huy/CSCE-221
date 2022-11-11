@@ -28,7 +28,7 @@ class Graph {
     double cost(size_t src, size_t dest) const;
 
     bool add_vertex(size_t id);
-    bool add_edge(size_t src, size_t dest, double weight = 1);
+    bool add_edge(size_t src, size_t dest, double weight = 1.0);
     bool remove_vertex(size_t id);
     bool remove_edge(size_t src, size_t dest);
 

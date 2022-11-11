@@ -86,17 +86,19 @@ void print(const vector<Object>& vect, ostream& os = cout) {
 }
 
 bool test_heapify() {
-    vector<int> heap = {3, 2, 4, 1, 5, 9};
+    vector<int> heap{15, 8, 4, 3, 1, 7, 11, 10, 2, 9, 6, 5, 12, 14, 13};
     print(heap);
 
-    heapify(&heap, less<int>{});
+    less<int> comp{};
+
+    heapify(&heap, comp);
     print(heap);
 
     END_TEST;
 }
 
 bool test_min() {
-    vector<int> heap = {3, 2, 4, 1, 5, 9};
+    vector<int> heap{15, 8, 4, 3, 1, 7, 11, 10, 2, 9, 6, 5, 12, 14, 13};
     heapify(heap, less<int>{});
 
     assert(heap_get_min(heap) == 1);
@@ -110,10 +112,44 @@ bool test_min_empty() {
     END_TEST;
 }
 
-bool test_delete_min() {
-    vector<int> heap = {3, 2, 4, 1, 5, 9};
+bool test_insert_end() {
+    vector<int> heap{15, 8, 4, 3, 1, 7, 11, 10, 2, 9, 6, 5, 12, 14, 13};
     less<int> comp{};
     heapify(heap, comp);
+    print(heap);
+
+    heap_insert(heap, 16, comp);
+    print(heap);
+
+    heap_insert(heap, 20, comp);
+    print(heap);
+
+    heap_insert(heap, 23, comp);
+    print(heap);
+
+    heap_insert(heap, 17, comp);
+    print(heap);
+
+    END_TEST;
+}
+
+bool test_insert_middle() {
+    vector<int> heap{15, 8, 4, 3, 16, 7, 11, 10, 2, 9, 6, 5, 12, 14, 13};
+    less<int> comp{};
+    heapify(heap, comp);
+    print(heap);
+
+    heap_insert(heap, 1, comp);
+    print(heap);
+
+    END_TEST;
+}
+
+bool test_delete_min() {
+    vector<int> heap{15, 8, 4, 3, 1, 7, 11, 10, 2, 9, 6, 5, 12, 14, 13};
+    less<int> comp{};
+    heapify(heap, comp);
+    print(heap);
 
     heap_delete_min(heap, comp);
     print(heap);
@@ -127,7 +163,7 @@ bool test_delete_min_empty() {
 }
 
 bool test_example() {
-    vector<int> heap{150,80,40,30,10,70,110,100,20,90,60,50,120,140,130};
+    vector<int> heap{15,8,4,3,1,7,11,10,2,9,6,5,12,14,13};
     cout << "before heapify: ";
     for (int i : heap) { cout << i << " "; }
     cout << std::endl;
@@ -143,7 +179,7 @@ bool test_example() {
         for (int i : heap) { cout << i << " "; }
         cout << std::endl;
     }
-    int values[] = {47,54,57,43,120,3};
+    int values[] = {47,54,57,43,12,3};
     for (unsigned j = 0; j < 6; j++) {
         cout << "insert " << values[j] << std::endl;
         heap_insert(&heap, values[j]);
@@ -161,9 +197,11 @@ int main() {
     test(heapify);
     test(min);
     test(min_empty);
+    test(insert_end);
+    test(insert_middle);
     test(delete_min);
     test(delete_min_empty);
-    test(example);
+    // test(example);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";

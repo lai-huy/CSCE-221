@@ -78,7 +78,18 @@ void shell_sort(vector<Comparable>& values) {
     if (values.empty())
         return;
 
-    std::sort(values.begin(), values.end());
+    size_t n = values.size();
+    for (size_t gap = n >> 1; gap; gap >>= 1) {
+        for (size_t i = gap; i < n; ++i) {
+            Comparable temp = values[i];
+            size_t j;
+            for (j = i; j >= gap && values[j - gap] > temp; j -= gap)
+                values[j] = values[j - gap];
+            values[j] = temp;
+        }
+
+        cout << values << "\n";
+    }
 }
 
 template <class Comparable>
@@ -92,13 +103,33 @@ void heap_sort(vector<Comparable>& values) {
 }
 
 template <class Comparable>
+void merge(vector<Comparable>& values, const size_t& begin, const size_t& mid, const size_t& end) {
+    size_t i = 0, j = mid + 1, m = begin;
+
+    while (i < mid && j < end)
+        swap(values[m++], values[i] <= values[j] ? values[i++] : values[j++]);
+}
+
+template <class Comparable>
+void merge_sort(vector<Comparable>& values, const size_t& begin, const size_t& end) {
+    if (begin >= end)
+        return;
+
+    size_t mid = begin + ((end - begin) >> 1);
+    merge_sort(values, begin, mid);
+    merge_sort(values, mid + 1, end);
+    merge(values, begin, mid, end);
+    cout << values << "\n";
+}
+
+template <class Comparable>
 void merge_sort(vector<Comparable>& values) {
     cout << values << "\n";
 
     if (values.empty())
         return;
 
-    std::sort(values.begin(), values.end());
+    merge_sort(values, 0, values.size() - 1);
 }
 
 template <class Comparable>

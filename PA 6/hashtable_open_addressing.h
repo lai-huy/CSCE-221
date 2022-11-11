@@ -73,14 +73,25 @@ private:
      * @return size_t next prime number
      */
     size_t nextPrime(const size_t& num) const {
-        size_t i = num;
-        while (!this->isPrime(i))
-            i += 2;
-        return i;
+        size_t b = (num << 1);
+        if (b % 6) {
+            b += (6 - (b % 6));
+            if (this->isPrime(b - 1))
+                return b - 1;
+        }
+
+        while (true) {
+            if (this->isPrime(b + 1))
+                return b + 1;
+            if (this->isPrime(b - 1))
+                return b - 1;
+            b += 6;
+        }
+        return b;
     }
 
     void rehash() {
-        this->_bucket = this->nextPrime((this->_bucket << 1) + 1);
+        this->_bucket = this->nextPrime(this->_bucket);
         vector<Key> temp;
         for (const Cell& cell : this->_table) {
             if (cell._state != State::ACTIVE)

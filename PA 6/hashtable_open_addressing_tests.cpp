@@ -467,7 +467,7 @@ bool test_position_undelete() {
 	assert(table.size() == 5);
 	assert(table.table_size() == 11);
 
-	assert(table.position(0) == 5);
+	assert(table.position(0) == 0);
 
 	END_TEST;
 }
@@ -535,29 +535,44 @@ bool test_copy_empty() {
 	END_TEST;
 }
 
+bool test_next_prime() {
+	HashTable<int, hash<int>> table;
+	size_t prime = 0;
+	for (int i = 0; i < INT16_MAX; ++i) {
+		table.insert(i);
+		if (table.table_size() != prime) {
+			prime = table.table_size();
+			cout << prime << "\n";
+		}
+	}
+
+	END_TEST;
+}
+
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
-	test(create);
-	test(create_size);
-	test(create_size_invalid);
-	test(insert);
-	test(insert_rehash);
-	test(insert_dup);
-	test(insert_conflict);
-	test(insert_conflict_rehash);
-	test(remove);
-	test(remove_empty);
-	test(remove_invalid);
-	test(remove_middle);
-	test(undelete);
-	test(undelete_conflict);
-	test(position_undelete);
-	test(contains);
-	test(print);
-	test(print_empty);
-	test(copy);
-	test(copy_empty);
+	// test(create);
+	// test(create_size);
+	// test(create_size_invalid);
+	// test(insert);
+	// test(insert_rehash);
+	// test(insert_dup);
+	// test(insert_conflict);
+	// test(insert_conflict_rehash);
+	// test(remove);
+	// test(remove_empty);
+	// test(remove_invalid);
+	// test(remove_middle);
+	// test(undelete);
+	// test(undelete_conflict);
+	// test(position_undelete);
+	// test(contains);
+	// test(print);
+	// test(print_empty);
+	// test(copy);
+	// test(copy_empty);
+	test(next_prime);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";

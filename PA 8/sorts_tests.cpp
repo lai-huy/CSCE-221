@@ -100,7 +100,7 @@ bool test_insert_empty() {
 }
 
 bool test_shell() {
-    vector<int> vect{9, 4, 3, 1, 7, 8, 0, 5, 6, 2};
+    vector<int> vect{81, 94, 11, 96, 12, 35, 17, 95, 28, 58, 41, 75, 15};
 
     shell_sort(vect);
     END_TEST;
@@ -186,22 +186,22 @@ bool test_radix_empty() {
 int main() {
     unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
-    test(selection);
-    test(selection_empty);
-    test(insert);
-    test(insert_empty);
-    test(shell);
-    test(shell_empty);
-    test(heap);
-    test(heap_empty);
+    // test(selection);
+    // test(selection_empty);
+    // test(insert);
+    // test(insert_empty);
+    // test(shell);
+    // test(shell_empty);
+    // test(heap);
+    // test(heap_empty);
     test(merge);
-    test(merge_empty);
-    test(quick);
-    test(quick_empty);
-    test(bucket);
-    test(bucket_empty);
-    test(radix);
-    test(radix_empty);
+    // test(merge_empty);
+    // test(quick);
+    // test(quick_empty);
+    // test(bucket);
+    // test(bucket_empty);
+    // test(radix);
+    // test(radix_empty);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";
