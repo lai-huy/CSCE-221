@@ -70,7 +70,11 @@ public:
      *
      * @return Container::const_reference the first element of the priority queue
      */
-    typename Container::const_reference top() const { return heap_get_min(this->_container); }
+    typename Container::const_reference top() const {
+        if (!this->_size)
+            throw invalid_argument("Priority Queue is empty");
+        return heap_get_min(this->_container);
+    }
 
     /**
      * @brief Determine if the priority queue is empty
@@ -102,7 +106,12 @@ public:
     /**
      * @brief Removes the top value from the priority queue
      */
-    void pop() { heap_delete_min(this->_container, this->_compare); --this->_size; }
+    void pop() {
+        if (!this->_size)
+            throw invalid_argument("Priority Queue is empty");
+        heap_delete_min(this->_container, this->_compare);
+        --this->_size;
+    }
 
     /**
      * @brief Print the priority queue
@@ -111,9 +120,9 @@ public:
      */
     void print_queue(ostream& os = cout) const {
         if (this->_size) {
-            for (typename Container::const_iterator iter = this->_container.begin() + 1; iter != this->_container.end(); ++iter) {
-                os << *iter;
-                if (iter != this->_container.end() - 1)
+            for (size_t i = 1; i < this->_container.size(); ++i) {
+                os << this->_container[i];
+                if (i != this->_container.size() - 1)
                     os << ", ";
             }
         } else
@@ -143,22 +152,12 @@ public:
         if (this != &rhs) {
             this->make_empty();
             this->_compare = rhs._compare;
+            this->_container.resize(rhs._container.size());
             std::copy(rhs._container.begin(), rhs._container.end(), this->_container.begin());
             this->_size = rhs._size;
         }
 
         return *this;
-    }
-
-    /**
-     * @brief Construct a new Priority Queue object
-     *
-     * @param compare comparator function
-     * @param container container of comparables
-     */
-    PriorityQueue(const Compare& compare, Container&& container) : _compare{compare}, _container{Container()}, _size{container.size()} {
-        std::swap_ranges(container.begin(), container.end(), this->_container.begin());
-        heapify(this->_container, this->_compare);
     }
 
     /**
@@ -180,6 +179,7 @@ public:
         if (this != &rhs) {
             this->make_empty();
             this->_compare = rhs._compare;
+            this->_container.resize(rhs._container.size());
             std::swap_ranges(rhs._container.begin(), rhs._container.end(), this->_container.begin());
             swap(this->_size, rhs._size);
         }

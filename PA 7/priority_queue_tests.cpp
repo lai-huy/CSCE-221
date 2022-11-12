@@ -137,7 +137,7 @@ bool test_push() {
     PriorityQueue<int> queue(vect);
     assert(queue.size() == vect.size());
 
-    queue.push(0);
+    expect_no_throw(queue.push(0));
     assert(queue.top() == 0);
     assert(queue.size() == 16);
 
@@ -175,7 +175,7 @@ bool test_pop() {
     PriorityQueue<int> queue(vect);
     assert(queue.size() == vect.size());
 
-    queue.pop();
+    expect_no_throw(queue.pop());
     assert(queue.size() == 14);
 
     END_TEST;
@@ -187,6 +187,20 @@ bool test_pop_empty() {
     assert(queue.empty());
 
     expect_throw(queue.pop(), invalid_argument);
+
+    END_TEST;
+}
+
+bool test_pop_until_empty() {
+    vector<int> vect{15, 8, 4, 3, 1, 7, 11, 10, 2, 9, 6, 5, 12, 14, 13};
+    PriorityQueue<int> queue(vect);
+    assert(queue.size() == vect.size());
+
+    while (!queue.empty())
+        expect_no_throw(queue.pop());
+
+    assert(queue.size() == 0);
+    assert(queue.empty());
 
     END_TEST;
 }
@@ -314,6 +328,7 @@ int main() {
     test(push_empty);
     test(pop);
     test(pop_empty);
+    test(pop_until_empty);
     test(print);
     test(print_empty);
     test(example);
