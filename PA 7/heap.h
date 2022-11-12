@@ -28,14 +28,6 @@ void build(Container* container, const size_t& heap_size, const size_t& parent, 
     }
 }
 
-template <class Container, class Compare = less<typename Container::value_type>>
-typename Container::const_reference replaceChild(size_t root, const Container& container, Compare compare = less<typename Container::value_type>{}) {
-    size_t left = root << 1, right = left + 1;
-    if (right > container.size())
-        return left;
-    return compare(container[left], container[right]) ? left : right;
-}
-
 /**
  * @brief
  *
