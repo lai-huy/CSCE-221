@@ -163,29 +163,29 @@ bool test_delete_min_empty() {
 }
 
 bool test_example() {
-    vector<int> heap{15,8,4,3,1,7,11,10,2,9,6,5,12,14,13};
+    vector<int> heap{150, 80, 40, 30, 10, 70, 110, 100, 20, 90, 60, 50, 120, 140, 130};
     cout << "before heapify: ";
-    for (int i : heap) { cout << i << " "; }
-    cout << std::endl;
+    for (const int& i : heap) cout << i << " ";
+    cout << "\n";
     heapify(&heap);
     cout << "after heapify: ";
-    for (int i : heap) { cout << i << " "; }
-    cout << std::endl;
+    for (const int& i : heap) cout << i << " ";
+    cout << "\n";
     for (unsigned j = 0; j < 4; j++) {
-        cout << "minimum is " << heap_get_min(heap) << std::endl;
-        cout << "delete min" << std::endl;
+        cout << "minimum is " << heap_get_min(heap) << "\n";
+        cout << "delete min\n";
         heap_delete_min(&heap);
         cout << "heap: ";
-        for (int i : heap) { cout << i << " "; }
-        cout << std::endl;
+        for (const int& i : heap) cout << i << " ";
+        cout << "\n";
     }
     int values[] = {47,54,57,43,12,3};
-    for (unsigned j = 0; j < 6; j++) {
-        cout << "insert " << values[j] << std::endl;
-        heap_insert(&heap, values[j]);
+    for (const int& num : values) {
+        cout << "insert " << num << "\n";
+        heap_insert(&heap, num);
         cout << "heap: ";
-        for (int i : heap) { cout << i << " "; }
-        cout << std::endl;
+        for (const int& i : heap) cout << i << " ";
+        cout << "\n";
     }
 
     END_TEST;
@@ -201,7 +201,7 @@ int main() {
     test(insert_middle);
     test(delete_min);
     test(delete_min_empty);
-    // test(example);
+    test(example);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";

@@ -16,8 +16,7 @@ using std::reverse;
 
 template <class Container, class Compare = less<typename Container::value_type>>
 void build(Container* container, const size_t& heap_size, const size_t& parent, Compare compare = less<typename Container::value_type>{}) {
-    size_t left = parent << 1, right = left + 1;
-    size_t index = parent;
+    size_t left = parent << 1, right = left + 1, index = parent;
 
     if (left < heap_size && compare(container->at(left), container->at(parent)))
         index = left;
@@ -28,8 +27,6 @@ void build(Container* container, const size_t& heap_size, const size_t& parent, 
         build(container, heap_size, index, compare);
     }
 }
-
-size_t parent(const size_t& root) { return root >> 1; }
 
 template <class Container, class Compare = less<typename Container::value_type>>
 typename Container::const_reference replaceChild(size_t root, const Container& container, Compare compare = less<typename Container::value_type>{}) {
@@ -53,7 +50,6 @@ void heapify(Container* container, Compare compare = less<typename Container::va
     size_t heap_size = container->size() - 1;
     for (size_t i = (heap_size >> 1); i >= 1; --i)
         build(container, heap_size, i, compare);
-    container->erase(container->begin());
 }
 
 /**
@@ -67,17 +63,15 @@ void heapify(Container* container, Compare compare = less<typename Container::va
  */
 template <class Container, class Compare = less<typename Container::value_type>>
 void heap_insert(Container* container, const typename Container::value_type& value, Compare compare = less<typename Container::value_type>{}) {
-    container->insert(container->begin(), typename Container::value_type());
     size_t index = container->size();
     container->push_back(value);
-    size_t p = parent(index);
-    while (index >> 1) {
-        if (compare(container->at(index), container->at(p)))
-            swap(container->at(index), container->at(p));
+    size_t parent = index >> 1;
+    while (parent) {
+        if (compare(container->at(index), container->at(parent)))
+            swap(container->at(index), container->at(parent));
         index >>= 1;
-        p = parent(index);
+        parent >>= 1;
     }
-    container->erase(container->begin());
 }
 
 /**
@@ -89,9 +83,9 @@ void heap_insert(Container* container, const typename Container::value_type& val
  */
 template <class Container>
 typename Container::const_reference heap_get_min(const Container& container) {
-    if (!container.size())
+    if (container.size() < 2)
         throw invalid_argument("Heap is empty");
-    return *container.begin();
+    return container[1];
 }
 
 /**
@@ -104,12 +98,12 @@ typename Container::const_reference heap_get_min(const Container& container) {
  */
 template <class Container, class Compare = less<typename Container::value_type>>
 void heap_delete_min(Container* container, Compare compare = less<typename Container::value_type>{}) {
-    if (!container->size())
+    size_t size = container->size();
+    if (size < 2)
         throw invalid_argument("Heap is empty");
-    reverse(container->begin(), container->end());
+    swap(container->at(1), container->back());
     container->pop_back();
-    reverse(container->begin(), container->end());
-    heapify(container, compare);
+    build(container, size - 1, 1, compare);
 }
 
 
