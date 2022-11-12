@@ -163,6 +163,17 @@ public:
     /**
      * @brief Construct a new Priority Queue object
      *
+     * @param compare comparator function
+     * @param container container to move from
+     */
+    PriorityQueue(const Compare& compare, Container&& container) : _compare{compare}, _container{Container()}, _size{container.size()} {
+        swap(this->_container, container);
+        heapify(this->_container, this->_compare);
+    }
+
+    /**
+     * @brief Construct a new Priority Queue object
+     *
      * @param rhs Priority queue to move from
      */
     PriorityQueue(PriorityQueue&& rhs) : _compare{move(rhs._compare)}, _container{move(rhs._container)}, _size{move(rhs._size)} {
