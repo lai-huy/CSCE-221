@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include "heap.h"
 
 using std::cout, std::ostream;
 using std::vector;
@@ -32,21 +33,18 @@ ostream& operator<<(ostream& os, const vector<Printable>& container) {
 // Selection sort (example of implementation expectations)
 template <class Comparable>
 void selection_sort(vector<Comparable>& container) {
-    // print the initial container
     cout << container << "\n";
 
     if (container.empty())
         return;
 
     for (size_t index = 0; index < container.size() - 1; ++index) {
-        // do 1 pass of selection sort: find the min and swap it to the front
         size_t index_min = index;
         for (size_t i = index + 1; i < container.size(); ++i)
             if (container[i] < container[index_min])
                 index_min = i;
         swap(container[index], container[index_min]);
 
-        // print the container after each pass
         cout << container << "\n";
     }
 }
@@ -79,7 +77,7 @@ void shell_sort(vector<Comparable>& values) {
         return;
 
     size_t n = values.size();
-    for (size_t gap = n >> 1; gap; gap >>= 1) {
+    for (size_t gap = n >> 1; gap > 0; gap >>= 1) {
         for (size_t i = gap; i < n; ++i) {
             Comparable temp = values[i];
             size_t j;
@@ -99,7 +97,15 @@ void heap_sort(vector<Comparable>& values) {
     if (values.empty())
         return;
 
-    std::sort(values.begin(), values.end());
+    vector<Comparable> heap(values.begin(), values.end());
+    heapify(heap);
+    cout << heap << "\n";
+    values.clear();
+    while (heap.size() != 1) {
+        values.push_back(heap_get_min(heap));
+        heap_delete_min(heap);
+        cout << heap << "\n" << values << "\n";
+    }
 }
 
 template <class Comparable>
@@ -131,6 +137,38 @@ void merge_sort(vector<Comparable>& values) {
 
     merge_sort(values, 0, values.size() - 1);
 }
+template <class Comparable>
+size_t partition(vector<Comparable>& values, const size_t& start, const size_t& end) {
+    const Comparable& pivot = values[start];
+    size_t count = 0;
+    for (size_t i = start + 1; i <= end; ++i)
+        if (values[i] < pivot)
+            ++count;
+
+    size_t index = start + count;
+    swap(values[index], values[start]);
+    size_t i = start, j = end, n = values.size();
+    while (i < index && j > index) {
+        while (i < n && values.at(i) <= pivot)
+            ++i;
+        while (j < n && values.at(j) >= pivot)
+            ++j;
+        if (i < index && j > index)
+            swap(values[i++], values[j--]);
+        cout << values << "\n";
+    }
+
+    return index;
+}
+
+template <class Comparable>
+void quick_sort(vector<Comparable>& values, const size_t& start, const size_t& end) {
+    if (start >= end)
+        return;
+    size_t p = partition(values, start, end);
+    quick_sort(values, start, p - 1);
+    quick_sort(values, p + 1, end);
+}
 
 template <class Comparable>
 void quick_sort(vector<Comparable>& values) {
@@ -139,7 +177,7 @@ void quick_sort(vector<Comparable>& values) {
     if (values.empty())
         return;
 
-    std::sort(values.begin(), values.end());
+    quick_sort(values, 0, values.size());
 }
 
 void bucket_sort(vector<unsigned>& values) {
