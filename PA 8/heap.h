@@ -30,7 +30,7 @@ void pushDown(Container* container, const size_t& heap_size, const size_t& paren
 
     if (left < heap_size && compare(container->at(left), container->at(parent)))
         index = left;
-    if (right < heap_size && compare(container->at(right), container->at(index)))
+    if (right <= heap_size && compare(container->at(right), container->at(index)))
         index = right;
     if (index != parent) {
         swap(container->at(parent), container->at(index));
@@ -100,12 +100,14 @@ typename Container::const_reference heap_get_min(const Container& container) {
  */
 template <class Container, class Compare = less<typename Container::value_type>>
 void heap_delete_min(Container* container, Compare compare = less<typename Container::value_type>{}) {
-    size_t size = container->size();
-    if (size < 2)
+    if (container->size() < 2)
         throw invalid_argument("Heap is empty");
-    swap(container->at(1), container->back());
-    container->pop_back();
-    pushDown(container, size - 1, 1, compare);
+    if (container->size() > 4) {
+        swap(container->at(1), container->back());
+        container->pop_back();
+        pushDown(container, container->size() - 1, 1, compare);
+    } else
+        container->erase(container->begin() + 1);
 }
 
 

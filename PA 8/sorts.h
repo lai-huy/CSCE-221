@@ -9,7 +9,9 @@
 using std::cout, std::ostream;
 using std::vector;
 using std::string;
-using std::swap;
+using std::swap, std::move;
+using std::begin, std::end;
+using std::max_element;
 
 // Pretty printing for vectors of Printable objects (have ostream operator<< defined)
 // Be careful: modifications risk failing tests
@@ -79,13 +81,12 @@ void shell_sort(vector<Comparable>& values) {
     size_t n = values.size();
     for (size_t gap = n >> 1; gap > 0; gap >>= 1) {
         for (size_t i = gap; i < n; ++i) {
-            Comparable temp = values[i];
+            Comparable temp = move(values[i]);
             size_t j;
-            for (j = i; j >= gap && values[j - gap] > temp; j -= gap)
-                values[j] = values[j - gap];
-            values[j] = temp;
+            for (j = i; j >= gap && temp < values[j - gap]; j -= gap)
+                values[j] = move(values[j - gap]);
+            values[j] = move(temp);
         }
-
         cout << values << "\n";
     }
 }
@@ -98,34 +99,41 @@ void heap_sort(vector<Comparable>& values) {
         return;
 
     vector<Comparable> heap(values.begin(), values.end());
-    heapify(heap);
+    heapify(&heap);
     cout << heap << "\n";
     values.clear();
     while (heap.size() != 1) {
         values.push_back(heap_get_min(heap));
-        heap_delete_min(heap);
+        heap_delete_min(&heap);
         cout << heap << "\n" << values << "\n";
     }
 }
 
 template <class Comparable>
-void merge(vector<Comparable>& values, const size_t& begin, const size_t& mid, const size_t& end) {
-    size_t i = 0, j = mid + 1, m = begin;
+void merge(vector<Comparable>& values, vector<Comparable>& tmpArray, size_t leftPos, size_t rightPos, size_t rightEnd) {
+    size_t leftEnd = rightPos - 1, tmpPos = leftPos, numElements = rightEnd - leftPos + 1;
+    while (leftPos <= leftEnd && rightPos <= rightEnd)
+        tmpArray[tmpPos++] = move(values[leftPos] <= values[rightPos] ? values[leftPos++] : values[rightPos++]);
 
-    while (i < mid && j < end)
-        swap(values[m++], values[i] <= values[j] ? values[i++] : values[j++]);
+    while (leftPos <= leftEnd)
+        tmpArray[tmpPos++] = move(values[leftPos++]);
+
+    while (rightPos <= rightEnd)
+        tmpArray[tmpPos++] = move(values[rightPos++]);
+
+    for (size_t i = 0; i < numElements; ++i, --rightEnd)
+        values[rightEnd] = move(tmpArray[rightEnd]);
 }
 
 template <class Comparable>
-void merge_sort(vector<Comparable>& values, const size_t& begin, const size_t& end) {
-    if (begin >= end)
-        return;
-
-    size_t mid = begin + ((end - begin) >> 1);
-    merge_sort(values, begin, mid);
-    merge_sort(values, mid + 1, end);
-    merge(values, begin, mid, end);
-    cout << values << "\n";
+void merge_sort(vector<Comparable>& values, vector<Comparable>& temp, size_t begin, size_t end) {
+    if (begin < end) {
+        size_t center = begin + ((end - begin) >> 1);
+        merge_sort(values, temp, begin, center);
+        merge_sort(values, temp, center + 1, end);
+        merge(values, temp, begin, center + 1, end);
+        cout << values << "\n";
+    }
 }
 
 template <class Comparable>
@@ -135,39 +143,8 @@ void merge_sort(vector<Comparable>& values) {
     if (values.empty())
         return;
 
-    merge_sort(values, 0, values.size() - 1);
-}
-template <class Comparable>
-size_t partition(vector<Comparable>& values, const size_t& start, const size_t& end) {
-    const Comparable& pivot = values[start];
-    size_t count = 0;
-    for (size_t i = start + 1; i <= end; ++i)
-        if (values[i] < pivot)
-            ++count;
-
-    size_t index = start + count;
-    swap(values[index], values[start]);
-    size_t i = start, j = end, n = values.size();
-    while (i < index && j > index) {
-        while (i < n && values.at(i) <= pivot)
-            ++i;
-        while (j < n && values.at(j) >= pivot)
-            ++j;
-        if (i < index && j > index)
-            swap(values[i++], values[j--]);
-        cout << values << "\n";
-    }
-
-    return index;
-}
-
-template <class Comparable>
-void quick_sort(vector<Comparable>& values, const size_t& start, const size_t& end) {
-    if (start >= end)
-        return;
-    size_t p = partition(values, start, end);
-    quick_sort(values, start, p - 1);
-    quick_sort(values, p + 1, end);
+    vector<Comparable> temp(values.size(), Comparable{});
+    merge_sort(values, temp, 0, values.size() - 1);
 }
 
 template <class Comparable>
@@ -177,7 +154,22 @@ void quick_sort(vector<Comparable>& values) {
     if (values.empty())
         return;
 
-    quick_sort(values, 0, values.size());
+    vector<Comparable> smaller{}, same{}, larger{};
+    const Comparable& partition = values[values.size() >> 1];
+    for (const Comparable& item : values)
+        if (item < partition)
+            smaller.push_back(move(item));
+        else if (item > partition)
+            larger.push_back(move(item));
+        else
+            same.push_back(move(item));
+
+    quick_sort(smaller);
+    quick_sort(larger);
+    move(begin(smaller), end(smaller), begin(values));
+    move(begin(same), end(same), begin(values) + smaller.size());
+    move(begin(larger), end(larger), begin(values) + smaller.size() + same.size());
+    cout << values << "\n";
 }
 
 void bucket_sort(vector<unsigned>& values) {
@@ -186,7 +178,20 @@ void bucket_sort(vector<unsigned>& values) {
     if (values.empty())
         return;
 
-    std::sort(values.begin(), values.end());
+    vector<size_t> counts(*max_element(values.begin(), values.end()) + 1);
+    for (const unsigned& index : values)
+        ++counts[index];
+    counts.shrink_to_fit();
+    cout << counts << "\n";
+
+    values.clear();
+    for (size_t i = 0; i < counts.size(); ++i) {
+        if (!counts[i])
+            continue;
+        for (size_t j = 0; j < counts[i]; ++j)
+            values.push_back(i);
+        cout << values << "\n";
+    }
 }
 
 template <class Comparable>
@@ -196,5 +201,7 @@ void radix_sort(vector<Comparable>& values) {
     if (values.empty())
         return;
 
+    // const Comparable& val = std::max_element(values.begin(), values.end());
     std::sort(values.begin(), values.end());
+    cout << values << "\n";
 }

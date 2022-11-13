@@ -156,7 +156,7 @@ bool test_quick_empty() {
 }
 
 bool test_bucket() {
-    vector<unsigned int> vect{81, 94, 11, 96, 12, 35, 17, 95, 28, 58, 41, 75, 15};
+    vector<unsigned int> vect{8, 1, 9, 4, 1, 1, 9, 6, 1, 2, 3, 5, 1, 7, 9, 5, 2, 8, 5, 8, 4, 1, 7, 5, 1, 5};
 
     bucket_sort(vect);
     END_TEST;
@@ -170,7 +170,7 @@ bool test_bucket_empty() {
 }
 
 bool test_radix() {
-    vector<int> vect{81, 94, 11, 96, 12, 35, 17, 95, 28, 58, 41, 75, 15};
+    vector<int> vect{64, 8, 216, 512, 27, 729, 0, 1, 343, 125};
 
     radix_sort(vect);
     END_TEST;
