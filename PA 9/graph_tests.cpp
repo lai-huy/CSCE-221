@@ -10,6 +10,8 @@
 #define white   "\033[37m"
 #define reset   "\033[m"
 
+using std::cout;
+
 #define END_TEST bool this_test_passed = test_passed;\
 test_passed = true;\
 return this_test_passed;
@@ -80,7 +82,6 @@ bool test_add_vertex() {
     assert(g.vertex_count() == 0);
     assert(g.edge_count() == 0);
 
-    assert(g.add_vertex(0));
     assert(g.add_vertex(1));
     assert(g.add_vertex(2));
     assert(g.add_vertex(3));
@@ -89,7 +90,7 @@ bool test_add_vertex() {
     assert(g.add_vertex(6));
     assert(g.add_vertex(7));
 
-    assert(g.vertex_count() == 8);
+    assert(g.vertex_count() == 7);
     assert(g.edge_count() == 0);
 
     END_TEST;
@@ -102,7 +103,7 @@ bool test_add_vertex_skip() {
 
     assert(g.add_vertex(7));
 
-    assert(g.vertex_count() == 8);
+    assert(g.vertex_count() == 1);
     assert(g.edge_count() == 0);
 
     END_TEST;
@@ -115,10 +116,12 @@ bool test_add_vertex_fail() {
 
     assert(g.add_vertex(7));
 
-    assert(g.vertex_count() == 8);
+    assert(g.vertex_count() == 1);
     assert(g.edge_count() == 0);
 
-    assert(!g.add_vertex(3));
+    assert(!g.add_vertex(7));
+    assert(g.vertex_count() == 1);
+    assert(g.edge_count() == 0);
 
     END_TEST;
 }
@@ -128,7 +131,6 @@ bool test_add_edge() {
     assert(g.vertex_count() == 0);
     assert(g.edge_count() == 0);
 
-    assert(g.add_vertex(0));
     assert(g.add_vertex(1));
     assert(g.add_vertex(2));
     assert(g.add_vertex(3));
@@ -137,18 +139,23 @@ bool test_add_edge() {
     assert(g.add_vertex(6));
     assert(g.add_vertex(7));
 
-    assert(g.vertex_count() == 8);
+    assert(g.vertex_count() == 7);
     assert(g.edge_count() == 0);
 
-    assert(g.add_edge(0, 1, 1.0));
-    assert(g.add_edge(0, 3, 5.0));
-    assert(g.add_edge(1, 3, 3.0));
-    assert(g.add_edge(2, 1, 2.0));
-    assert(g.add_edge(2, 5, 1.5));
-    assert(g.add_edge(4, 2, 0.5));
-    assert(g.add_edge(7, 4, 4.0));
-    assert(g.edge_count() == 7);
-    assert(g.vertex_count() == 8);
+    assert(g.add_edge(1, 2, 5));
+    assert(g.add_edge(1, 3, 3));
+    assert(g.add_edge(2, 3, 2));
+    assert(g.add_edge(2, 5, 3));
+    assert(g.add_edge(2, 7, 1));
+    assert(g.add_edge(3, 4, 7));
+    assert(g.add_edge(3, 5, 7));
+    assert(g.add_edge(4, 1, 2));
+    assert(g.add_edge(4, 6, 6));
+    assert(g.add_edge(5, 4, 2));
+    assert(g.add_edge(5, 6, 1));
+    assert(g.add_edge(7, 5, 1));
+    assert(g.edge_count() == 12);
+    assert(g.vertex_count() == 7);
 
     END_TEST;
 }
@@ -158,7 +165,6 @@ bool test_add_edge_fail() {
     assert(g.vertex_count() == 0);
     assert(g.edge_count() == 0);
 
-    assert(g.add_vertex(0));
     assert(g.add_vertex(1));
     assert(g.add_vertex(2));
     assert(g.add_vertex(3));
@@ -167,17 +173,23 @@ bool test_add_edge_fail() {
     assert(g.add_vertex(6));
     assert(g.add_vertex(7));
 
-    assert(g.vertex_count() == 8);
+    assert(g.vertex_count() == 7);
     assert(g.edge_count() == 0);
 
-    assert(!g.add_edge(1, 0, INFINITY));
-    assert(!g.add_edge(0, 1, NAN));
-    assert(!g.add_edge(0, 9, 1.0));
-    assert(!g.add_edge(9, 0, 1.0));
-    assert(!g.add_edge(0, 0, 1.0));
+    // assert(!g.add_edge(2, 1, INFINITY));
+    // assert(!g.add_edge(1, 2, NAN));
+    assert(!g.add_edge(1, 8, 1.0));
+    assert(!g.add_edge(8, 1, 1.0));
+    assert(!g.add_edge(1, 1, 1.0));
 
-    assert(g.vertex_count() == 8);
+    assert(g.vertex_count() == 7);
     assert(g.edge_count() == 0);
+
+    assert(g.add_edge(2, 1, 1.0));
+    assert(!g.add_edge(2, 1, 5.0));
+    assert(g.vertex_count() == 7);
+    assert(g.edge_count() == 1);
+    assert(g.cost(2, 1) == 1.0);
 
     END_TEST;
 }
@@ -187,7 +199,6 @@ bool test_remove_vertex() {
     assert(g.vertex_count() == 0);
     assert(g.edge_count() == 0);
 
-    assert(g.add_vertex(0));
     assert(g.add_vertex(1));
     assert(g.add_vertex(2));
     assert(g.add_vertex(3));
@@ -196,23 +207,207 @@ bool test_remove_vertex() {
     assert(g.add_vertex(6));
     assert(g.add_vertex(7));
 
-    assert(g.vertex_count() == 8);
+    assert(g.vertex_count() == 7);
     assert(g.edge_count() == 0);
 
-    assert(g.add_edge(0, 1, 1.0));
-    assert(g.add_edge(0, 3, 5.0));
-    assert(g.add_edge(1, 3, 3.0));
-    assert(g.add_edge(2, 1, 2.0));
-    assert(g.add_edge(2, 5, 1.5));
-    assert(g.add_edge(4, 2, 0.5));
-    assert(g.add_edge(7, 4, 4.0));
-    assert(g.edge_count() == 7);
-    assert(g.vertex_count() == 8);
+    assert(g.add_edge(1, 2, 5));
+    assert(g.add_edge(1, 3, 3));
+    assert(g.add_edge(2, 3, 2));
+    assert(g.add_edge(2, 5, 3));
+    assert(g.add_edge(2, 7, 1));
+    assert(g.add_edge(3, 4, 7));
+    assert(g.add_edge(3, 5, 7));
+    assert(g.add_edge(4, 1, 2));
+    assert(g.add_edge(4, 6, 6));
+    assert(g.add_edge(5, 4, 2));
+    assert(g.add_edge(5, 6, 1));
+    assert(g.add_edge(7, 5, 1));
+    assert(g.edge_count() == 12);
+    assert(g.vertex_count() == 7);
+
+    assert(g.remove_vertex(7));
+    assert(g.edge_count() == 10);
+    assert(g.vertex_count() == 6);
+
+    assert(g.remove_vertex(6));
+    assert(g.edge_count() == 8);
+    assert(g.vertex_count() == 5);
+
+    assert(g.remove_vertex(5));
+    assert(g.edge_count() == 5);
+    assert(g.vertex_count() == 4);
+
+    assert(g.remove_vertex(4));
+    assert(g.edge_count() == 3);
+    assert(g.vertex_count() == 3);
+
+    assert(g.remove_vertex(3));
+    assert(g.edge_count() == 1);
+    assert(g.vertex_count() == 2);
 
     assert(g.remove_vertex(2));
-    assert(g.edge_count() == 4);
+    assert(g.edge_count() == 0);
+    assert(g.vertex_count() == 1);
+
+    assert(g.remove_vertex(1));
+    assert(g.edge_count() == 0);
+    assert(g.vertex_count() == 0);
+
+    END_TEST;
+}
+
+bool test_remove_vertex_fail() {
+    Graph g{};
+    assert(g.vertex_count() == 0);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_vertex(1));
+    assert(g.add_vertex(2));
+    assert(g.add_vertex(3));
+    assert(g.add_vertex(4));
+    assert(g.add_vertex(5));
+    assert(g.add_vertex(6));
+    assert(g.add_vertex(7));
+
     assert(g.vertex_count() == 7);
-    assert(g.contains_vertex(2));
+    assert(g.edge_count() == 0);
+
+    assert(!g.remove_vertex(8));
+    assert(!g.remove_vertex(0));
+
+    END_TEST;
+}
+
+bool test_example() {
+    cout << "make an empty digraph\n";
+    Graph G;
+    cout << "add vertices\n";
+    for (size_t n = 1; n <= 7; n++)
+        G.add_vertex(n);
+
+    cout << "add directed edges\n";
+    G.add_edge(1, 2, 5);  // 1 ->{5} 2; (edge from 1 to 2 with weight 5)
+    G.add_edge(1, 3, 3);
+    G.add_edge(2, 3, 2);
+    G.add_edge(2, 5, 3);
+    G.add_edge(2, 7, 1);
+    G.add_edge(3, 4, 7);
+    G.add_edge(3, 5, 7);
+    G.add_edge(4, 1, 2);
+    G.add_edge(4, 6, 6);
+    G.add_edge(5, 4, 2);
+    G.add_edge(5, 6, 1);
+    G.add_edge(7, 5, 1);
+
+    assert(G.contains_edge(1, 2));
+    assert(G.contains_edge(1, 3));
+    assert(G.contains_edge(2, 3));
+    assert(G.contains_edge(2, 5));
+    assert(G.contains_edge(2, 7));
+    assert(G.contains_edge(3, 4));
+    assert(G.contains_edge(3, 5));
+    assert(G.contains_edge(4, 1));
+    assert(G.contains_edge(4, 6));
+    assert(G.contains_edge(5, 4));
+    assert(G.contains_edge(5, 6));
+    assert(G.contains_edge(7, 5));
+
+    cout << "G has " << G.vertex_count() << " vertices\n";
+    cout << "G has " << G.edge_count() << " edges\n";
+    cout << "compute shortest path from 2\n";
+    G.dijkstra(2);
+    cout << "print shortest paths\n";
+    for (size_t n = 1; n <= 7; n++) {
+        cout << "shortest path from 2 to " << n << "\n";
+        cout << "  ";
+        G.print_shortest_path(n);
+    }
+
+    END_TEST;
+}
+
+bool test_cost() {
+    Graph g{};
+    assert(g.vertex_count() == 0);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_vertex(1));
+    assert(g.add_vertex(2));
+    assert(g.add_vertex(3));
+    assert(g.add_vertex(4));
+    assert(g.add_vertex(5));
+    assert(g.add_vertex(6));
+    assert(g.add_vertex(7));
+
+    assert(g.vertex_count() == 7);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_edge(1, 2, 5));
+    assert(g.add_edge(1, 3, 3));
+    assert(g.add_edge(2, 3, 2));
+    assert(g.add_edge(2, 5, 3));
+    assert(g.add_edge(2, 7, 1));
+    assert(g.add_edge(3, 4, 7));
+    assert(g.add_edge(3, 5, 7));
+    assert(g.add_edge(4, 1, 2));
+    assert(g.add_edge(4, 6, 6));
+    assert(g.add_edge(5, 4, 2));
+    assert(g.add_edge(5, 6, 1));
+    assert(g.add_edge(7, 5, 1));
+    assert(g.edge_count() == 12);
+    assert(g.vertex_count() == 7);
+
+    assert(g.cost(1, 2) == 5);
+    assert(g.cost(1, 3) == 3);
+    assert(g.cost(2, 3) == 2);
+    assert(g.cost(2, 5) == 3);
+    assert(g.cost(2, 7) == 1);
+    assert(g.cost(3, 4) == 7);
+    assert(g.cost(3, 5) == 7);
+    assert(g.cost(4, 1) == 2);
+    assert(g.cost(4, 6) == 6);
+    assert(g.cost(5, 4) == 2);
+    assert(g.cost(5, 6) == 1);
+    assert(g.cost(7, 5) == 1);
+
+    END_TEST;
+}
+
+bool test_cost_invalid() {
+    Graph g{};
+    assert(g.vertex_count() == 0);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_vertex(1));
+    assert(g.add_vertex(2));
+    assert(g.add_vertex(3));
+    assert(g.add_vertex(4));
+    assert(g.add_vertex(5));
+    assert(g.add_vertex(6));
+    assert(g.add_vertex(7));
+
+    assert(g.vertex_count() == 7);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_edge(1, 2, 5));
+    assert(g.add_edge(1, 3, 3));
+    assert(g.add_edge(2, 3, 2));
+    assert(g.add_edge(2, 5, 3));
+    assert(g.add_edge(2, 7, 1));
+    assert(g.add_edge(3, 4, 7));
+    assert(g.add_edge(3, 5, 7));
+    assert(g.add_edge(4, 1, 2));
+    assert(g.add_edge(4, 6, 6));
+    assert(g.add_edge(5, 4, 2));
+    assert(g.add_edge(5, 6, 1));
+    assert(g.add_edge(7, 5, 1));
+    assert(g.edge_count() == 12);
+    assert(g.vertex_count() == 7);
+
+    assert(g.cost(1, 1) == INFINITY);
+    assert(g.cost(1, 8) == INFINITY);
+    assert(g.cost(8, 1) == INFINITY);
+    assert(g.cost(1, 5) == INFINITY);
 
     END_TEST;
 }
@@ -227,6 +422,10 @@ int main() {
     test(add_edge);
     test(add_edge_fail);
     test(remove_vertex);
+    test(remove_vertex_fail);
+    test(cost);
+    test(cost_invalid);
+    test(example);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";
