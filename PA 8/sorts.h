@@ -52,6 +52,24 @@ void selection_sort(vector<Comparable>& container) {
 }
 
 template <class Comparable>
+void insertion_sort(vector<Comparable>& values, size_t begin, size_t end) {
+    cout << values << "\n";
+    if (values.empty())
+        return;
+    for (size_t index = begin + 1; index < end + 1; ++index) {
+        Comparable key = values[index];
+        size_t j = index - 1;
+        while (j < values.size() && values[j] > key) {
+            values[j + 1] = values[j];
+            --j;
+        }
+        values[j + 1] = key;
+
+        cout << values << "\n";
+    }
+}
+
+template <class Comparable>
 void insertion_sort(vector<Comparable>& values) {
     cout << values << "\n";
 
@@ -148,28 +166,49 @@ void merge_sort(vector<Comparable>& values) {
 }
 
 template <class Comparable>
-void quick_sort(vector<Comparable>& values) {
+void quick_sort(vector<Comparable>& values, size_t begin, size_t end) {
     cout << values << "\n";
-
-    if (values.empty())
+    size_t size = end - begin + 1;
+    if (size <= 1)
         return;
+    if (size <= 10) {
+        insertion_sort(values, begin, end);
+        return;
+    }
 
-    vector<Comparable> smaller{}, same{}, larger{};
-    const Comparable& partition = values[values.size() >> 1];
-    for (const Comparable& item : values)
-        if (item < partition)
-            smaller.push_back(move(item));
-        else if (item > partition)
-            larger.push_back(move(item));
-        else
-            same.push_back(move(item));
+    size_t mid = (size << 1) + begin;
 
-    quick_sort(smaller);
-    quick_sort(larger);
-    move(begin(smaller), end(smaller), begin(values));
-    move(begin(same), end(same), begin(values) + smaller.size());
-    move(begin(larger), end(larger), begin(values) + smaller.size() + same.size());
-    cout << values << "\n";
+    vector<Comparable> temp{values[begin], values[end], values[mid]};
+    std::sort(temp.begin(), temp.end());
+    size_t index = std::find(values.begin(), values.end(), temp[1]) - values.begin();
+    values[index] = values[end];
+    Comparable val = values[end];
+
+    size_t i = begin, j = end - 1;
+    while (i <= j) {
+        if (values[i] >= val && values[j] <= val)
+            swap(values[i], values[j]);
+        if (values[i] <= val)
+            ++i;
+        if (values[j] >= val)
+            --j;
+    }
+
+    values[end] = values[i];
+    values[i] = val;
+
+    quick_sort(values, begin, i - 1);
+    quick_sort(values, i + 1, end);
+}
+
+template <class Comparable>
+void quick_sort(vector<Comparable>& values) {
+    if (values.empty()) {
+        cout << values << "\n";
+        return;
+    }
+
+    quick_sort(values, 0, values.size() - 1);
 }
 
 void bucket_sort(vector<unsigned>& values) {

@@ -212,6 +212,7 @@ bool test_remove_vertex() {
     assert(g.remove_vertex(2));
     assert(g.edge_count() == 4);
     assert(g.vertex_count() == 7);
+    assert(g.contains_vertex(2));
 
     END_TEST;
 }

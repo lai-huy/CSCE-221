@@ -42,6 +42,7 @@ public:
     size_t edge_count() const { return this->_edge; }
 
     bool contains_vertex(size_t id) const { return id < this->_size; }
+
     bool contains_edge(size_t src, size_t dest) const {
         if (!this->contains_vertex(src))
             return false;
@@ -114,7 +115,7 @@ public:
 
     void print_shortest_path(size_t dest_id, ostream& os = cout) const {
         if (this->contains_vertex(dest_id)) {
-            return;
+            os << dest_id;
         }
         os << "<no path>\n";
     }
