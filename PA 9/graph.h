@@ -22,48 +22,28 @@ using std::pair;
 class Graph {
 private:
     size_t _edge;
+    size_t _source;
     unordered_map<size_t, unordered_map<size_t, double>> _graph;
     unordered_map<size_t, double> _dist;
-    unordered_map<size_t, vector<size_t>> _paths;
-
-    void copy(const Graph& rhs) {
-        this->_edge = rhs._edge;
-
-        for (const auto& [vertex, neighbors] : rhs._graph) {
-            unordered_map<size_t, double> n{};
-            for (const auto& [v, weight] : neighbors)
-                n.insert({v, weight});
-            this->_graph.insert({vertex, n});
-        }
-
-        for (const auto& [vertex, distance] : rhs._dist)
-            this->_dist.insert({vertex, distance});
-
-        for (const auto& [vertex, path] : rhs._paths)
-            this->_paths.insert({vertex, path});
-    }
-
-    void clear() {
-        this->_edge = 0;
-        this->_graph.clear();
-        this->_dist.clear();
-        this->_paths.clear();
-    }
+    unordered_map<size_t, size_t> _parents;
 
 public:
-    Graph() : _edge{size_t{}}, _graph{unordered_map<size_t, unordered_map<size_t, double>>{}}, _dist{unordered_map<size_t, double>{}}, _paths{unordered_map<size_t, vector<size_t>>{}} {}
-    Graph(const Graph& rhs) : Graph() { this->copy(rhs); }
+    Graph() : _edge{size_t{}}, _source{size_t{}}, _graph{unordered_map<size_t, unordered_map<size_t, double>>{}}, _dist{unordered_map<size_t, double>{}}, _parents{unordered_map<size_t, size_t>{}} {}
+    Graph(const Graph& rhs) : _edge{rhs._edge}, _source{rhs._source}, _graph{rhs._graph}, _dist{rhs._dist}, _parents{rhs._parents} {}
 
     Graph& operator=(const Graph& rhs) {
         if (this != &rhs) {
-            this->clear();
-            this->copy(rhs);
+            this->_edge = rhs._edge;
+            this->_source = rhs._source;
+            this->_graph = rhs._graph;
+            this->_dist = rhs._dist;
+            this->_parents = rhs._parents;
         }
 
         return *this;
     }
 
-    ~Graph() { this->clear(); }
+    ~Graph() {}
 
     size_t vertex_count() const { return this->_graph.size(); }
     size_t edge_count() const { return this->_edge; }
@@ -83,7 +63,7 @@ public:
             return false;
         this->_graph.insert({id, unordered_map<size_t, double>{}});
         this->_dist.insert({id, INFINITY});
-        this->_paths.insert({id, vector<size_t>{}});
+        this->_parents.insert({id, size_t{}});
         return true;
     }
 
@@ -117,7 +97,7 @@ public:
         }
         this->_graph.erase(id);
         this->_dist.erase(id);
-        this->_paths.erase(id);
+        this->_parents.erase(id);
         return true;
     }
 
@@ -134,15 +114,13 @@ public:
             return;
 
         // Priority queue neighbors
+        this->_source = source_id;
         priority_queue<pair<double, size_t>, vector<pair<double, size_t>>, greater<pair<double, size_t>>> pq{};
         pq.push({0, source_id});
 
         // Initial set up
-        unordered_map<size_t, size_t> parents{};
-        for (const auto& [vertex, dist] : this->_dist) {
+        for (const auto& [vertex, dist] : this->_dist)
             this->_dist.at(vertex) = vertex == source_id ? 0 : INFINITY;
-            parents.insert({vertex, size_t{}});
-        }
 
         // Traverse the graph and run Dijkstra
         while (!pq.empty()) {
@@ -152,58 +130,61 @@ public:
                 if (this->_dist.at(v) > this->_dist.at(vertex) + w) {
                     this->_dist.at(v) = this->_dist.at(vertex) + w;
                     pq.push({this->_dist.at(v), v});
-                    parents.at(v) = vertex;
+                    this->_parents.at(v) = vertex;
                 }
             }
-        }
-
-        // Compute the path from source to every other vertex
-        for (auto& [vertex, path] : this->_paths) {
-            path.push_back(source_id);
-            size_t parent = parents.at(vertex);
-            while (parent && parent != source_id) {
-                path.insert(path.begin() + 1, parent);
-                parent = parents.at(parent);
-            }
-            path.push_back(vertex);
         }
     }
 
     double distance(size_t id) const { return this->contains_vertex(id) ? this->_dist.at(id) : INFINITY; }
 
     void print_shortest_path(size_t dest_id, ostream& os = cout) const {
-        if (this->contains_vertex(dest_id)) {
-            const vector<size_t>& path = this->_paths.at(dest_id);
-            double dist = this->distance(dest_id);
-            if (isinf(dist)) {
-                os << "<no path>";
+        if (!this->contains_vertex(dest_id)) {
+            os << "<no path>\n";
+            return;
+        }
+        const double dist = this->_dist.at(dest_id);
+        if (isinf(dist)) {
+            os << "<no path>\n";
+            return;
+        } else if (dist == 0) {
+            os << dest_id << " distance: 0\n";
+            return;
+        }
+
+        vector<size_t> path{dest_id};
+        size_t curr = dest_id;
+        while (curr != this->_source) {
+            if (this->_parents.count(this->_parents.at(curr))) {
+                curr = this->_parents.at(curr);
+                path.push_back(curr);
+            } else {
+                os << "<no path>\n";
                 return;
             }
+        }
 
-            if (path[0] == path[1])
-                os << path.at(0);
-            else {
-                bool first = false;
-                for (const size_t& vertex : this->_paths.at(dest_id)) {
-                    if (first)
-                        os << " --> ";
-                    os << vertex;
-                    first = true;
-                }
-            }
-            os << " distance: " << dist << "\n";
-        } else
-            os << "<no path>";
+        for (auto iter = path.crbegin(); iter != path.crend() - 1; ++iter)
+            os << *iter << " --> ";
+        os << *path.begin() << " distance: " << dist << "\n";
     }
 
     // ----------------------- Optional ----------------------- //
-    Graph(Graph&& rhs) : _edge{move(rhs._edge)}, _graph{move(rhs._graph)}, _dist{move(rhs._dist)}, _paths{move(rhs._paths)} {}
+    Graph(Graph&& rhs) : Graph() {
+        swap(this->_edge, rhs._edge);
+        swap(this->_source, rhs._source);
+        this->_graph.swap(rhs._graph);
+        this->_dist.swap(rhs._dist);
+        this->_parents.swap(rhs._parents);
+    }
+
     Graph& operator=(Graph&& rhs) {
         if (this != &rhs) {
-            this->_edge = move(rhs._edge);
-            this->_graph = move(rhs._graph);
-            this->_dist = move(rhs._dist);
-            this->_paths = move(rhs._paths);
+            swap(this->_edge, rhs._edge);
+            swap(this->_source, rhs._source);
+            this->_graph.swap(rhs._graph);
+            this->_dist.swap(rhs._dist);
+            this->_parents.swap(rhs._parents);
         }
 
         return *this;

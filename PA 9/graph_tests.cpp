@@ -458,50 +458,40 @@ bool test_print_shortest_path() {
     END_TEST;
 }
 
-bool test_example() {
-    cout << "make an empty digraph\n";
-    Graph G;
-    cout << "add vertices\n";
-    for (size_t n = 1; n <= 7; n++)
-        G.add_vertex(n);
+bool test_copy() {
+    Graph g{};
+    assert(g.vertex_count() == 0);
+    assert(g.edge_count() == 0);
 
-    cout << "add directed edges\n";
-    G.add_edge(1, 2, 5);
-    G.add_edge(1, 3, 3);
-    G.add_edge(2, 3, 2);
-    G.add_edge(2, 5, 3);
-    G.add_edge(2, 7, 1);
-    G.add_edge(3, 4, 7);
-    G.add_edge(3, 5, 7);
-    G.add_edge(4, 1, 2);
-    G.add_edge(4, 6, 6);
-    G.add_edge(5, 4, 2);
-    G.add_edge(5, 6, 1);
-    G.add_edge(7, 5, 1);
+    assert(g.add_vertex(1));
+    assert(g.add_vertex(2));
+    assert(g.add_vertex(3));
+    assert(g.add_vertex(4));
+    assert(g.add_vertex(5));
+    assert(g.add_vertex(6));
+    assert(g.add_vertex(7));
 
-    assert(G.contains_edge(1, 2));
-    assert(G.contains_edge(1, 3));
-    assert(G.contains_edge(2, 3));
-    assert(G.contains_edge(2, 5));
-    assert(G.contains_edge(2, 7));
-    assert(G.contains_edge(3, 4));
-    assert(G.contains_edge(3, 5));
-    assert(G.contains_edge(4, 1));
-    assert(G.contains_edge(4, 6));
-    assert(G.contains_edge(5, 4));
-    assert(G.contains_edge(5, 6));
-    assert(G.contains_edge(7, 5));
+    assert(g.vertex_count() == 7);
+    assert(g.edge_count() == 0);
 
-    cout << "G has " << G.vertex_count() << " vertices\n";
-    cout << "G has " << G.edge_count() << " edges\n";
-    cout << "compute shortest path from 2\n";
-    G.dijkstra(2);
-    cout << "print shortest paths\n";
-    for (size_t n = 1; n <= 7; n++) {
-        cout << "shortest path from 2 to " << n << "\n";
-        cout << "  ";
-        G.print_shortest_path(n);
-    }
+    assert(g.add_edge(1, 2, 5));
+    assert(g.add_edge(1, 3, 3));
+    assert(g.add_edge(2, 3, 2));
+    assert(g.add_edge(2, 5, 3));
+    assert(g.add_edge(2, 7, 1));
+    assert(g.add_edge(3, 4, 7));
+    assert(g.add_edge(3, 5, 7));
+    assert(g.add_edge(4, 1, 2));
+    assert(g.add_edge(4, 6, 6));
+    assert(g.add_edge(5, 4, 2));
+    assert(g.add_edge(5, 6, 1));
+    assert(g.add_edge(7, 5, 1));
+    assert(g.edge_count() == 12);
+    assert(g.vertex_count() == 7);
+
+    Graph h(g);
+    assert(h.edge_count() == g.edge_count());
+    assert(h.vertex_count() == g.vertex_count());
 
     END_TEST;
 }
@@ -521,7 +511,7 @@ int main() {
     test(cost_invalid);
     test(dijkstra);
     test(print_shortest_path);
-    test(example);
+    test(copy);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";
