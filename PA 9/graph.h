@@ -13,29 +13,32 @@
 
 using std::cout, std::ostream;
 using std::vector, std::priority_queue;
-using std::unordered_map;
+using std::unordered_map, std::unordered_set;
 using std::swap, std::move;
 using std::isinf, std::isnan;
-using std::less, std::hash;
+using std::find, std::greater;
+using std::pair;
 
 class Graph {
 private:
     size_t _edge;
     unordered_map<size_t, unordered_map<size_t, double>> _graph;
+    unordered_map<size_t, double> _dist;
 
 public:
-    Graph() : _edge{size_t{}}, _graph{unordered_map<size_t, unordered_map<size_t, double>>{}} {}
-    Graph(const Graph& rhs) : _edge{rhs._edge}, _graph{rhs._graph} {}
+    Graph() : _edge{size_t{}}, _graph{unordered_map<size_t, unordered_map<size_t, double>>{}}, _dist{unordered_map<size_t, double>{}} {}
+    Graph(const Graph& rhs) : _edge{rhs._edge}, _graph{rhs._graph}, _dist{rhs._dist} {}
     Graph& operator=(const Graph& rhs) {
         if (this != &rhs) {
             this->_edge = rhs._edge;
             this->_graph = rhs._graph;
+            this->_dist = rhs._dist;
         }
 
         return *this;
     }
 
-    ~Graph() { this->_graph.clear(); }
+    ~Graph() { this->_graph.clear(); this->_dist.clear(); }
 
     size_t vertex_count() const { return this->_graph.size(); }
     size_t edge_count() const { return this->_edge; }
@@ -45,10 +48,7 @@ public:
     bool contains_edge(size_t src, size_t dest) const {
         if (!this->contains_vertex(src))
             return false;
-        else if (!this->contains_vertex(dest))
-            return false;
-        const unordered_map<size_t, double>& vertex = this->_graph.at(src);
-        return vertex.find(dest) != vertex.end();
+        return this->_graph.at(src).count(dest);
     }
 
     double cost(size_t src, size_t dest) const { return this->contains_edge(src, dest) ? this->_graph.at(src).at(dest) : INFINITY; }
@@ -57,6 +57,7 @@ public:
         if (this->contains_vertex(id))
             return false;
         this->_graph.insert({id, unordered_map<size_t, double>{}});
+        this->_dist.insert({id, INFINITY});
         return true;
     }
 
@@ -71,7 +72,6 @@ public:
         if (vertex.find(dest) != vertex.end())
             return false;
         this->_graph[src][dest] = weight;
-        this->_graph[dest][src] = weight;
         ++this->_edge;
         return true;
     }
@@ -80,14 +80,17 @@ public:
         if (!this->contains_vertex(id))
             return false;
 
-        for (auto& [vertex, neighbors] : this->_graph) {
+        for (const auto& [vertex, neighbors] : this->_graph) {
             if (this->contains_edge(id, vertex)) {
-                this->_graph[id].erase(vertex);
-                this->_graph[vertex].erase(id);
+                this->_graph.at(id).erase(vertex);
+                --this->_edge;
+            } else if (this->contains_edge(vertex, id)) {
+                this->_graph.at(vertex).erase(id);
                 --this->_edge;
             }
         }
         this->_graph.erase(id);
+        this->_dist.erase(id);
         return true;
     }
 
@@ -102,30 +105,49 @@ public:
     void dijkstra(size_t source_id) {
         if (!this->contains_vertex(source_id))
             return;
+        priority_queue<pair<double, size_t>, vector<pair<double, size_t>>, greater<pair<double, size_t>>> pq{};
+        pq.push({0, source_id});
+        this->_dist[source_id] = 0;
+
+        while (!pq.empty()) {
+            const auto [weight, vertex] = pq.top();
+            pq.pop();
+            for (const auto& [v, w] : this->_graph.at(vertex)) {
+                if (this->_dist[v] > this->_dist[vertex] + w) {
+                    this->_dist[v] = this->_dist[vertex] + w;
+                    pq.push({this->_dist[v], v});
+                }
+            }
+        }
     }
 
-    double distance(size_t id) const {
-        cout << id;
-        return INFINITY;
-    }
+    double distance(size_t id) const { return this->contains_vertex(id) ? this->_dist.at(id) : INFINITY; }
 
     void print_shortest_path(size_t dest_id, ostream& os = cout) const {
         if (this->contains_vertex(dest_id)) {
-            os << dest_id << "\n";
+            os << dest_id << "\t" << this->distance(dest_id) << "\n";
         } else
             os << "<no path>\n";
     }
 
     // ----------------------- Optional ----------------------- //
-    Graph(Graph&& rhs) : _edge{move(rhs._edge)}, _graph{move(rhs._graph)} {}
+    Graph(Graph&& rhs) : _edge{move(rhs._edge)}, _graph{move(rhs._graph)}, _dist{move(rhs._dist)} {}
     Graph& operator=(Graph&& rhs) {
         if (this != &rhs) {
-            this->_edge = 0;
-            this->_graph.clear();
             this->_edge = move(rhs._edge);
             this->_graph = move(rhs._graph);
+            this->_dist = move(rhs._dist);
         }
 
         return *this;
+    }
+
+    void print_graph(ostream& os = cout) const {
+        if (this->_edge) {
+            for (const auto& [src, neighbors] : this->_graph)
+                for (const auto& [dest, weight] : neighbors)
+                    cout << src << " ->{" << dest << "} " << weight << "\n";
+        } else
+            os << "<empty>\n";
     }
 };

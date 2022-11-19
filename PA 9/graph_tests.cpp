@@ -176,8 +176,6 @@ bool test_add_edge_fail() {
     assert(g.vertex_count() == 7);
     assert(g.edge_count() == 0);
 
-    // assert(!g.add_edge(2, 1, INFINITY));
-    // assert(!g.add_edge(1, 2, NAN));
     assert(!g.add_edge(1, 8, 1.0));
     assert(!g.add_edge(8, 1, 1.0));
     assert(!g.add_edge(1, 1, 1.0));
@@ -278,54 +276,6 @@ bool test_remove_vertex_fail() {
     END_TEST;
 }
 
-bool test_example() {
-    cout << "make an empty digraph\n";
-    Graph G;
-    cout << "add vertices\n";
-    for (size_t n = 1; n <= 7; n++)
-        G.add_vertex(n);
-
-    cout << "add directed edges\n";
-    G.add_edge(1, 2, 5);  // 1 ->{5} 2; (edge from 1 to 2 with weight 5)
-    G.add_edge(1, 3, 3);
-    G.add_edge(2, 3, 2);
-    G.add_edge(2, 5, 3);
-    G.add_edge(2, 7, 1);
-    G.add_edge(3, 4, 7);
-    G.add_edge(3, 5, 7);
-    G.add_edge(4, 1, 2);
-    G.add_edge(4, 6, 6);
-    G.add_edge(5, 4, 2);
-    G.add_edge(5, 6, 1);
-    G.add_edge(7, 5, 1);
-
-    assert(G.contains_edge(1, 2));
-    assert(G.contains_edge(1, 3));
-    assert(G.contains_edge(2, 3));
-    assert(G.contains_edge(2, 5));
-    assert(G.contains_edge(2, 7));
-    assert(G.contains_edge(3, 4));
-    assert(G.contains_edge(3, 5));
-    assert(G.contains_edge(4, 1));
-    assert(G.contains_edge(4, 6));
-    assert(G.contains_edge(5, 4));
-    assert(G.contains_edge(5, 6));
-    assert(G.contains_edge(7, 5));
-
-    cout << "G has " << G.vertex_count() << " vertices\n";
-    cout << "G has " << G.edge_count() << " edges\n";
-    cout << "compute shortest path from 2\n";
-    G.dijkstra(2);
-    cout << "print shortest paths\n";
-    for (size_t n = 1; n <= 7; n++) {
-        cout << "shortest path from 2 to " << n << "\n";
-        cout << "  ";
-        G.print_shortest_path(n);
-    }
-
-    END_TEST;
-}
-
 bool test_cost() {
     Graph g{};
     assert(g.vertex_count() == 0);
@@ -412,6 +362,98 @@ bool test_cost_invalid() {
     END_TEST;
 }
 
+bool test_dijkstra() {
+    Graph g{};
+    assert(g.vertex_count() == 0);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_vertex(1));
+    assert(g.add_vertex(2));
+    assert(g.add_vertex(3));
+    assert(g.add_vertex(4));
+    assert(g.add_vertex(5));
+    assert(g.add_vertex(6));
+    assert(g.add_vertex(7));
+
+    assert(g.vertex_count() == 7);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_edge(1, 2, 5));
+    assert(g.add_edge(1, 3, 3));
+    assert(g.add_edge(2, 3, 2));
+    assert(g.add_edge(2, 5, 3));
+    assert(g.add_edge(2, 7, 1));
+    assert(g.add_edge(3, 4, 7));
+    assert(g.add_edge(3, 5, 7));
+    assert(g.add_edge(4, 1, 2));
+    assert(g.add_edge(4, 6, 6));
+    assert(g.add_edge(5, 4, 2));
+    assert(g.add_edge(5, 6, 1));
+    assert(g.add_edge(7, 5, 1));
+    assert(g.edge_count() == 12);
+    assert(g.vertex_count() == 7);
+
+    g.dijkstra(2);
+
+    assert(g.distance(1) == 6);
+    assert(g.distance(2) == 0);
+    assert(g.distance(3) == 2);
+    assert(g.distance(4) == 4);
+    assert(g.distance(5) == 2);
+    assert(g.distance(6) == 3);
+    assert(g.distance(7) == 1);
+
+    END_TEST;
+}
+
+bool test_example() {
+    cout << "make an empty digraph\n";
+    Graph G;
+    cout << "add vertices\n";
+    for (size_t n = 1; n <= 7; n++)
+        G.add_vertex(n);
+
+    cout << "add directed edges\n";
+    G.add_edge(1, 2, 5);
+    G.add_edge(1, 3, 3);
+    G.add_edge(2, 3, 2);
+    G.add_edge(2, 5, 3);
+    G.add_edge(2, 7, 1);
+    G.add_edge(3, 4, 7);
+    G.add_edge(3, 5, 7);
+    G.add_edge(4, 1, 2);
+    G.add_edge(4, 6, 6);
+    G.add_edge(5, 4, 2);
+    G.add_edge(5, 6, 1);
+    G.add_edge(7, 5, 1);
+
+    assert(G.contains_edge(1, 2));
+    assert(G.contains_edge(1, 3));
+    assert(G.contains_edge(2, 3));
+    assert(G.contains_edge(2, 5));
+    assert(G.contains_edge(2, 7));
+    assert(G.contains_edge(3, 4));
+    assert(G.contains_edge(3, 5));
+    assert(G.contains_edge(4, 1));
+    assert(G.contains_edge(4, 6));
+    assert(G.contains_edge(5, 4));
+    assert(G.contains_edge(5, 6));
+    assert(G.contains_edge(7, 5));
+
+    cout << "G has " << G.vertex_count() << " vertices\n";
+    cout << "G has " << G.edge_count() << " edges\n";
+    cout << "compute shortest path from 2\n";
+    G.dijkstra(2);
+    cout << "print shortest paths\n";
+    for (size_t n = 1; n <= 7; n++) {
+        cout << "shortest path from 2 to " << n << "\n";
+        cout << "  ";
+        G.print_shortest_path(n);
+    }
+
+    END_TEST;
+}
+
 int main() {
     unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
@@ -425,6 +467,7 @@ int main() {
     test(remove_vertex_fail);
     test(cost);
     test(cost_invalid);
+    test(dijkstra);
     test(example);
 
     cout << "\n";
