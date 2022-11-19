@@ -406,6 +406,58 @@ bool test_dijkstra() {
     END_TEST;
 }
 
+bool test_print_shortest_path() {
+    Graph g{};
+    assert(g.vertex_count() == 0);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_vertex(1));
+    assert(g.add_vertex(2));
+    assert(g.add_vertex(3));
+    assert(g.add_vertex(4));
+    assert(g.add_vertex(5));
+    assert(g.add_vertex(6));
+    assert(g.add_vertex(7));
+
+    assert(g.vertex_count() == 7);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_edge(1, 2, 5));
+    assert(g.add_edge(1, 3, 3));
+    assert(g.add_edge(2, 3, 2));
+    assert(g.add_edge(2, 5, 3));
+    assert(g.add_edge(2, 7, 1));
+    assert(g.add_edge(3, 4, 7));
+    assert(g.add_edge(3, 5, 7));
+    assert(g.add_edge(4, 1, 2));
+    assert(g.add_edge(4, 6, 6));
+    assert(g.add_edge(5, 4, 2));
+    assert(g.add_edge(5, 6, 1));
+    assert(g.add_edge(7, 5, 1));
+    assert(g.edge_count() == 12);
+    assert(g.vertex_count() == 7);
+
+    g.dijkstra(2);
+
+    assert(g.distance(1) == 6);
+    assert(g.distance(2) == 0);
+    assert(g.distance(3) == 2);
+    assert(g.distance(4) == 4);
+    assert(g.distance(5) == 2);
+    assert(g.distance(6) == 3);
+    assert(g.distance(7) == 1);
+
+    g.print_shortest_path(1);
+    g.print_shortest_path(2);
+    g.print_shortest_path(3);
+    g.print_shortest_path(4);
+    g.print_shortest_path(5);
+    g.print_shortest_path(6);
+    g.print_shortest_path(7);
+
+    END_TEST;
+}
+
 bool test_example() {
     cout << "make an empty digraph\n";
     Graph G;
@@ -468,6 +520,7 @@ int main() {
     test(cost);
     test(cost_invalid);
     test(dijkstra);
+    test(print_shortest_path);
     test(example);
 
     cout << "\n";
