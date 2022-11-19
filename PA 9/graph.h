@@ -50,11 +50,7 @@ public:
 
     bool contains_vertex(size_t id) const { return this->_graph.find(id) != this->_graph.end(); }
 
-    bool contains_edge(size_t src, size_t dest) const {
-        if (!this->contains_vertex(src))
-            return false;
-        return this->_graph.at(src).count(dest);
-    }
+    bool contains_edge(size_t src, size_t dest) const { return this->contains_vertex(src) ? this->_graph.at(src).count(dest) : false; }
 
     double cost(size_t src, size_t dest) const { return this->contains_edge(src, dest) ? this->_graph.at(src).at(dest) : INFINITY; }
 
@@ -74,8 +70,7 @@ public:
             return false;
         if (!this->contains_vertex(dest))
             return false;
-        const unordered_map<size_t, double>& vertex = this->_graph.at(src);
-        if (vertex.find(dest) != vertex.end())
+        if (this->_graph.at(src).count(dest))
             return false;
         this->_graph[src][dest] = weight;
         ++this->_edge;
@@ -89,8 +84,6 @@ public:
         for (const auto& [vertex, neighbors] : this->_graph) {
             if (this->contains_edge(id, vertex)) {
                 this->_graph.at(id).erase(vertex);
-                --this->_edge;
-            } else if (this->contains_edge(vertex, id)) {
                 this->_graph.at(vertex).erase(id);
                 --this->_edge;
             }
@@ -113,8 +106,8 @@ public:
         if (!this->contains_vertex(source_id))
             return;
 
-        // Priority queue neighbors
         this->_source = source_id;
+        // Priority queue neighbors
         priority_queue<pair<double, size_t>, vector<pair<double, size_t>>, greater<pair<double, size_t>>> pq{};
         pq.push({0, source_id});
 
