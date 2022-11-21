@@ -176,11 +176,8 @@ bool test_add_edge_fail() {
     assert(g.vertex_count() == 7);
     assert(g.edge_count() == 0);
 
-    // assert(!g.add_edge(2, 1, INFINITY));
-    // assert(!g.add_edge(1, 2, NAN));
     assert(!g.add_edge(1, 8, 1.0));
     assert(!g.add_edge(8, 1, 1.0));
-    assert(!g.add_edge(1, 1, 1.0));
 
     assert(g.vertex_count() == 7);
     assert(g.edge_count() == 0);
@@ -278,42 +275,6 @@ bool test_remove_vertex_fail() {
     END_TEST;
 }
 
-bool test_example() {
-    cout << "make an empty graph\n";
-    Graph G;
-    cout << "add vertices\n";
-    for (size_t n = 1; n <= 7; n++) {
-        G.add_vertex(n);
-    }
-    cout << "add undirected edges\n";
-    G.add_edge(1, 2, 5);  // 1 --{5} 2; (edge between 1 and 2 with weight 5)
-    G.add_edge(1, 3, 3);
-    G.add_edge(2, 3, 2);
-    G.add_edge(2, 5, 3);
-    G.add_edge(2, 7, 1);
-    G.add_edge(3, 4, 7);
-    G.add_edge(3, 5, 7);
-    G.add_edge(4, 1, 2);
-    G.add_edge(4, 6, 6);
-    G.add_edge(5, 4, 2);
-    G.add_edge(5, 6, 1);
-    G.add_edge(7, 5, 1);
-    cout << "G has " << G.vertex_count() << " vertices and ";
-    cout << G.edge_count() << " edges\n";
-    cout << "compute a minimum spanning tree\n";
-    std::list<std::pair<size_t, size_t>> mst = G.prim();
-    cout << "print minimum spanning tree\n";
-    double tree_cost = 0;
-    for (const std::pair<size_t, size_t>& edge : mst) {
-        cout << edge.first << " --{" << G.cost(edge.first, edge.second) << "} " <<
-            edge.second << ";\n";
-        tree_cost += G.cost(edge.first, edge.second);
-    }
-    cout << "tree cost = " << tree_cost << "\n";
-
-    END_TEST;
-}
-
 bool test_cost() {
     Graph g{};
     assert(g.vertex_count() == 0);
@@ -400,6 +361,81 @@ bool test_cost_invalid() {
     END_TEST;
 }
 
+bool test_prim() {
+    Graph g{};
+    assert(g.vertex_count() == 0);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_vertex(1));
+    assert(g.add_vertex(2));
+    assert(g.add_vertex(3));
+    assert(g.add_vertex(4));
+    assert(g.add_vertex(5));
+    assert(g.add_vertex(6));
+    assert(g.add_vertex(7));
+
+    assert(g.vertex_count() == 7);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_edge(1, 2, 5));
+    assert(g.add_edge(1, 3, 3));
+    assert(g.add_edge(2, 3, 2));
+    assert(g.add_edge(2, 5, 3));
+    assert(g.add_edge(2, 7, 1));
+    assert(g.add_edge(3, 4, 7));
+    assert(g.add_edge(3, 5, 7));
+    assert(g.add_edge(4, 1, 2));
+    assert(g.add_edge(4, 6, 6));
+    assert(g.add_edge(5, 4, 2));
+    assert(g.add_edge(5, 6, 1));
+    assert(g.add_edge(7, 5, 1));
+    assert(g.edge_count() == 12);
+    assert(g.vertex_count() == 7);
+
+    g.prim();
+    g.print_minimum_spanning_tree();
+
+    END_TEST;
+}
+
+bool test_copy() {
+    Graph g{};
+    assert(g.vertex_count() == 0);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_vertex(1));
+    assert(g.add_vertex(2));
+    assert(g.add_vertex(3));
+    assert(g.add_vertex(4));
+    assert(g.add_vertex(5));
+    assert(g.add_vertex(6));
+    assert(g.add_vertex(7));
+
+    assert(g.vertex_count() == 7);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_edge(1, 2, 5));
+    assert(g.add_edge(1, 3, 3));
+    assert(g.add_edge(2, 3, 2));
+    assert(g.add_edge(2, 5, 3));
+    assert(g.add_edge(2, 7, 1));
+    assert(g.add_edge(3, 4, 7));
+    assert(g.add_edge(3, 5, 7));
+    assert(g.add_edge(4, 1, 2));
+    assert(g.add_edge(4, 6, 6));
+    assert(g.add_edge(5, 4, 2));
+    assert(g.add_edge(5, 6, 1));
+    assert(g.add_edge(7, 5, 1));
+    assert(g.edge_count() == 12);
+    assert(g.vertex_count() == 7);
+
+    Graph h(g);
+    assert(h.edge_count() == g.edge_count());
+    assert(h.vertex_count() == g.vertex_count());
+
+    END_TEST;
+}
+
 int main() {
     unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
@@ -411,9 +447,10 @@ int main() {
     test(add_edge_fail);
     test(remove_vertex);
     test(remove_vertex_fail);
+    test(prim);
     test(cost);
     test(cost_invalid);
-    test(example);
+    test(copy);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";
