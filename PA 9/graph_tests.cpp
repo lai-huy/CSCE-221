@@ -178,7 +178,6 @@ bool test_add_edge_fail() {
 
     assert(!g.add_edge(1, 8, 1.0));
     assert(!g.add_edge(8, 1, 1.0));
-    assert(!g.add_edge(1, 1, 1.0));
 
     assert(g.vertex_count() == 7);
     assert(g.edge_count() == 0);
