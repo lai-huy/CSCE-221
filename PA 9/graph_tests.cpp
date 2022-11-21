@@ -405,6 +405,50 @@ bool test_dijkstra() {
     END_TEST;
 }
 
+bool test_dijkstra_invalid() {
+    Graph g{};
+    assert(g.vertex_count() == 0);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_vertex(1));
+    assert(g.add_vertex(2));
+    assert(g.add_vertex(3));
+    assert(g.add_vertex(4));
+    assert(g.add_vertex(5));
+    assert(g.add_vertex(6));
+    assert(g.add_vertex(7));
+
+    assert(g.vertex_count() == 7);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_edge(1, 2, 5));
+    assert(g.add_edge(1, 3, 3));
+    assert(g.add_edge(2, 3, 2));
+    assert(g.add_edge(2, 5, 3));
+    assert(g.add_edge(2, 7, 1));
+    assert(g.add_edge(3, 4, 7));
+    assert(g.add_edge(3, 5, 7));
+    assert(g.add_edge(4, 1, 2));
+    assert(g.add_edge(4, 6, 6));
+    assert(g.add_edge(5, 4, 2));
+    assert(g.add_edge(5, 6, 1));
+    assert(g.add_edge(7, 5, 1));
+    assert(g.edge_count() == 12);
+    assert(g.vertex_count() == 7);
+
+    g.dijkstra(8);
+
+    assert(g.distance(1) == INFINITY);
+    assert(g.distance(2) == INFINITY);
+    assert(g.distance(3) == INFINITY);
+    assert(g.distance(4) == INFINITY);
+    assert(g.distance(5) == INFINITY);
+    assert(g.distance(6) == INFINITY);
+    assert(g.distance(7) == INFINITY);
+
+    END_TEST;
+}
+
 bool test_print_shortest_path() {
     Graph g{};
     assert(g.vertex_count() == 0);
@@ -453,6 +497,45 @@ bool test_print_shortest_path() {
     g.print_shortest_path(5);
     g.print_shortest_path(6);
     g.print_shortest_path(7);
+
+    END_TEST;
+}
+
+bool test_psp_none() {
+    Graph g{};
+    assert(g.vertex_count() == 0);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_vertex(1));
+    assert(g.add_vertex(2));
+    assert(g.add_vertex(3));
+    assert(g.add_vertex(4));
+    assert(g.add_vertex(5));
+    assert(g.add_vertex(6));
+    assert(g.add_vertex(7));
+
+    assert(g.vertex_count() == 7);
+    assert(g.edge_count() == 0);
+
+    assert(g.add_edge(1, 2, 5));
+    assert(g.add_edge(1, 3, 3));
+    assert(g.add_edge(2, 3, 2));
+    assert(g.add_edge(2, 5, 3));
+    assert(g.add_edge(2, 7, 1));
+    assert(g.add_edge(3, 4, 7));
+    assert(g.add_edge(3, 5, 7));
+    assert(g.add_edge(4, 1, 2));
+    assert(g.add_edge(4, 6, 6));
+    assert(g.add_edge(5, 4, 2));
+    assert(g.add_edge(5, 6, 1));
+    assert(g.add_edge(7, 5, 1));
+    assert(g.edge_count() == 12);
+    assert(g.vertex_count() == 7);
+
+    g.dijkstra(2);
+    g.print_shortest_path(8);
+    g.add_vertex(8);
+    g.print_shortest_path(8);
 
     END_TEST;
 }
@@ -509,7 +592,9 @@ int main() {
     test(cost);
     test(cost_invalid);
     test(dijkstra);
+    test(dijkstra_invalid);
     test(print_shortest_path);
+    test(psp_none);
     test(copy);
 
     cout << "\n";

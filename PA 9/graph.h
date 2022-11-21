@@ -184,13 +184,8 @@ public:
             return false;
 
         for (const auto& [vertex, neighbors] : this->_graph) {
-            if (this->contains_edge(id, vertex)) {
-                this->_graph[id].erase(vertex);
-                --this->_edge;
-            } if (this->contains_edge(vertex, id)) {
-                this->_graph[vertex].erase(id);
-                --this->_edge;
-            }
+            this->remove_edge(vertex, id);
+            this->remove_edge(id, vertex);
         }
         this->_graph.erase(id);
         this->_dist.erase(id);
