@@ -27,6 +27,14 @@ private:
     unordered_map<size_t, double> _dist;
     unordered_map<size_t, size_t> _parents;
 
+    void clear() {
+        this->_graph.clear();
+        this->_dist.clear();
+        this->_parents.clear();
+        this->_edge = 0;
+        this->_source = 0;
+    }
+
 public:
     Graph() : _edge{size_t{}}, _source{size_t{}}, _graph{unordered_map<size_t, unordered_map<size_t, double>>{}}, _dist{unordered_map<size_t, double>{}}, _parents{unordered_map<size_t, size_t>{}} {}
     Graph(const Graph& rhs) : _edge{rhs._edge}, _source{rhs._source}, _graph{rhs._graph}, _dist{rhs._dist}, _parents{rhs._parents} {}
@@ -43,7 +51,7 @@ public:
         return *this;
     }
 
-    ~Graph() {}
+    ~Graph() { this->clear(); }
 
     size_t vertex_count() const { return this->_graph.size(); }
     size_t edge_count() const { return this->_edge; }
@@ -62,10 +70,8 @@ public:
         this->_parents.insert({id, size_t{}});
         return true;
     }
-
+ 
     bool add_edge(size_t src, size_t dest, double weight = 1.0) {
-        if (src == dest)
-            return false;
         if (!this->contains_vertex(src))
             return false;
         if (!this->contains_vertex(dest))
@@ -83,8 +89,8 @@ public:
 
         for (const auto& [vertex, neighbors] : this->_graph) {
             if (this->contains_edge(id, vertex)) {
-                this->_graph.at(id).erase(vertex);
-                this->_graph.at(vertex).erase(id);
+                this->_graph[id].erase(vertex);
+                this->_graph[vertex].erase(id);
                 --this->_edge;
             }
         }
@@ -122,8 +128,8 @@ public:
             for (const auto& [v, w] : this->_graph.at(vertex)) {
                 if (this->_dist.at(v) > this->_dist.at(vertex) + w) {
                     this->_dist.at(v) = this->_dist.at(vertex) + w;
-                    pq.push({this->_dist.at(v), v});
-                    this->_parents.at(v) = vertex;
+                    pq.push({this->_dist[v], v});
+                    this->_parents[v] = vertex;
                 }
             }
         }
