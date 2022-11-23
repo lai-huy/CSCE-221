@@ -58,7 +58,7 @@ private:
         this->_data = new Object[this->_capacity]{};
 
         for (size_t i = 0; i < this->_capacity; ++i)
-            this->_data[i] = i < this->_size ? rhs[i] : Object();
+            this->_data[i] = i < this->_size ? rhs[i] : Object{};
     }
 
 public:
@@ -156,7 +156,7 @@ public:
             this->_data = new Object[this->_capacity]{};
 
             for (size_t i = 0; i < this->_capacity; ++i)
-                this->_data[i] = i < this->_size ? temp[i] : Object();
+                this->_data[i] = i < this->_size ? temp[i] : Object{};
 
             delete[] temp;
         }
@@ -185,7 +185,7 @@ public:
             throw out_of_range("Index out of bounds");
 
         if (index == this->_size - 1)
-            this->_data[index] = Object();
+            this->_data[index] = Object{};
         else
             for (size_t i = index; i < this->_size; ++i)
                 this->_data[i] = this->_data[i + 1];
