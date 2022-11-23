@@ -164,9 +164,10 @@ public:
             return false;
         if (!this->contains_vertex(dest))
             return false;
-        if (this->_graph.at(src).count(dest))
+        if (this->_graph[src].count(dest))
             return false;
         this->_graph[src][dest] = weight;
+        this->_graph[dest][src] = weight;
         ++this->_edge;
         return true;
     }
@@ -204,19 +205,25 @@ public:
         if (!this->contains_edge(src, dest))
             return false;
         this->_graph[src].erase(dest);
+        this->_graph[dest].erase(src);
         --this->_edge;
         return true;
     }
 
     list<pair<size_t, size_t>> prim() {
-        list<pair<size_t, size_t>> result{};
         if (!this->_edge) {
             for (const auto& [vertex, neighbors] : this->_graph)
                 this->_dist[vertex] = INFINITY;
-            return result;
+            return list<pair<size_t, size_t>>{};
         }
 
-        this->_source = this->_graph.begin()->first;
+        auto iter = this->_graph.cbegin();
+        this->_source = iter->first;
+        while (!iter->second.size() && iter != this->_graph.cend())
+            this->_source = (++iter)->first;
+        if (!this->_graph[this->_source].size())
+            return list<pair<size_t, size_t>>{};;
+
         // Priority queue neighbors
         priority_queue<pair<size_t, double>, vector<pair<size_t, double>>, greater<pair<size_t, double>>> pq{};
         pq.push({this->_source, 0});
@@ -238,9 +245,12 @@ public:
             }
         }
 
-        for (const auto& [vertex, parent] : this->_parents)
+        list<pair<size_t, size_t>> result{};
+        for (const auto [vertex, parent] : this->_parents)
             if (parent)
-                result.push_back({parent, vertex});
+                result.push_back({vertex, parent});
+        if (result.size() != this->_parents.size() - 1)
+            return list<pair<size_t, size_t>>{};
 
         return result;
     }
@@ -250,14 +260,31 @@ public:
     void print_minimum_spanning_tree(ostream& os = cout) const {
         for (const auto& [vertex, parent] : this->_parents)
             if (parent)
-                os << parent << " --{" << this->_graph.at(parent).at(vertex) << "} " << vertex << ";\n";
+                os << vertex << " --{" << this->_graph.at(parent).at(vertex) << "} " << parent << ";\n";
     }
 
     // ----------------------- Optional ----------------------- //
-    Graph(Graph&& rhs) : _edge{move(rhs._edge)}, _source{move(rhs._source)}, _graph{move(rhs._graph)}, _dist{move(rhs._dist)}, _parents{move(rhs._parents)} {}
+    /**
+     * @brief Construct a new Graph object
+     *
+     * @param rhs graph to move from
+     */
+    Graph(Graph&& rhs) : Graph() {
+        swap(this->_edge, rhs._edge);
+        swap(this->_source, rhs._source);
+        this->_graph.swap(rhs._graph);
+        this->_dist.swap(rhs._dist);
+        this->_parents.swap(rhs._parents);
+    }
+
+    /**
+     * @brief Move assignment operator
+     *
+     * @param rhs graph to move from
+     * @return Graph& *this
+     */
     Graph& operator=(Graph&& rhs) {
         if (this != &rhs) {
-            this->clear();
             swap(this->_edge, rhs._edge);
             swap(this->_source, rhs._source);
             this->_graph.swap(rhs._graph);
@@ -266,5 +293,19 @@ public:
         }
 
         return *this;
+    }
+
+    /**
+     * @brief Print the graph
+     *
+     * @param os ostream, cout by default
+     */
+    void print_graph(ostream& os = cout) const {
+        if (this->_edge) {
+            for (const auto& [src, neighbors] : this->_graph)
+                for (const auto& [dest, weight] : neighbors)
+                    cout << src << " --{" << weight << "} " << dest << "\n";
+        } else
+            os << "<empty>\n";
     }
 };

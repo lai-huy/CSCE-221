@@ -11,6 +11,7 @@
 #define reset   "\033[m"
 
 using std::cout;
+using std::list, std::pair;
 
 #define END_TEST bool this_test_passed = test_passed;\
 test_passed = true;\
@@ -436,6 +437,42 @@ bool test_copy() {
     END_TEST;
 }
 
+bool test_example() {
+    cout << "make an empty graph\n";
+    Graph g;
+    cout << "add vertices\n";
+    for (size_t n = 1; n <= 7; ++n)
+        g.add_vertex(n);
+    cout << "add undirected edges\n";
+    g.add_edge(1, 2, 5);
+    g.add_edge(1, 3, 3);
+    g.add_edge(2, 3, 2);
+    g.add_edge(2, 5, 3);
+    g.add_edge(2, 7, 1);
+    g.add_edge(3, 4, 7);
+    g.add_edge(3, 5, 7);
+    g.add_edge(4, 1, 2);
+    g.add_edge(4, 6, 6);
+    g.add_edge(5, 4, 2);
+    g.add_edge(5, 6, 1);
+    g.add_edge(7, 5, 1);
+    cout << "G has " << g.vertex_count() << " vertices and ";
+    cout << g.edge_count() << " edges\n";
+    cout << "compute a minimum spanning tree\n";
+    list<pair<size_t, size_t>> mst = g.prim();
+    cout << "print minimum spanning tree\n";
+    double tree_cost = 0;
+    for (const pair<size_t, size_t>& edge : mst) {
+        cout << edge.first << " --{" << g.cost(edge.first, edge.second) << "} " <<
+            edge.second << ";\n";
+        tree_cost += g.cost(edge.first, edge.second);
+    }
+    cout << "tree cost = " << tree_cost << "\n";
+
+
+    END_TEST;
+}
+
 int main() {
     unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
@@ -451,6 +488,7 @@ int main() {
     test(cost);
     test(cost_invalid);
     test(copy);
+    test(example);
 
     cout << "\n";
     cout << magenta << "summary:" << reset << "\n";
