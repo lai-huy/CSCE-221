@@ -39,7 +39,7 @@ public:
         /**
          * @brief Construct a new Node object
          */
-        Node() : _value{Object()}, _next{nullptr}, _prev{nullptr} {}
+        Node() : _value{Object{}}, _next{nullptr}, _prev{nullptr} {}
 
         /**
          * @brief Construct a new Node object
@@ -267,17 +267,22 @@ public:
     }
 
     /**
-     * @brief return this head pointer of htis list
+     * @brief return this head pointer of this list
      *
      * @return const Node* this->_head;
      */
     const Node* head() const { return this->_head; }
 
+    /**
+     * @brief return this tail point of this list
+     *
+     * @return const Node* this->_tail
+     */
     const Node* tail() const { return this->_tail; }
 
     // ----------------------- Optional ----------------------- //
     class const_iterator {
-        const Node* _node;
+        Node* const _node;
     public:
         const_iterator() : const_iterator(nullptr) {}
         const_iterator(const Node* node) : _node{node} {}
@@ -374,16 +379,16 @@ public:
     }
 
     void insert(size_t index, Object&& value) {
-        Object o;
+        Object o{};
         swap(o, value);
         this->insert(index, o);
     }
 
     iterator begin() { return iterator(this->_head); }
 
-    const_iterator begin() const { return iterator(this->_head); }
+    const_iterator begin() const { return const_iterator(this->_head); }
 
     iterator end() { return iterator(nullptr); }
 
-    const_iterator end() const { return iterator(nullptr); }
+    const_iterator end() const { return const_iterator(nullptr); }
 };
