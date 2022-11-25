@@ -328,7 +328,7 @@ public:
      * @return string printable version of the iterator
      */
     virtual string to_string() const {
-        stringstream ss;
+        stringstream ss{};
         ss << "<Set::const_iterator -> [";
         if (this->_node)
             ss << this->_node->_value;
@@ -392,7 +392,7 @@ public:
      *
      * @return Comparable value stored in the node this points to.
      */
-    Comparable& operator*() const {
+    Comparable& operator*() {
         if (!this->_node)
             throw runtime_error("Segmentation Fault");
         return this->_node->_value;
@@ -403,7 +403,7 @@ public:
      *
      * @return Comparable* pointer to the value stored in the node this points to.
      */
-    Comparable* operator->() const {
+    Comparable* operator->() {
         if (!this->_node)
             throw runtime_error("Segmentation Fault");
         return &this->_node->_value;
@@ -471,7 +471,7 @@ public:
      * @return string printable version of the iterator
      */
     string to_string() const override {
-        stringstream ss;
+        stringstream ss{};
         ss << "<Set::iterator -> [";
         if (this->_node)
             ss << this->_node->_value;
