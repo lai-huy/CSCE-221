@@ -370,7 +370,7 @@ public:
  * @brief Iterator for map
  *
  * @tparam Key key type
- * @tparam Value key type
+ * @tparam Value value type
  */
 template <class Key, class Value>
 class Map_iterator : public Map_const_iterator<Key, Value> {
@@ -405,9 +405,9 @@ public:
     ~Map_iterator() { this->_node = nullptr; }
 
     /**
-     * @brief
+     * @brief Indirection operator
      *
-     * @return value_type
+     * @return value_type value stored in the node this points to.
      */
     value_type& operator*() const {
         if (!this->_node)
@@ -416,9 +416,9 @@ public:
     }
 
     /**
-     * @brief
+     * @brief Member access operator
      *
-     * @return value_type*
+     * @return value_type* pointer to the value stored in the node this points to.
      */
     value_type* operator->() const {
         if (!this->_node)

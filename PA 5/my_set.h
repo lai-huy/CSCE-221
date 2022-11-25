@@ -305,8 +305,8 @@ public:
     /**
      * @brief Lexicographically compares a iterator to a node
      *
-     * @param lhs iterator
-     * @param rhs Node*
+     * @param lhs iterator const iterator
+     * @param rhs Node* a pointer to a node.
      * @return true if the iterator points to the same node as the node*
      * @return false otherwise
      */
