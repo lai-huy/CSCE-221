@@ -485,9 +485,17 @@ public:
 template <class Comparable>
 class Set {
 public:
-    typedef Set_Node<Comparable> Node;
-    typedef Set_const_iterator<Comparable> const_iterator;
-    typedef Set_iterator<Comparable> iterator;
+    using key_type = Key;
+    using value_type = Key;
+    using size_type = size_t;
+    using difference_type = ptrdiff_t;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using const_pointer = const value_type*;
+    using iterator = Set_iterator<Key>;
+    using const_iterator = Set_const_iterator<Key>;
+    using Node = Set_Node<Key>;
 
 private:
     /**
@@ -923,6 +931,13 @@ private:
         return temp;
     }
 
+    /**
+     * @brief Search for a value in a subtree
+     *
+     * @param root subtree so search through
+     * @param value value to search for
+     * @return Node* a pointer to the node with the value
+     */
     Node* search(Node* const& root, const Comparable& value) const {
         if (!root)
             return nullptr;
