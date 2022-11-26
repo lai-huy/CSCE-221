@@ -33,11 +33,12 @@ class Map_Node {
     friend class Map_const_iterator<Key, Value>;
     friend class Map_iterator<Key, Value>;
     typedef Map_Node<Key, Value> Node;
+    using value_type = pair<const Key, Value>;
 
     /**
      * @brief pointer to a Key, Value pair stored in the node
      */
-    pair<const Key, Value>* _pair;
+    value_type* _pair;
 
     /**
      * @brief Color of this node
@@ -65,7 +66,7 @@ public:
      *
      * @param rhs comparable to set as the key
     */
-    Map_Node(const pair<const Key, Value>& rhs) : Map_Node(rhs, Color::RED) {}
+    Map_Node(const value_type& rhs) : Map_Node(rhs, Color::RED) {}
 
     /**
      * @brief Construct a new Node object
@@ -73,7 +74,7 @@ public:
      * @param rhs comparable to set as the key
      * @param color Color to set as the color
      */
-    Map_Node(const pair<const Key, Value>& rhs, const Color& color) : _pair{new pair<const Key, Value>(rhs)}, _color{color}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
+    Map_Node(const value_type& rhs, const Color& color) : _pair{new value_type(rhs)}, _color{color}, _left{nullptr}, _right{nullptr}, _parent{nullptr} {}
 
     /**
      * @brief Construct a new Map_Node object
@@ -96,7 +97,7 @@ public:
     Map_Node& operator=(const Map_Node& rhs) {
         if (this != &rhs) {
             this->clear();
-            this->_pair = new pair<const Key, Value>(*rhs._pair);
+            this->_pair = new value_type(*rhs._pair);
             this->_color = rhs._color;
         }
 
@@ -228,7 +229,7 @@ class Map_const_iterator {
 private:
     friend class Map<Key, Value>;
     typedef Map_Node<Key, Value> Node;
-    typedef pair<const Key, Value> value_type;
+    using value_type = pair<const Key, Value>;
 protected:
     /**
      * @brief current Node of the iterator
@@ -377,7 +378,7 @@ class Map_iterator : public Map_const_iterator<Key, Value> {
 private:
     friend class Map<Key, Value>;
     typedef Map_Node<Key, Value> Node;
-    typedef pair<const Key, Value> value_type;
+    using value_type = pair<const Key, Value>;
     typedef Map_const_iterator<Key, Value> const_iterator;
 public:
     /**
@@ -409,7 +410,7 @@ public:
      *
      * @return value_type value stored in the node this points to.
      */
-    value_type& operator*() const {
+    value_type& operator*() {
         if (!this->_node)
             throw runtime_error("Segmentation Fault");
         return *this->_node->_pair;
@@ -420,7 +421,7 @@ public:
      *
      * @return value_type* pointer to the value stored in the node this points to.
      */
-    value_type* operator->() const {
+    value_type* operator->() {
         if (!this->_node)
             throw runtime_error("Segmentaion Fault");
         return this->_node->_pair;
@@ -502,12 +503,19 @@ public:
 template <class Key, class Value>
 class Map {
 public:
-    typedef Map_Node<Key, Value> Node;
-    typedef Map_const_iterator<Key, Value> const_iterator;
-    typedef Map_iterator<Key, Value> iterator;
-    typedef pair<const Key, Value> value_type;
+    using key_type = Key;
+    using mapped_type = Value;
+    using value_type = pair<const Key, Value>;
+    using size_type = size_t;
+    using difference_type = ptrdiff_t;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using const_pointer = const value_type*;
+    using iterator = Map_iterator<Key, Value>;
+    using const_iterator = Map_const_iterator<Key, Value>;
+    using Node = Map_Node<Key, Value>;
 
-private:
 private:
     /**
      * @brief Root of the 🟥⬛🌲
@@ -1030,12 +1038,12 @@ public:
      * @return Value& value
      */
     Value& operator[](const Key& key) {
-        const_iterator index = this->find(key);
+        iterator index = this->find(key);
         if (index._node)
-            return this->at(key);
+            return index->second;
         else {
-            this->insert(index, {key, Value()});
-            return this->at(key);
+            this->insert(index, {key, Value{}});
+            return index->second;
         }
     }
 
@@ -1107,12 +1115,12 @@ public:
     }
 
     /**
-     * @brief insert the given lvalue reference into the map
+     * @brief insert a value into the map
      *
-     * @param _pair lvalue to insert
-     * @return pair<iterator, bool> iterator to the inserted element and boolean which indicates whether the insertion was successful
+     * @param _pair key, value pair to insert
+     * @return pair<iterator, bool> an iterator to the inserted element (or to the element that prevented the insertion) and a bool value set to true if the insertion took place.
      */
-    pair<iterator, bool> insert(const pair<const Key, Value>& _pair) {
+    pair<iterator, bool> insert(const value_type& _pair) {
         Node* node = this->search(this->_root, _pair.first);
         if (node)
             return pair(iterator(node), false);
@@ -1125,13 +1133,13 @@ public:
     }
 
     /**
-     * @brief insert the given lvalue reference into the set just after the specified position
+     * @brief inserts value in the position as close as possible to the position just prior to hint
      *
-     * @param hint specified location
-     * @param _pair lvalue to insert
-     * @return iterator to the inserted element
+     * @param hint iterator to the position before which the new element will be inserted
+     * @param _pair 	element value to insert
+     * @return Returns an iterator to the inserted element, or to the element that prevented the insertion.
      */
-    iterator insert(const_iterator hint, const pair<const Key, Value>& _pair) {
+    iterator insert(const_iterator hint, const value_type& _pair) {
         Node* node = this->search(this->_root, _pair.first);
         if (node)
             return iterator(node);
@@ -1294,7 +1302,7 @@ public:
      * @param pair pair to move insert
      * @return pair<iterator, bool> an iterator to the key-value pair inserted and if the insertion was successful
      */
-    pair<iterator, bool> insert(pair<const Key, Value>&& pair) {
+    pair<iterator, bool> insert(value_type&& pair) {
         value_type p(pair.first, Value());
         swap(p.second, pair.second);
         return this->insert(p);
@@ -1307,7 +1315,7 @@ public:
      * @param pair pair to move insert
      * @return iterator to the key-value pair inserted
      */
-    iterator insert(const_iterator hint, pair<const Key, Value>&& pair) {
+    iterator insert(const_iterator hint, value_type&& pair) {
         value_type p(pair.first, Value());
         swap(p.second, pair.second);
         return this->insert(hint, p);
