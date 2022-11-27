@@ -148,15 +148,14 @@ private:
      * @brief Rehash the hash table
      */
     void rehash() {
-        this->_bucket = this->nextPrime(this->_bucket);
         vector<Key> temp;
-        for (const Cell& cell : this->_table) {
-            if (cell._state != State::ACTIVE)
-                continue;
-            temp.push_back(cell._value);
-        }
+        for (const Cell& cell : this->_table)
+            if (cell._state == State::ACTIVE)
+                temp.emplace_back(cell._value);
 
         this->make_empty();
+        this->_bucket = this->nextPrime(this->_bucket);
+        this->_table.resize(this->_bucket, Cell{});
         for (const Key& key : temp)
             this->insert(key);
     }
@@ -216,7 +215,7 @@ public:
     bool insert(const Key& key) {
         if (this->contains(key))
             return false;
-        Cell& cell = this->_table.at(this->position(key));
+        Cell& cell = this->_table[this->position(key)];
         if (cell._state == State::INACTIVE)
             ++this->_occupied;
         ++this->_size;
@@ -234,17 +233,17 @@ public:
      * @return size_t the number of keys removed from the hash table
      */
     size_t remove(const Key& key) {
-        for (typename vector<Cell>::iterator it = this->_table.begin(); it != this->_table.end(); ++it) {
-            switch (it->_state) {
-            case State::DELETE:
-            case State::INACTIVE:
-                continue;
-            default:
-                if (it->_value == key) {
-                    it->_state = State::DELETE;
+        for (Cell& cell : this->_table) {
+            switch (cell._state) {
+            case State::ACTIVE:
+                if (cell._value == key) {
+                    cell._state = State::DELETE;
                     --this->_size;
                     return 1;
                 }
+                break;
+            default:
+                continue;
             }
         }
 
@@ -259,17 +258,17 @@ public:
      * @return false otherwise
      */
     bool contains(const Key& key) const {
-        for (typename vector<Cell>::const_iterator it = this->_table.begin(); it != this->_table.end(); ++it) {
-            switch (it->_state) {
-            case State::INACTIVE:
-            case State::DELETE:
-                continue;
-            default:
-                if (it->_value == key)
+        for (const Cell& cell : this->_table) {
+            switch (cell._state) {
+            case State::ACTIVE:
+                if (cell._value == key)
                     return true;
                 break;
+            default:
+                continue;
             }
         }
+
         return false;
     }
 
@@ -281,14 +280,13 @@ public:
      */
     size_t position(const Key& key) const {
         size_t index = this->_hash(key) % this->_bucket;
-        size_t i = 1;
-        Cell cell = this->_table.at(index);
-        while (cell._state != State::INACTIVE) {
+        for (size_t i = 0; i < this->_bucket; ++i) {
+            const Cell& cell = this->_table.at(index);
             if (cell._value == key)
                 break;
-            index = (this->_hash(key) + i) % this->_bucket;
-            cell = this->_table.at(index);
-            ++i;
+            else if (cell._state == State::INACTIVE)
+                break;
+            index = (index + 1) % this->_bucket;
         }
 
         return index;
