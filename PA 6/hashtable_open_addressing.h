@@ -91,6 +91,11 @@ private:
     size_t _occupied;
 
     /**
+     * @brief Hasher object to hash key values
+     */
+    Hash _hash;
+
+    /**
      * @brief Primality Test. Source: https://en.wikipedia.org/wiki/Primality_test#C,_C++,_C#_&_D
      *
      * @param num number to determine if its prime
@@ -167,7 +172,7 @@ public:
      *
      * @param buckets The number of buckets to construct the table with
      */
-    explicit HashTable(size_t buckets) : _table{vector<Cell>(buckets)}, _size{0}, _bucket{buckets}, _occupied{0} {}
+    explicit HashTable(size_t buckets) : _table{vector<Cell>(buckets)}, _size{0}, _bucket{buckets}, _occupied{0}, _hash{Hash{}} {}
 
     /**
      * @brief Determine if the table is empty
@@ -275,13 +280,13 @@ public:
      * @return size_t the bucket the key should go into
      */
     size_t position(const Key& key) const {
-        size_t index = Hash{}(key) % this->_bucket;
+        size_t index = this->_hash(key) % this->_bucket;
         size_t i = 1;
         Cell cell = this->_table.at(index);
         while (cell._state != State::INACTIVE) {
             if (cell._value == key)
                 break;
-            index = (Hash{}(key) +i) % this->_bucket;
+            index = (this->_hash(key) + i) % this->_bucket;
             cell = this->_table.at(index);
             ++i;
         }
@@ -312,7 +317,7 @@ public:
      *
      * @param rhs HashTable to copy from
      */
-    HashTable(const HashTable& rhs) : _table{rhs._table}, _size{rhs._size}, _bucket{rhs._bucket}, _occupied{rhs._occupied} {}
+    HashTable(const HashTable& rhs) : _table{rhs._table}, _size{rhs._size}, _bucket{rhs._bucket}, _occupied{rhs._occupied}, _hash{rhs._hash} {}
 
     /**
      * @brief Construct a new Hash Table object
@@ -324,6 +329,7 @@ public:
         swap(this->_size, rhs._size);
         swap(this->_bucket, rhs._bucket);
         swap(this->_occupied, rhs._occupied);
+        swap(this->_hash, rhs._hash);
     }
 
     /**
@@ -344,6 +350,7 @@ public:
             this->_size = rhs._size;
             this->_bucket = rhs._bucket;
             this->_occupied = rhs._occupied;
+            this->_hash = rhs._hash;
         }
 
         return *this;
@@ -362,6 +369,7 @@ public:
             swap(this->_size, rhs._size);
             swap(this->_bucket, rhs._bucket);
             swap(this->_occupied, rhs._occupied);
+            swap(this->_hash, rhs._hash);
         }
 
         return *this;

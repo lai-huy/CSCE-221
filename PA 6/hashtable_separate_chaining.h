@@ -8,7 +8,7 @@
 #include <vector>
 
 using std::ostream, std::cout;
-using std::hash, std::find, std::swap, std::copy, std::back_inserter;
+using std::hash, std::find, std::swap;
 using std::vector, std::list;
 using std::out_of_range, std::invalid_argument;
 using std::numeric_limits;
@@ -43,6 +43,11 @@ private:
     float _mlf;
 
     /**
+     * @brief Hasher object to hash key values
+     */
+    Hash _hash;
+
+    /**
      * @brief Primality Test. Source: https://en.wikipedia.org/wiki/Primality_test#C,_C++,_C#_&_D
      *
      * @param num number to determine if its prime
@@ -74,10 +79,22 @@ private:
      * @return size_t the next prime
      */
     size_t nextPrime(const size_t& num) const {
-        size_t i = num;
-        while (!this->isPrime(i))
-            ++i;
-        return i;
+        size_t b = (num << 1);
+        if (b % 6) {
+            b += (6 - (b % 6));
+            if (this->isPrime(b - 1))
+                return b - 1;
+        }
+
+        while (true) {
+            if (this->isPrime(b + 1))
+                return b + 1;
+            if (this->isPrime(b - 1))
+                return b - 1;
+            b += 6;
+        }
+
+        return b;
     }
 
     /**
@@ -92,6 +109,7 @@ private:
         this->_size = rhs._size;
         this->_bucket = rhs._bucket;
         this->_mlf = rhs._mlf;
+        this->_hash = rhs._hash;
     }
 
 public:
@@ -105,7 +123,7 @@ public:
      *
      * @param size the number of buckets
      */
-    explicit HashTable(size_t size) : _table{vector<list<Key>>(size)}, _size{0}, _bucket{size}, _mlf{1.0f} {
+    explicit HashTable(size_t size) : _table{vector<list<Key>>(size)}, _size{0}, _bucket{size}, _mlf{1.0f}, _hash{Hash{}} {
         if (!size)
             throw invalid_argument("Initial size of table canont be zero.");
     }
@@ -125,6 +143,9 @@ public:
      */
     size_t size() const { return this->_size; }
 
+    /**
+     * @brief Prevents memory leaks by deallocating the entire hash table
+     */
     void make_empty() {
         for (list<Key>& list : this->_table)
             list.clear();
@@ -147,7 +168,7 @@ public:
         this->_table.at(bucket).push_back(key);
         ++this->_size;
         if (this->load_factor() > this->max_load_factor()) {
-            size_t size = this->nextPrime(2 * this->_bucket + 1);
+            size_t size = this->nextPrime(this->_bucket);
             this->rehash(size);
         }
         return true;
@@ -205,7 +226,7 @@ public:
      * @param key key value
      * @return size_t the bucket the key goes into
      */
-    size_t bucket(const Key& key) const { return Hash{}(key) % this->_bucket; }
+    size_t bucket(const Key& key) const { return this->_hash(key) % this->_bucket; }
 
     /**
      * @brief Determine the load factor of the table
@@ -235,7 +256,7 @@ public:
             throw invalid_argument("new max load factor is infinite");
         this->_mlf = lf;
         if (this->load_factor() > this->_mlf)
-            this->rehash(this->nextPrime(static_cast<size_t>(this->_size / this->_mlf)));
+            this->rehash(this->nextPrime(static_cast<size_t>(this->_size / this->_mlf) >> 1));
     }
 
     /**
@@ -245,11 +266,10 @@ public:
      */
     void rehash(size_t bucket) {
         if (bucket != this->_bucket) {
-            this->_bucket = static_cast<float>(this->_size) / bucket > this->_mlf ? this->nextPrime(static_cast<size_t>(this->_size / this->_mlf)) : bucket;
+            this->_bucket = this->_size / static_cast<float>(bucket) > this->_mlf ? this->nextPrime(static_cast<size_t>(this->_size / this->_mlf) >> 1) : bucket;
             vector<Key> temp;
             for (const list<Key>& l : this->_table)
-                for (const Key& key : l)
-                    temp.push_back(key);
+                temp.insert(temp.end(), l.cbegin(), l.cend());
             this->make_empty();
             for (const Key& key : temp)
                 this->insert(key);
@@ -296,6 +316,7 @@ public:
         this->_table.swap(rhs._table);
         swap(this->_size, rhs._size);
         swap(this->_bucket, rhs._bucket);
+        swap(this->_hash, rhs._hash);
     }
 
     /**
@@ -330,6 +351,7 @@ public:
             this->_table.swap(rhs._table);
             swap(this->_size, rhs._size);
             swap(this->_bucket, rhs._bucket);
+            swap(this->_hash, rhs._hash);
         }
 
         return *this;

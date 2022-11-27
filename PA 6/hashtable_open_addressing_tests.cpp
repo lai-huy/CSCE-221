@@ -552,27 +552,27 @@ bool test_next_prime() {
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
-	// test(create);
-	// test(create_size);
-	// test(create_size_invalid);
-	// test(insert);
-	// test(insert_rehash);
-	// test(insert_dup);
-	// test(insert_conflict);
-	// test(insert_conflict_rehash);
-	// test(remove);
-	// test(remove_empty);
-	// test(remove_invalid);
-	// test(remove_middle);
-	// test(undelete);
-	// test(undelete_conflict);
-	// test(position_undelete);
-	// test(contains);
-	// test(print);
-	// test(print_empty);
-	// test(copy);
-	// test(copy_empty);
-	test(next_prime);
+	test(create);
+	test(create_size);
+	test(create_size_invalid);
+	test(insert);
+	test(insert_rehash);
+	test(insert_dup);
+	test(insert_conflict);
+	test(insert_conflict_rehash);
+	test(remove);
+	test(remove_empty);
+	test(remove_invalid);
+	test(remove_middle);
+	test(undelete);
+	test(undelete_conflict);
+	test(position_undelete);
+	test(contains);
+	test(print);
+	test(print_empty);
+	test(copy);
+	test(copy_empty);
+	// test(next_prime);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";
