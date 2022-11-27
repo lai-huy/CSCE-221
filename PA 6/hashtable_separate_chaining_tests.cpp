@@ -4,11 +4,13 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
+#include <chrono>
 #include "hashtable_separate_chaining.h"
 
 using std::cout, std::stringstream;
 using std::hash;
 using std::invalid_argument;
+using namespace std::chrono;
 
 #define black   "\033[30m"
 #define red     "\033[31m"
@@ -668,33 +670,51 @@ bool test_self_assignment() {
 	END_TEST;
 }
 
+bool test_next_prime() {
+	HashTable<int, hash<int>> table;
+	size_t prime = 0;
+	auto start = high_resolution_clock::now();
+	for (int i = 0; i < INT16_MAX; ++i) {
+		table.insert(table.bucket_count() * i);
+		if (table.bucket_count() != prime) {
+			prime = table.bucket_count();
+			cout << prime << "\n";
+		}
+	}
+	auto end = high_resolution_clock::now();
+	cout << "Time:\t" << duration_cast<milliseconds>(end - start).count() << "\n";
+
+	END_TEST;
+}
+
 int main() {
 	unsigned pass_cnt = 0, fail_cnt = 0, skip_cnt = 0;
 
-	test(create);
-	test(create_size);
-	test(create_size_invalid);
-	test(insert);
-	test(insert_rehash);
-	test(insert_dup);
-	test(insert_conflict_rehash);
-	test(remove);
-	test(remove_empty);
-	test(remove_invalid);
-	test(contains);
-	test(rehash_smaller);
-	test(rehash_smaller_mlf);
-	test(load_factor);
-	test(mlf);
-	test(mlf_invalid);
-	test(mlf_rehash);
-	test(print);
-	test(print_empty);
-	test(copy);
-	test(copy_empty);
-	test(assignment);
-	test(assignment_empty);
-	test(self_assignment);
+	// test(create);
+	// test(create_size);
+	// test(create_size_invalid);
+	// test(insert);
+	// test(insert_rehash);
+	// test(insert_dup);
+	// test(insert_conflict_rehash);
+	// test(remove);
+	// test(remove_empty);
+	// test(remove_invalid);
+	// test(contains);
+	// test(rehash_smaller);
+	// test(rehash_smaller_mlf);
+	// test(load_factor);
+	// test(mlf);
+	// test(mlf_invalid);
+	// test(mlf_rehash);
+	// test(print);
+	// test(print_empty);
+	// test(copy);
+	// test(copy_empty);
+	// test(assignment);
+	// test(assignment_empty);
+	// test(self_assignment);
+	test(next_prime);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";
