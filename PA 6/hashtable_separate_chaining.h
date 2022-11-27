@@ -218,7 +218,7 @@ public:
         if (index >= this->_bucket)
             throw out_of_range("Invalid bucket");
         return this->_table.at(index).size();
-    };
+    }
 
     /**
      * @brief Determines which bucket a key will go into
