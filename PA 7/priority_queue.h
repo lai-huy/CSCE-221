@@ -101,7 +101,7 @@ public:
      *
      * @param val value to add
      */
-    void push(const typename Container::value_type& val) { heap_insert(this->_container, val, this->_compare); ++this->_size; }
+    void push(typename Container::const_reference val) { heap_insert(this->_container, val, this->_compare); ++this->_size; }
 
     /**
      * @brief Removes the top value from the priority queue
@@ -152,8 +152,7 @@ public:
         if (this != &rhs) {
             this->make_empty();
             this->_compare = rhs._compare;
-            this->_container.resize(rhs._container.size());
-            std::copy(rhs._container.begin(), rhs._container.end(), this->_container.begin());
+            this->_container = rhs._container;
             this->_size = rhs._size;
         }
 
@@ -166,19 +165,14 @@ public:
      * @param compare comparator function
      * @param container container to move from
      */
-    PriorityQueue(const Compare& compare, Container&& container) : _compare{compare}, _container{Container()}, _size{container.size()} {
-        swap(this->_container, container);
-        heapify(this->_container, this->_compare);
-    }
+    PriorityQueue(const Compare& compare, Container&& container) : _compare{compare}, _container{move(container)}, _size{container.size()} { heapify(this->_container, this->_compare); }
 
     /**
      * @brief Construct a new Priority Queue object
      *
      * @param rhs Priority queue to move from
      */
-    PriorityQueue(PriorityQueue&& rhs) : _compare{move(rhs._compare)}, _container{move(rhs._container)}, _size{move(rhs._size)} {
-        heapify(this->_container, this->_compare);
-    }
+    PriorityQueue(PriorityQueue&& rhs) : _compare{move(rhs._compare)}, _container{move(rhs._container)}, _size{move(rhs._size)} { heapify(this->_container, this->_compare); }
 
     /**
      * @brief Move assignment operator
@@ -189,10 +183,9 @@ public:
     PriorityQueue& operator=(PriorityQueue&& rhs) {
         if (this != &rhs) {
             this->make_empty();
-            this->_compare = rhs._compare;
-            this->_container.resize(rhs._container.size());
-            std::swap_ranges(rhs._container.begin(), rhs._container.end(), this->_container.begin());
-            swap(this->_size, rhs._size);
+            this->_compare = move(rhs._compare);
+            this->_container = move(rhs._container);
+            this->_size = move(rhs._size);
         }
 
         return *this;
@@ -204,8 +197,7 @@ public:
      * @param val value to move from
      */
     void push(typename Container::value_type&& val) {
-        typename Container::value_type v{};
-        swap(v, val);
+        typename Container::value_type v(move(val));
         this->push(v);
     }
 };
