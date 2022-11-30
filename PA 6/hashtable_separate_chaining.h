@@ -197,8 +197,8 @@ public:
      * @return false otherwise
      */
     bool contains(const Key& key) const {
-        list<Key> list = this->_table.at(this->bucket(key));
-        return find(list.begin(), list.end(), key) != list.end();
+        const list<Key>& list = this->_table.at(this->bucket(key));
+        return find(list.cbegin(), list.cend(), key) != list.cend();
     }
 
     /**
@@ -348,10 +348,10 @@ public:
     HashTable& operator=(HashTable&& rhs) {
         if (this != &rhs) {
             this->make_empty();
-            this->_table.swap(rhs._table);
+            this->_table = move(rhs._table);
             swap(this->_size, rhs._size);
             swap(this->_bucket, rhs._bucket);
-            swap(this->_hash, rhs._hash);
+            this->_hash = move(rhs._hash);
         }
 
         return *this;
@@ -365,8 +365,7 @@ public:
      * @return false otherwise
      */
     bool insert(Key&& key) {
-        Key k;
-        swap(k, key);
+        Key k(move(key));
         return this->insert(k);
     }
 };

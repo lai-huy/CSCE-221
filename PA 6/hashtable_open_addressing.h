@@ -8,9 +8,9 @@
 #include <vector>
 
 using std::ostream, std::cout;
-using std::hash, std::swap;
-using std::vector;
-using std::find;
+using std::hash, std::swap, std::move;
+using std::find, std::vector;
+using std::pair, std::make_pair;
 
 /**
  * @brief Hash Table implementation. This resolves hash collisions through linear probing.
@@ -25,55 +25,11 @@ public:
      * @brief State of each cell
      */
     enum State { INACTIVE, ACTIVE, DELETE };
-
-    /**
-     * @brief Individual cells in the hash table
-     */
-    struct Cell {
-        /**
-         * @brief Key stored in the cell
-         */
-        Key _value;
-
-        /**
-         * @brief State of the cell
-         */
-        State _state;
-
-        /**
-         * @brief Construct a new Cell object
-         */
-        Cell() : Cell(Key{}, State::INACTIVE) {}
-
-        /**
-         * @brief Construct a new Cell object
-         *
-         * @param key key value to give the cell
-         */
-        Cell(const Key& key) : Cell(key, State::ACTIVE) {}
-
-        /**
-         * @brief Construct a new Cell object
-         *
-         * @param key key value to give the cell
-         * @param state state of the cell
-         */
-        Cell(const Key& key, const State& state) : _value{Key(key)}, _state{state} {}
-
-        /**
-         * @brief Stream intersion operator
-         *
-         * @param os ostream to insert into
-         * @param cell cell to insert from
-         * @return ostream& os
-         */
-        friend ostream& operator<<(ostream& os, const Cell& cell) { return os << cell._value; }
-    };
 private:
     /**
      * @brief Internal structure for the hash table
      */
-    vector<Cell> _table;
+    vector<pair<Key, State>> _table;
 
     /**
      * @brief Number of elements in the hash table
@@ -121,6 +77,25 @@ private:
     }
 
     /**
+     * @brief Rehash the hash table
+     */
+    void rehash() {
+        vector<pair<Key, State>> temp = move(this->_table);
+
+        this->_size = 0;
+        this->_occupied = 0;
+        this->_bucket = this->nextPrime(this->_bucket);
+        this->_table.resize(this->_bucket, pair<Key, State>{});
+        // cout << "Rehash to:\t" << this->_bucket << "\n";
+        for (const auto& [value, state] : temp)
+            if (state == State::ACTIVE) {
+                this->_table[this->position(value)] = move(make_pair(value, State::ACTIVE));
+                ++this->_size;
+                ++this->_occupied;
+            }
+    }
+public:
+    /**
      * @brief Retreive the next prime from a number
      *
      * @param num number to find the next prime of
@@ -128,39 +103,19 @@ private:
      */
     size_t nextPrime(const size_t& num) const {
         size_t b = (num << 1);
-        if (b % 6) {
+        if (b % 6)
             b += (6 - (b % 6));
-            if (this->isPrime(b - 1))
-                return b - 1;
-        }
 
         while (true) {
-            if (this->isPrime(b + 1))
-                return b + 1;
             if (this->isPrime(b - 1))
                 return b - 1;
+            if (this->isPrime(b + 1))
+                return b + 1;
             b += 6;
         }
         return b;
     }
 
-    /**
-     * @brief Rehash the hash table
-     */
-    void rehash() {
-        vector<Key> temp;
-        for (const Cell& cell : this->_table)
-            if (cell._state == State::ACTIVE)
-                temp.emplace_back(cell._value);
-
-        this->make_empty();
-        this->_bucket = this->nextPrime(this->_bucket);
-        this->_table.resize(this->_bucket, Cell{});
-        for (const Key& key : temp)
-            this->insert(key);
-    }
-
-public:
     /**
      * @brief Construct a new Hash Table object
      */
@@ -171,7 +126,7 @@ public:
      *
      * @param buckets The number of buckets to construct the table with
      */
-    explicit HashTable(size_t buckets) : _table{vector<Cell>(buckets)}, _size{0}, _bucket{buckets}, _occupied{0}, _hash{Hash{}} {}
+    explicit HashTable(size_t buckets) : _table{vector<pair<Key, State>>(buckets, pair<Key, State>{})}, _size{0}, _bucket{buckets}, _occupied{0}, _hash{Hash{}} {}
 
     /**
      * @brief Determine if the table is empty
@@ -215,13 +170,12 @@ public:
     bool insert(const Key& key) {
         if (this->contains(key))
             return false;
-        Cell& cell = this->_table[this->position(key)];
-        if (cell._state == State::INACTIVE)
+        pair<Key, State>& cell = this->_table[this->position(key)];
+        if (cell.second == State::INACTIVE)
             ++this->_occupied;
         ++this->_size;
-        cell._value = key;
-        cell._state = State::ACTIVE;
-        if (this->_occupied / static_cast<float>(this->_bucket) > 0.5f)
+        cell = {key, State::ACTIVE};
+        if (this->_occupied << 1 > this->_bucket)
             this->rehash();
         return true;
     }
@@ -233,18 +187,11 @@ public:
      * @return size_t the number of keys removed from the hash table
      */
     size_t remove(const Key& key) {
-        for (Cell& cell : this->_table) {
-            switch (cell._state) {
-            case State::ACTIVE:
-                if (cell._value == key) {
-                    cell._state = State::DELETE;
-                    --this->_size;
-                    return 1;
-                }
-                break;
-            default:
-                continue;
-            }
+        auto& [value, state] = this->_table[this->position(key)];
+        if (value == key && state == State::ACTIVE) {
+            state = State::DELETE;
+            --this->_size;
+            return 1;
         }
 
         return 0;
@@ -258,18 +205,8 @@ public:
      * @return false otherwise
      */
     bool contains(const Key& key) const {
-        for (const Cell& cell : this->_table) {
-            switch (cell._state) {
-            case State::ACTIVE:
-                if (cell._value == key)
-                    return true;
-                break;
-            default:
-                continue;
-            }
-        }
-
-        return false;
+        const auto& [value, state] = this->_table[this->position(key)];
+        return value == key && state == State::ACTIVE;
     }
 
     /**
@@ -279,17 +216,15 @@ public:
      * @return size_t the bucket the key should go into
      */
     size_t position(const Key& key) const {
-        size_t index = this->_hash(key) % this->_bucket;
-        for (size_t i = 0; i < this->_bucket; ++i) {
-            const Cell& cell = this->_table.at(index);
-            if (cell._value == key)
-                break;
-            else if (cell._state == State::INACTIVE)
-                break;
-            index = (index + 1) % this->_bucket;
+        size_t hash = this->_hash(key), i{}, index = (hash + i) % this->_bucket;
+        while (true) {
+            const auto& [value, state] = this->_table[index];
+            if (state == State::INACTIVE)
+                return index;
+            if (value == key)
+                return index;
+            index = (hash + ++i) % this->_bucket;
         }
-
-        return index;
     }
 
     /**
@@ -300,10 +235,9 @@ public:
     void print_table(ostream& os = cout) const {
         if (this->_size) {
             for (size_t i = 0; i < this->_table.size(); ++i) {
-                const Cell& cell = this->_table.at(i);
-                if (cell._state != State::ACTIVE)
-                    continue;
-                os << i << ": " << cell._value << "\n";
+                const auto& [value, state] = this->_table[i];
+                if (state == State::ACTIVE)
+                    os << i << ": " << value << "\n";
             }
         } else
             os << "<empty>\n";
@@ -363,11 +297,11 @@ public:
     HashTable& operator=(HashTable&& rhs) {
         if (this != &rhs) {
             this->make_empty();
-            this->_table.swap(rhs._table);
+            this->_table = move(rhs._table);
             swap(this->_size, rhs._size);
             swap(this->_bucket, rhs._bucket);
             swap(this->_occupied, rhs._occupied);
-            swap(this->_hash, rhs._hash);
+            this->_hash = move(rhs._hash);
         }
 
         return *this;
@@ -381,8 +315,7 @@ public:
      * @return false otherwise
      */
     bool insert(Key&& key) {
-        Key k{};
-        swap(k, key);
+        Key k(move(key));
         return this->insert(k);
     }
 };

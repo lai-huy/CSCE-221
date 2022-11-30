@@ -4,10 +4,13 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
+// #include <chrono>
 #include "hashtable_open_addressing.h"
 
 using std::cout, std::stringstream;
 using std::invalid_argument;
+// using std::hash;
+// using namespace std::chrono;
 
 #define black   "\033[30m"
 #define red     "\033[31m"
@@ -535,17 +538,17 @@ bool test_copy_empty() {
 	END_TEST;
 }
 
-/**
-bool test_next_prime() {
-	HashTable<int, hash<int>> table;
-	size_t prime = 0;
-	for (int i = 0; i < INT16_MAX; ++i) {
-		table.insert(table.table_size() * i);
-		if (table.table_size() != prime) {
-			prime = table.table_size();
-			cout << prime << "\n";
-		}
-	}
+/*
+bool test_performance() {
+	HashTable<int> table;
+	auto start = high_resolution_clock::now();
+	for (int i = 10000000; i >= 0; --i)
+		table.insert(i);
+	auto end = high_resolution_clock::now();
+	cout << "Time:\t" << duration_cast<nanoseconds>(end - start).count() << "\n";
+
+	for (int i = 1000; i >= 0; --i)
+		table.remove(i);
 
 	END_TEST;
 }*/
@@ -573,7 +576,7 @@ int main() {
 	test(print_empty);
 	test(copy);
 	test(copy_empty);
-	// test(next_prime);
+	// test(performance);
 
 	cout << "\n";
 	cout << magenta << "summary:" << reset << "\n";
