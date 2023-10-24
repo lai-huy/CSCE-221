@@ -19,7 +19,7 @@ C++ Programming Review
 
 # Task 1: `Selection`
 
-Write a program to determine (select) the `k`-th largestvalue in a list of `N` values.
+Write a program to determine (select) the `k`-th largest value in a list of `N` values.
 
 ## Requirements
 
