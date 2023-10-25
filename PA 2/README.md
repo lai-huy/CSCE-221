@@ -116,27 +116,22 @@ ArrayList(const ArrayList&)             # - constructs a copy of the given list
 ArrayList& operator=(const ArrayList&)  # - assigns a copy of the given list
 
 size_t size() const                 # - returns the number of elementsin the list
-Object& operator[](size_t)          # - returns a reference to the element at the
-                                    #   specified index or throws std::out_of_range
-                                    #   if the index is out of bounds.
-void insert(size_t, const Object&)  # - insert the given object at the specified index
-                                    #   or throws std::out_of_range if 
-                                    #   the index is out of bounds
-void remove(index)                  # - remove the object at the specified index
-                                    #   or throws std::out_of_range if the index is out of bounds
+Object& operator[](size_t)          # - returns a reference to the element at the specified index or throws std::out_of_range if the index is out of bounds.
+void insert(size_t, const Object&)  # - insert the given object at the specified index or throws std::out_of_range if the index is out of bounds
+void remove(index)                  # - remove the object at the specified index or throws std::out_of_range if the index is out of bounds
 ```
 
 ### Optional
 ```cpp
-ArrayList(ArrayList&&) - move-constructs a "copy" of the given (rvalue) list
-ArrayList& operator=(ArrayList&&) - move-assigns a "copy" of the given (rvalue) list
-void insert(size_t, Object&&) - insert the given (rvalue)object at the specified index or throws std::out_of_rangeif the index is out ofbounds
-const Object& operator[](size_t) const - returns aconstant reference to the element at the specified index or throws std::out_of_rangeif the index is out of bounds.
+ArrayList(ArrayList&&)                  # - move-constructs a "copy" of the given (rvalue) list
+ArrayList& operator=(ArrayList&&)       # - move-assigns a "copy" of the given (rvalue) list
+void insert(size_t, Object&&)           # - insert the given (rvalue)object at the specified index or throws std::out_of_rangeif the index is out ofbounds
+const Object& operator[](size_t) const  # - returns a constant reference to the element at the specified index or throws std::out_of_range if the index is out of bounds.
 
-Object* begin() - returns a pointer to the beginningof the list
-const Object* begin() const - returns a pointer tothe beginning of the list
-Object* end() - returns a pointer to the end of the list
-const Object* end() const - returns a pointer to theend of the list
+Object* begin()              # - returns a pointer to the beginningof the list
+const Object* begin() const  # - returns a pointer tothe beginning of the list
+Object* end()                # - returns a pointer to the end of the list
+const Object* end() const    # - returns a pointer to theend of the list
 ```
 
 ### Example
@@ -160,23 +155,23 @@ int value = list[1];
 ```
 
 
-## Task 2: Doubly Linked List
+# Task 2: Doubly Linked List
 
 Implement a list using a doubly linked list.
 
-### Requirements
+## Requirements
 
-#### Files
+### Files
 
 doubly_linked_list.h- contains the template definitions
 doubly_linked_list_tests.cpp- contains the test casesand test driver (main)
 
-#### Class
+### Class
 
 template <typename Object>
 class DoublyLinkedList;
 
-#### Functions (public)
+### Functions (public)
 
 **DoublyLinkedList()** - makes an empty list
 +--Rule of Three-----------------------------------------------------+
@@ -193,7 +188,7 @@ throws std::out_of_rangeif the index is out of bounds
 **void remove(size_t)** - remove the object at the specifiedindex or throws
 std::out_of_rangeif the index is out of bounds
 
-##### Optional
+### Optional
 
 **DoublyLinkedList(DoublyLinkedList&&)** - move-constructsa “copy” of the given
 (rvalue) list
@@ -211,7 +206,7 @@ list
 **iterator end()** - returns an iterator that points tothe end of the list
 **const_iterator end() const** - returns an iterator thatpoints to the end of the list
 
-#### Example
+### Example
 
 // make an empty list
 DoublyLinkedList<int> list;
@@ -231,23 +226,23 @@ list.remove(1);
 int value = list[1];
 
 
-## Task 3: Stack
+# Task 3: Stack
 
 Implement a stack using a list. You should use yourArrayList orDoublyLinkedList.
 
-### Requirements
+## Requirements
 
-#### Files
+### Files
 
 stack.h- contains the template definitions
 stack_tests.cpp- contains the test cases and testdriver (main)
 
-#### Class
+### Class
 
 template <typename Object>
 class Stack;
 
-#### Functions (public)
+### Functions (public)
 
 **Stack()** - makes an empty stack
 +--Rule of Three--------------------------------------------+
@@ -261,7 +256,7 @@ stack is empty.
 **Object& top()** - return a reference to the elementon top of the stack or throw
 std::out_of_rangeif the stack is empty.
 
-##### Optional
+### Optional
 
 **Stack(Stack&&)** - move-constructs a “copy” of the given(rvalue) stack
 **Stack& operator=(Stack&&)** - move-assigns a “copy”of the given (rvalue) stack
@@ -271,7 +266,7 @@ stack or throws std::out_of_rangeif the stack isempty.
 **size_t size() const** - returns the number of elementsin the stack
 
 
-#### Example
+## Example
 
 // make an empty stack
 Stack<int> stack;
@@ -288,23 +283,23 @@ stack.pop();
 int value = stack.top();
 
 
-## Task 4: Queue
+# Task 4: Queue
 
 Implement a queue using a list. You should use yourArrayList orDoublyLinkedList.
 
-### Requirements
+## Requirements
 
-#### Files
+### Files
 
 queue.h - contains the template definitions
 queue_tests.cpp - contains the test cases and test driver (main)
 
-#### Class
+### Class
 
 template <typename Object>
 class Queue;
 
-#### Functions (public)
+### Functions (public)
 
 **Queue()** - makes an empty stack
 +--Rule of Three--------------------------------------------+
@@ -318,7 +313,7 @@ std::out_of_rangeif the queue is empty.
 **Object& front()** - return a reference to the elementat the front of the queue or throw
 std::out_of_rangeif the queue is empty.
 
-##### Optional
+### Optional
 
 **Queue(Queue&&)** - move-constructs a “copy” of the given(rvalue) queue
 **Queue& operator=(Queue&&)** - move-assigns a “copy”of the given (rvalue) queue
@@ -328,7 +323,7 @@ of the queue or throws std::out_of_rangeif the queueis empty.
 **size_t size() const** - returns the number of elementsin the queue
 
 
-#### Example
+## Example
 
 // make an empty queue
 Queue<int> queue;
@@ -345,31 +340,31 @@ queue.dequeue();
 int value = queue.front();
 
 
-## How To Measure Coverage with Gcov
+# How To Measure Coverage with Gcov
 
-### Compile with coverage
+## Compile with coverage
 
 g++ -std=c++17 -g --coverage <source files>
 
-### Run
+## Run
 
 ./a.out
 
-### Generate coverage report
+## Generate coverage report
 
 gcov -mr <source file>
 
-### View coverage report
+## View coverage report
 
 cat <source file>.gcov
 
-‘-’ means the line is not executable (does not count for coverage)
-‘#####’ means the line is executable but was executed 0 times
-‘126’ means the line was executed 126 times
+'-' means the line is not executable (does not count for coverage)
+'#####' means the line is executable but was executed 0 times
+'126' means the line was executed 126 times
 
 ### Identify lines which are not covered
 
-grep “#####” <source file>.gcov
+grep '#####' <source file>.gcov
 
 ### Clean up before next measurement
 
