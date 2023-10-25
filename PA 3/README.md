@@ -50,8 +50,8 @@ Implement a binary search tree.
 
 ### Files
 ```cpp
-binary_search_tree.h            - contains the template definitions
-binary_search_tree_tests.cpp    - contains the test cases and test driver (main)
+binary_search_tree.h            // - contains the template definitions
+binary_search_tree_tests.cpp    // - contains the test cases and test driver (main)
 ```
 
 ### Class
@@ -62,30 +62,30 @@ class BinarySearchTree;
 
 ### Functions (public)
 ```cpp
-BinarySearchTree() - makes an empty tree
+BinarySearchTree() // - makes an empty tree
 
 # ============== Rule of Three ============== #
-BinarySearchTree(const BinarySearchTree&)               - copy constructor
-~BinarySearchTree()                                     - destructor
-BinarySearchTree& operator=(const BinarySearchTree&)    - copy assignment operator
+BinarySearchTree(const BinarySearchTree&)               // - copy constructor
+~BinarySearchTree()                                     // - destructor
+BinarySearchTree& operator=(const BinarySearchTree&)    // - copy assignment operator
 
-bool contains(const Comparable&) const  - returns Boolean true if the specified value is in the tree
-void insert(const Comparable&)          - insert the givenvalue into the tree
-void remove(const Comparable&)          - remove the specified value from the tree (replace with minimum of right child tree when value's node has two children)
+bool contains(const Comparable&) const  // - returns Boolean true if the specified value is in the tree
+void insert(const Comparable&)          // - insert the givenvalue into the tree
+void remove(const Comparable&)          // - remove the specified value from the tree (replace with minimum of right child tree when value's node has two children)
 
-const Comparable& find_min() const - return the minimum value in the tree or throw std::invalid_argument if the tree is empty
-const Comparable& find_max() const - return the maximum value in the tree or throw std::invalid_argument if the tree is empty
+const Comparable& find_min() const // - return the minimum value in the tree or throw std::invalid_argument if the tree is empty
+const Comparable& find_max() const // - return the maximum value in the tree or throw std::invalid_argument if the tree is empty
 
-void print_tree(std::ostream&=std::cout) const - pretty print the tree (rotated 90 degrees anti-clockwise, two spaces per level; see example below) to the specified output stream (default std::cout). Print "<empty>\n" if the tree is empty.
+void print_tree(std::ostream&=std::cout) const // - pretty print the tree (rotated 90 degrees anti-clockwise, two spaces per level; see example below) to the specified output stream (default std::cout). Print "<empty>\n" if the tree is empty.
 ```
 
 ### Optional
 ```cpp
-BinarySearchTree(BinarySearchTree&&)            - move constructsa copy of the given (rvalue) tree
-BinarySearchTree& operator=(BinarySearchTree&&) - move assigns a copy of the given (rvalue) tree
-bool is_empty() const                           - returns Boolean true if thetree is empty
-void insert(Comparable&&)                       - insert the given rvalueinto the tree using move semantics
-void make_empty()                               - remove all values from the tree
+BinarySearchTree(BinarySearchTree&&)            // - move constructsa copy of the given (rvalue) tree
+BinarySearchTree& operator=(BinarySearchTree&&) // - move assigns a copy of the given (rvalue) tree
+bool is_empty() const                           // - returns Boolean true if thetree is empty
+void insert(Comparable&&)                       // - insert the given rvalueinto the tree using move semantics
+void make_empty()                               // - remove all values from the tree
 ```
 
 ### Example
@@ -140,8 +140,8 @@ Implement an AVL tree (auto-balancing binary search tree).
 
 ### Files
 ```cpp
-avl_tree.h          - contains the template definitions
-avl_tree_tests.cpp  - contains the test cases and test driver (main)
+avl_tree.h          // - contains the template definitions
+avl_tree_tests.cpp  // - contains the test cases and test driver (main)
 ```
 
 ### Class
@@ -152,30 +152,30 @@ class AVLTree;
 
 ### Functions (public)
 ```cpp
-AVLTree() - makes an empty tree
+AVLTree() // - makes an empty tree
 
 # ============== Rule of Three ============== #
-AVLTree(const AVLTree&)             - copy constructor
-~AVLTree()                          - destructor
-AVLTree& operator=(const AVLTree&)  - copy assignment operator
+AVLTree(const AVLTree&)             // - copy constructor
+~AVLTree()                          // - destructor
+AVLTree& operator=(const AVLTree&)  // - copy assignment operator
 
-bool contains(const Comparable&) const  - returns Boolean true if the specified value is in the tree
-void insert(const Comparable&)          - insert the given value into the tree
-void remove(const Comparable&)          - remove the specified value from the tree (replace with minimum of right child tree when value's node has two children)
+bool contains(const Comparable&) const  // - returns Boolean true if the specified value is in the tree
+void insert(const Comparable&)          // - insert the given value into the tree
+void remove(const Comparable&)          // - remove the specified value from the tree (replace with minimum of right child tree when value's node has two children)
 
-const Comparable& find_min() const - return the minimum value in the tree or throw std::invalid_argument if the tree is empty
-const Comparable& find_max() const - return the maximum value in the tree or throw std::invalid_argument if the tree is empty
+const Comparable& find_min() const // - return the minimum value in the tree or throw std::invalid_argument if the tree is empty
+const Comparable& find_max() const // - return the maximum value in the tree or throw std::invalid_argument if the tree is empty
 
-void print_tree(std::ostream&=std::cout) const - prettyprint the tree (rotated 90 degrees anti-clockwise, two spaces per level; see example below) to the specified output stream (default std::cout). Print "<empty>\n" if the tree is empty.
+void print_tree(std::ostream&=std::cout) const // - pretty print the tree (rotated 90 degrees anti-clockwise, two spaces per level; see example below) to the specified output stream (default std::cout). Print "<empty>\n" if the tree is empty.
 ```
 
 ### Optional
 ```cpp
-AVLTree(AVLTree&&)              - move constructs a copy of thegiven (rvalue) tree
-AVLTree& operator=(AVLTree&&)   - move assigns a copy of the given (rvalue) tree
-bool is_empty() const           - returns Boolean true if the tree is empty
-void insert(Comparable&&)       - insert the given rvalue into the tree using move semantics
-void make_empty()               - remove all values from the tree
+AVLTree(AVLTree&&)              // - move constructs a copy of thegiven (rvalue) tree
+AVLTree& operator=(AVLTree&&)   // - move assigns a copy of the given (rvalue) tree
+bool is_empty() const           // - returns Boolean true if the tree is empty
+void insert(Comparable&&)       // - insert the given rvalue into the tree using move semantics
+void make_empty()               // - remove all values from the tree
 ```
 
 

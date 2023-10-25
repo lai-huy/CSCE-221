@@ -95,9 +95,10 @@ Implement a list using an array.
 ## Requirements
 
 ### Files
-
-`array_list.h` - contains the template definitions  
-`array_list_tests.cpp` - contains the test cases andtest driver (main)
+```cpp
+array_list.h          // - contains the template definitions  
+array_list_tests.cpp  // - contains the test cases andtest driver (main)
+```
 
 ### Class
 ```cpp
@@ -107,31 +108,31 @@ class ArrayList;
 
 ### Functions (public)
 ```cpp
-ArrayList()                 # - makes an empty list
-explicit ArrayList(size_t)  # - makes a list with thespecified initial capacity
+ArrayList()                 // - makes an empty list
+explicit ArrayList(size_t)  // - makes a list with thespecified initial capacity
 
-# ============== Rule of Three ============== #
-ArrayList(const ArrayList&)             # - constructs a copy of the given list
-~ArrayList()                            # - destroys this list
-ArrayList& operator=(const ArrayList&)  # - assigns a copy of the given list
+// ============== Rule of Three ============== //
+ArrayList(const ArrayList&)             // - constructs a copy of the given list
+~ArrayList()                            // - destroys this list
+ArrayList& operator=(const ArrayList&)  // - assigns a copy of the given list
 
-size_t size() const                 # - returns the number of elementsin the list
-Object& operator[](size_t)          # - returns a reference to the element at the specified index or throws std::out_of_range if the index is out of bounds.
-void insert(size_t, const Object&)  # - insert the given object at the specified index or throws std::out_of_range if the index is out of bounds
-void remove(index)                  # - remove the object at the specified index or throws std::out_of_range if the index is out of bounds
+size_t size() const                 // - returns the number of elementsin the list
+Object& operator[](size_t)          // - returns a reference to the element at the specified index or throws std::out_of_range if the index is out of bounds.
+void insert(size_t, const Object&)  // - insert the given object at the specified index or throws std::out_of_range if the index is out of bounds
+void remove(index)                  // - remove the object at the specified index or throws std::out_of_range if the index is out of bounds
 ```
 
 ### Optional
 ```cpp
-ArrayList(ArrayList&&)                  # - move-constructs a "copy" of the given (rvalue) list
-ArrayList& operator=(ArrayList&&)       # - move-assigns a "copy" of the given (rvalue) list
-void insert(size_t, Object&&)           # - insert the given (rvalue)object at the specified index or throws std::out_of_rangeif the index is out ofbounds
-const Object& operator[](size_t) const  # - returns a constant reference to the element at the specified index or throws std::out_of_range if the index is out of bounds.
+ArrayList(ArrayList&&)                  // - move-constructs a "copy" of the given (rvalue) list
+ArrayList& operator=(ArrayList&&)       // - move-assigns a "copy" of the given (rvalue) list
+void insert(size_t, Object&&)           // - insert the given (rvalue) object at the specified index or throws std::out_of_range if the index is out ofbounds
+const Object& operator[](size_t) const  // - returns a constant reference to the element at the specified index or throws std::out_of_range if the index is out of bounds.
 
-Object* begin()              # - returns a pointer to the beginningof the list
-const Object* begin() const  # - returns a pointer tothe beginning of the list
-Object* end()                # - returns a pointer to the end of the list
-const Object* end() const    # - returns a pointer to theend of the list
+Object* begin()              // - returns a pointer to the beginningof the list
+const Object* begin() const  // - returns a pointer tothe beginning of the list
+Object* end()                // - returns a pointer to the end of the list
+const Object* end() const    // - returns a pointer to theend of the list
 ```
 
 ### Example
@@ -162,8 +163,8 @@ Implement a list using a doubly linked list.
 
 ### Files
 ```cpp
-doubly_linked_list.h         - contains the template definitions
-doubly_linked_list_tests.cpp - contains the test casesand test driver (main)
+doubly_linked_list.h         // - contains the template definitions
+doubly_linked_list_tests.cpp // - contains the test casesand test driver (main)
 ```
 
 ### Class
@@ -177,29 +178,29 @@ class DoublyLinkedList;
 DoublyLinkedList() - makes an empty list
 
 # ============== Rule of Three ============== #
-DoublyLinkedList(const DoublyLinkedList&)             - constructsa copy of the given list
-~DoublyLinkedList()                                   - destroys this list
-DoublyLinkedList& operator=(const DoublyLinkedList&)  - assigns a copy the given list
+DoublyLinkedList(const DoublyLinkedList&)             // - constructsa copy of the given list
+~DoublyLinkedList()                                   // - destroys this list
+DoublyLinkedList& operator=(const DoublyLinkedList&)  // - assigns a copy the given list
 
-size_t size() const                 - returns the number of elementsin the list
-Object& operator[](size_t)          - returns a reference to the element at the specified index or throws std::out_of_range if the index is out of bounds.
-void insert(size_t, const Object&)  - insert the given object at the specified index or throws std::out_of_range if the index is out of bounds
-void remove(size_t)                 - remove the object at the specified index or throws std::out_of_range if the index is out of bounds
+size_t size() const                 // - returns the number of elements in the list
+Object& operator[](size_t)          // - returns a reference to the element at the specified index or throws std::out_of_range if the index is out of bounds.
+void insert(size_t, const Object&)  // - insert the given object at the specified index or throws std::out_of_range if the index is out of bounds
+void remove(size_t)                 // - remove the object at the specified index or throws std::out_of_range if the index is out of bounds
 ```
 
 ### Optional
 ```cpp
-DoublyLinkedList(DoublyLinkedList&&)            - move-constructs a "copy" of the given (rvalue) list
-DoublyLinkedList& operator=(DoublyLinkedList&&) - move-assigns a "copy" of the given (rvalue) list
+DoublyLinkedList(DoublyLinkedList&&)            // - move-constructs a "copy" of the given (rvalue) list
+DoublyLinkedList& operator=(DoublyLinkedList&&) // - move-assigns a "copy" of the given (rvalue) list
 
-void insert(size_t, Object&&)           - insert the given (rvalue) object at the specified index or throws std::out_of_range if the index is out ofbounds
-const Object& operator[](size_t) const  - returns a constant reference to the element at the specified index or throws std::out_of_range if the index is out of bounds.
+void insert(size_t, Object&&)           // - insert the given (rvalue) object at the specified index or throws std::out_of_range if the index is out ofbounds
+const Object& operator[](size_t) const  // - returns a constant reference to the element at the specified index or throws std::out_of_range if the index is out of bounds.
 
 
-iterator begin()              - returns an iterator that points to the beginning of the list
-const_iterator begin() const  - returns an iterator that points to the beginning of the list
-iterator end()                - returns an iterator that points to the end of the list
-const_iterator end() const    - returns an iterator that points to the end of the list
+iterator begin()              // - returns an iterator that points to the beginning of the list
+const_iterator begin() const  // - returns an iterator that points to the beginning of the list
+iterator end()                // - returns an iterator that points to the end of the list
+const_iterator end() const    // - returns an iterator that points to the end of the list
 ```
 
 ### Example
@@ -229,8 +230,8 @@ Implement a stack using a list. You should use your `ArrayList` or `DoublyLinked
 
 ### Files
 ```cpp
-stack.h         - contains the template definitions
-stack_tests.cpp - contains the test cases and test driver (main)
+stack.h         // - contains the template definitions
+stack_tests.cpp // - contains the test cases and test driver (main)
 ```
 
 ### Class
@@ -241,25 +242,25 @@ class Stack;
 
 ### Functions (public)
 ```cpp
-Stack() - makes an empty stack
+Stack() // - makes an empty stack
 
-# ============== Rule of Three ============== #
-Stack(const Stack&)             - constructs a copy of the given stack
-~Stack()                        - destroys this stack
-Stack& operator=(const Stack&)  - assigns a copy of the given stack
+// ============== Rule of Three ============== //
+Stack(const Stack&)             // - constructs a copy of the given stack
+~Stack()                        // - destroys this stack
+Stack& operator=(const Stack&)  // - assigns a copy of the given stack
 
-void push(const Object&)  - add the given object to the top of the stack
-void pop()                - remove the top element from the stack, or throw std::out_of_range is the stack is empty.
-Object& top()             - return a reference to the element on top of the stack or throw std::out_of_range if the stack is empty.
+void push(const Object&)  // - add the given object to the top of the stack
+void pop()                // - remove the top element from the stack, or throw std::out_of_range is the stack is empty.
+Object& top()             // - return a reference to the element on top of the stack or throw std::out_of_range if the stack is empty.
 ```
 
 ### Optional
 ```cpp
-Stack(Stack&&)            - move-constructs a "copy" of the given (rvalue) stack
-Stack& operator=(Stack&&) - move-assigns a "copy" of the given (rvalue) stack
-void push(Object&&)       - add the given (rvalue) object to the top of the stack
-const Object& top() const - returns a constant referenceto the element on top of the stack or throws std::out_of_range if the stack is empty.
-size_t size() const       - returns the number of elements in the stack
+Stack(Stack&&)            // - move-constructs a "copy" of the given (rvalue) stack
+Stack& operator=(Stack&&) // - move-assigns a "copy" of the given (rvalue) stack
+void push(Object&&)       // - add the given (rvalue) object to the top of the stack
+const Object& top() const // - returns a constant reference to the element on top of the stack or throws std::out_of_range if the stack is empty.
+size_t size() const       // - returns the number of elements in the stack
 ```
 
 ## Example
@@ -286,8 +287,8 @@ Implement a queue using a list. You should use yourArrayList orDoublyLinkedList.
 
 ### Files
 ```cpp
-queue.h         - contains the template definitions
-queue_tests.cpp - contains the test cases and test driver (main)
+queue.h         // - contains the template definitions
+queue_tests.cpp // - contains the test cases and test driver (main)
 ```
 
 ### Class
@@ -298,27 +299,26 @@ class Queue;
 
 ### Functions (public)
 ```cpp
-Queue() - makes an empty stack
+Queue() // - makes an empty stack
 
-# ============== Rule of Three ============== #
-Queue(const Queue&)             - constructs a copy of the given queue
-~Queue()                        - destroys this queue
-Queue& operator=(const Queue&)  - assigns a copy of the given stack
+// ============== Rule of Three ============== //
+Queue(const Queue&)             // - constructs a copy of the given queue
+~Queue()                        // - destroys this queue
+Queue& operator=(const Queue&)  // - assigns a copy of the given stack
 
-void enqueue(const Object&) - add the given object to the back of the queue
-Object dequeue()            - remove and return the front element from the queue, or throw std::out_of_range if the queue is empty.
-Object& front()             - return a reference to the element at the front of the queue or throw std::out_of_range if the queue is empty.
+void enqueue(const Object&) // - add the given object to the back of the queue
+Object dequeue()            // - remove and return the front element from the queue, or throw std::out_of_range if the queue is empty.
+Object& front()             // - return a reference to the element at the front of the queue or throw std::out_of_range if the queue is empty.
 ```
 
 ### Optional
 ```cpp
-Queue(Queue&&)              - move-constructs a "copy" of the given (rvalue) queue
-Queue& operator=(Queue&&)   - move-assigns a "copy" of the given (rvalue) queue
-void enqueue(Object&&)      - add the given (rvalue) objectto the queue
-const Object& front() const - returns a constant reference to the element at the front of the queue or throws std::out_of_range if the queue is empty.
-size_t size() const         - returns the number of elements in the queue
+Queue(Queue&&)              // - move-constructs a "copy" of the given (rvalue) queue
+Queue& operator=(Queue&&)   // - move-assigns a "copy" of the given (rvalue) queue
+void enqueue(Object&&)      // - add the given (rvalue) objectto the queue
+const Object& front() const // - returns a constant reference to the element at the front of the queue or throws std::out_of_range if the queue is empty.
+size_t size() const         // - returns the number of elements in the queue
 ```
-
 
 ## Example
 ```cpp
