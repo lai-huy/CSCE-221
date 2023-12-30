@@ -15,7 +15,7 @@ clean:
 $(objects): %: clean hashtable_%.h hashtable_%_tests.cpp
 	g++ $(CXXFLAGS) --coverage hashtable_$@_tests.cpp
 	./main.out
-	gcov -mr hashtable_$@_tests.cpp
+	gcov --use-colors --demangled-names --object-file *.gcda hashtable_$@_tests.cpp
 
 separate_chaining_memory_errors: %_memory_errors: clean hashtable_%.h hashtable_%_tests.cpp
 	g++ $(CXXFLAGS) hashtable_separate_chaining_tests.cpp

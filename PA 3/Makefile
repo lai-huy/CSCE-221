@@ -9,7 +9,7 @@ compile_test: clean binary_search_tree.h avl_tree.h compile_test.cpp
 bst: clean binary_search_tree.h binary_search_tree_tests.cpp
 	g++ -std=c++17 -Wall -Wextra -Weffc++ -pedantic-errors -g --coverage -o main.out binary_search_tree_tests.cpp
 	./main.out
-	gcov -mr binary_search_tree_tests.cpp
+	gcov --use-colors --demangled-names --object-file *.gcda binary_search_tree_tests.cpp
 
 bst_check: clean
 	g++ -std=c++17 -Wall -Wextra -Weffc++ -pedantic-errors -g -o unsainitized.out binary_search_tree_tests.cpp
@@ -22,7 +22,7 @@ bst_time: clean
 avl: clean avl_tree.h avl_tree_tests.cpp
 	g++ -std=c++17 -Wall -Wextra -Weffc++ -pedantic-errors -g --coverage -o main.out avl_tree_tests.cpp
 	./main.out
-	gcov -mr avl_tree_tests.cpp
+	gcov --use-colors --demangled-names --object-file *.gcda avl_tree_tests.cpp
 
 avl_check: clean
 	g++ -std=c++17 -Wall -Wextra -Weffc++ -pedantic-errors -g -o unsainitized.out avl_tree_tests.cpp

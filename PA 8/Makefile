@@ -15,7 +15,7 @@ clean:
 $(objects): %: clean %.h %_tests.cpp
 	g++ $(CXXFLAGS) --coverage $@_tests.cpp
 	./main.out
-	gcov -mr $@_tests.cpp
+	gcov --use-colors --demangled-names --object-file *.gcda $@_tests.cpp
 	
 sorts_memory_errors: %_memory_errors: clean %.h %_tests.cpp
 	g++ $(CXXFLAGS) sorts_tests.cpp

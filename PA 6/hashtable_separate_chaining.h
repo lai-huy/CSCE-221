@@ -3,12 +3,13 @@
 #include <functional>
 #include <iostream>
 #include <list>
+#include <limits>
 #include <sstream>
 #include <stdexcept>
 #include <vector>
 
 using std::ostream, std::cout;
-using std::hash, std::find, std::swap;
+using std::hash, std::find, std::swap, std::move;
 using std::vector, std::list;
 using std::out_of_range, std::invalid_argument;
 using std::numeric_limits;

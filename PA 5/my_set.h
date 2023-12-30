@@ -485,17 +485,17 @@ public:
 template <class Comparable>
 class Set {
 public:
-    using key_type = Key;
-    using value_type = Key;
+    using key_type = Comparable;
+    using value_type = Comparable;
     using size_type = size_t;
     using difference_type = ptrdiff_t;
     using reference = value_type&;
     using const_reference = const value_type&;
     using pointer = value_type*;
     using const_pointer = const value_type*;
-    using iterator = Set_iterator<Key>;
-    using const_iterator = Set_const_iterator<Key>;
-    using Node = Set_Node<Key>;
+    using iterator = Set_iterator<Comparable>;
+    using const_iterator = Set_const_iterator<Comparable>;
+    using Node = Set_Node<Comparable>;
 
 private:
     /**
